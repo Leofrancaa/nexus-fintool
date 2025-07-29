@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-sans: var(--font-manrope);
 }
 
 @theme inline {
@@ -22,5 +23,24 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* globals.css */
+[data-sonner-toast] {
+  background-color: #111827; /* nexus.background */
+  color: #f3f4f6; /* nexus.text */
+  border: 1px solid #3b82f6; /* nexus.border */
+  border-radius: 0.75rem; /* rounded-xl */
+  padding: 0.75rem 1rem; /* px-4 py-3 */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  font-family: var(--font-manrope), sans-serif;
+}
+
+[data-sonner-toast][data-type="success"] {
+  border-color: #22c55e; /* nexus.success */
+}
+
+[data-sonner-toast][data-type="error"] {
+  border-color: #ef4444; /* nexus.error */
 }
