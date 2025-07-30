@@ -98,26 +98,24 @@ export default function Signup() {
 
       <div className="relative z-10 w-full max-w-lg sm:max-w-md md:max-w-[60%] lg:max-w-[40%] xl:max-w-[30%] bg-[#111827] rounded-2xl shadow-lg px-6 sm:px-8 md:px-10 pb-8">
         <div className="text-center">
-          <div className="mx-auto mt-10" style={{ width: 170, height: 100 }}>
+          <div className="mx-auto mt-6 mb-6 w-[100px]">
             <Image
               src="/logo-nexus.png"
               alt="Logo Nexus"
-              width={170}
-              height={100}
+              width={0}
+              height={0}
+              sizes="100vw"
+              style={{ width: "100%", height: "auto" }}
               priority
-              style={{ height: "auto" }}
             />
           </div>
 
           <h1 className="text-xl font-semibold text-white">Criar conta</h1>
-          <p className="text-sm text-[#9CA3AF]">
-            Comece a controlar suas finanças hoje mesmo
-          </p>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-5 mt-2 flex flex-col gap-4"
+          className="space-y-5 mt-2 flex flex-col 3xl:gap-4"
         >
           <div>
             <Label htmlFor="nome">Nome completo</Label>
