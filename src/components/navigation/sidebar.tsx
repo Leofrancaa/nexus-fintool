@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  Wallet,
+  TrendingDown,
   TrendingUp,
   CreditCard,
   FolderKanban,
@@ -22,7 +22,7 @@ import clsx from "clsx";
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Despesas", href: "/despesas", icon: Wallet },
+  { name: "Despesas", href: "/despesas", icon: TrendingDown },
   { name: "Receitas", href: "/receitas", icon: TrendingUp },
   { name: "Cartões", href: "/cartoes", icon: CreditCard },
   { name: "Categorias", href: "/categorias", icon: FolderKanban },
@@ -43,7 +43,7 @@ export function Sidebar() {
     <>
       {/* Topo Mobile com logo + menu (aparece só quando fechado) */}
       {!isMobileOpen && (
-        <div className="lg:hidden fixed top-0 left-0 w-full bg-[#232222] flex items-center justify-between px-4 py-3 z-40 shadow-md">
+        <div className="lg:hidden fixed top-0 left-0 w-full bg-[#0a0a0a] flex items-center justify-between px-8 py-3 z-40 shadow-md">
           <div className="w-[80px]">
             <Image
               src="/logo-nexus.png"
@@ -67,7 +67,7 @@ export function Sidebar() {
       {/* Sidebar Desktop */}
       <aside
         className={clsx(
-          "hidden lg:flex h-screen bg-[#232222] text-white border-r border-white/5 transition-all duration-300",
+          "hidden lg:flex h-screen bg-[#0a0a0a] text-white border-r border-white/5 transition-all duration-300",
           {
             "w-[19%]": isOpen,
             "w-[4%]": !isOpen,
