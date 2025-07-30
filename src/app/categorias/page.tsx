@@ -24,7 +24,7 @@ export default function Categories() {
 
       if (!res.ok) throw new Error("Erro ao buscar categorias");
 
-      const data = await res.json();
+      const data: Categoria[] = await res.json();
       setCategorias(data);
     } catch {
       toast.error("Erro ao buscar categorias");
@@ -34,6 +34,10 @@ export default function Categories() {
   useEffect(() => {
     fetchCategorias();
   }, []);
+
+  const categoriasPai = categorias.filter((cat) => cat.parent_id === null);
+  const getSubcategorias = (id: number) =>
+    categorias.filter((cat) => cat.parent_id === id);
 
   return (
     <main className="flex flex-col min-h-screen bg-black px-8 py-4">
@@ -50,13 +54,14 @@ export default function Categories() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
-        {categorias.map((categoria) => (
+        {categoriasPai.map((categoria) => (
           <CategoryCard
             key={categoria.id}
             id={categoria.id}
             nome={categoria.nome}
             cor={categoria.cor}
             tipo={categoria.tipo}
+            subcategorias={getSubcategorias(categoria.id)}
             onDelete={(deletedId) =>
               setCategorias((prev) =>
                 prev.filter((cat) => cat.id !== deletedId)
