@@ -13,7 +13,7 @@ export default function AddButton({
   ...props
 }: ButtonProps) {
   const base =
-    "w-full flex justify-center lg:justify-between items-center rounded-xl font-semibold transition-all py-6 text-lg cursor-pointer text-[16px] px-4";
+    "flex justify-center lg:justify-between items-center rounded-xl font-semibold transition-all py-6 text-lg cursor-pointer text-[16px] px-4";
 
   const variants = {
     primary:
