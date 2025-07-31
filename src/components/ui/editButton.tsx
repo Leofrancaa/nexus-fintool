@@ -1,5 +1,5 @@
 interface EditButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
   title?: string;
   size?: "sm" | "md" | "lg"; // tamanho do ícone
 }
