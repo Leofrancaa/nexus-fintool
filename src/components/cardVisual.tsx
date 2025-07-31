@@ -4,14 +4,14 @@ import { CardType } from "@/types/card"; // interface que você usar
 import { formatCurrency } from "@/utils/format"; // utilidade para formatar valor em R$
 import { differenceInDays, format } from "date-fns";
 import { AlertTriangle } from "lucide-react";
-import { EditCardModal } from "../components/modals/editCardModal"; // ajuste o path se necessário
+import EditButton from "./ui/editButton";
 
 interface CardVisualProps {
   card: CardType;
   onEdit: (card: CardType) => void;
 }
 
-export function CardVisual({ card }: CardVisualProps) {
+export function CardVisual({ card, onEdit }: CardVisualProps) {
   const {
     nome,
     numero,
@@ -88,12 +88,13 @@ export function CardVisual({ card }: CardVisualProps) {
             )}
 
             {/* Botão de editar */}
-            <EditCardModal
-              card={card}
-              onUpdated={() => {
-                /* opcional: recarrega */
-              }}
-            />
+            <div className="flex justify-end">
+              <EditButton
+                onClick={() => onEdit(card)}
+                title="Editar cartão"
+                size="md"
+              />
+            </div>
           </div>
         </div>
       </div>

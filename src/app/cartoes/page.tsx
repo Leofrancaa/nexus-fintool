@@ -3,17 +3,19 @@
 import { useEffect, useState } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewCardModal } from "@/components/modals/newCardModal";
-import { CardVisual } from "@/components//cardVisual";
+import { EditCardModal } from "@/components/modals/editCardModal"; // 👈 importar o modal
+import { CardVisual } from "@/components/cardVisual";
 import { CardType } from "@/types/card";
 import { toast } from "react-hot-toast";
 
 export default function Cards() {
   const [cards, setCards] = useState<CardType[]>([]);
+  const [editando, setEditando] = useState<CardType | null>(null); // 👈 controle do modal
 
   const fetchCards = async () => {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cards`, {
-        credentials: "include", // ✅ cookies HTTP-only
+        credentials: "include",
       });
 
       if (!res.ok) throw new Error();
@@ -35,11 +37,7 @@ export default function Cards() {
           title="Cartões"
           subTitle="Gerencie e acompanhe seus cartões"
         />
-        <NewCardModal
-          onCreated={() => {
-            fetchCards();
-          }}
-        />
+        <NewCardModal onCreated={fetchCards} />
       </div>
 
       <section className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -47,14 +45,22 @@ export default function Cards() {
           <CardVisual
             key={card.id}
             card={card}
-            onEdit={(editedCard) => {
-              // Implement your edit logic here, e.g., open an edit modal or update state
-              // For now, just show a toast as a placeholder
-              toast.success(`Editar cartão: ${editedCard.id}`);
-            }}
+            onEdit={() => setEditando(card)} // abre o modal
           />
         ))}
       </section>
+
+      {editando && (
+        <EditCardModal
+          card={editando} // ✅ aqui o editando já nunca será null
+          open={!!editando}
+          onClose={() => setEditando(null)}
+          onUpdated={() => {
+            fetchCards();
+            setEditando(null);
+          }}
+        />
+      )}
     </main>
   );
 }
