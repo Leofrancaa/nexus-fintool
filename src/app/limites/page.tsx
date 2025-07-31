@@ -7,6 +7,7 @@ import ThresholdCard from "@/components/thresholdCard";
 import { Threshold } from "@/types/threshold";
 import { toast } from "react-hot-toast";
 import { EditThresholdModal } from "@/components/modals/editThresholdModal"; // 👈 importar modal
+import { useRouter } from "next/navigation";
 
 const fetchGastoPorCategoria = async (categoryId: number): Promise<number> => {
   try {
@@ -23,6 +24,22 @@ const fetchGastoPorCategoria = async (categoryId: number): Promise<number> => {
 };
 
 export default function Limits() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        router.push("/login");
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
   const [limites, setLimites] = useState<Threshold[]>([]);
   const [gastos, setGastos] = useState<Record<number, number>>({});
   const [editando, setEditando] = useState<Threshold | null>(null); // 👈 controle de edição

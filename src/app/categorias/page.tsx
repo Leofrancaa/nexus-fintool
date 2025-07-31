@@ -6,8 +6,25 @@ import { NewCategoryModal } from "@/components/modals/newCategoryModal";
 import CategoryCard from "@/components/categoryCard";
 import { Categoria } from "@/types/category";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Categories() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        router.push("/login");
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
   const [categorias, setCategorias] = useState<Categoria[]>([]);
 
   const fetchCategorias = async () => {

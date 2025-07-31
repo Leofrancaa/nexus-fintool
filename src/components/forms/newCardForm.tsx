@@ -74,6 +74,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
       <div>
         <Label>Nome do Cartão</Label>
         <Input
+          variant="dark"
           placeholder="Ex: Nubank, Visa, etc"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
@@ -85,6 +86,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
       <div>
         <Label>Número (somente os 4 últimos)</Label>
         <Input
+          variant="dark"
           placeholder="1234"
           value={numero}
           onChange={(e) => setNumero(e.target.value)}
@@ -118,6 +120,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
       <div>
         <Label>Limite</Label>
         <Input
+          variant="dark"
           placeholder="Ex: 5000"
           type="number"
           value={limite}
@@ -130,6 +133,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
       <div>
         <Label>Dia de Vencimento</Label>
         <Input
+          variant="dark"
           placeholder="Ex: 15"
           type="number"
           min={1}

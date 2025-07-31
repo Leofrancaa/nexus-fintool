@@ -7,10 +7,27 @@ import { EditCardModal } from "@/components/modals/editCardModal"; // 👈 impor
 import { CardVisual } from "@/components/cardVisual";
 import { CardType } from "@/types/card";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function Cards() {
   const [cards, setCards] = useState<CardType[]>([]);
   const [editando, setEditando] = useState<CardType | null>(null); // 👈 controle do modal
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
+        credentials: "include",
+      });
+
+      if (!res.ok) {
+        router.push("/login");
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   const fetchCards = async () => {
     try {

@@ -6,6 +6,13 @@ import { Label } from "@/components/ui/label";
 import { toast } from "react-hot-toast";
 import { Categoria } from "@/types/category";
 import { Threshold } from "@/types/threshold";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Props {
   onClose: () => void;
@@ -111,24 +118,32 @@ export function NewThresholdForm({
       {/* Categoria */}
       <div>
         <Label>Categoria</Label>
-        <select
-          value={categoriaId ?? ""}
-          onChange={(e) => setCategoriaId(Number(e.target.value))}
-          className="w-full mt-1 px-4 py-2 rounded-md bg-[#1B1B1B] text-white border border-[#2e2e2e]"
+        <Select
+          value={categoriaId !== null ? categoriaId.toString() : "none"}
+          onValueChange={(value) =>
+            setCategoriaId(value === "none" ? null : Number(value))
+          }
         >
-          <option value="">Selecione uma categoria</option>
-          {categorias.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.nome}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione uma categoria" />
+          </SelectTrigger>
+
+          <SelectContent>
+            <SelectItem value="none">Selecione uma categoria</SelectItem>
+            {categorias.map((cat) => (
+              <SelectItem key={cat.id} value={cat.id.toString()}>
+                {cat.nome}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Valor */}
       <div>
         <Label>Valor do Limite (R$)</Label>
         <Input
+          variant="dark"
           type="number"
           placeholder="Ex: 1000"
           value={valor}

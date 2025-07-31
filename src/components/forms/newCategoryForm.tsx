@@ -5,6 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-hot-toast";
 import { Categoria } from "@/types/category";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select"; // certifique-se que está importando do lugar correto
 
 const cores = [
   "#6366f1",
@@ -93,6 +100,7 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
       <div>
         <Label>Nome da Categoria</Label>
         <Input
+          variant="dark"
           placeholder="Ex: Alimentação, Transporte..."
           value={nome}
           onChange={(e) => setNome(e.target.value)}
@@ -144,20 +152,25 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
       {/* Categoria Pai */}
       <div>
         <Label>Categoria Pai (opcional)</Label>
-        <select
-          value={parentId ?? ""}
-          onChange={(e) =>
-            setParentId(e.target.value === "" ? null : Number(e.target.value))
+        <Select
+          value={parentId?.toString() ?? ""}
+          onValueChange={(value) =>
+            setParentId(value === "" ? null : Number(value))
           }
-          className="w-full mt-1 px-4 py-2 rounded-md bg-[#1B1B1B] text-white border border-[#2e2e2e]"
         >
-          <option value="">Sem categoria pai</option>
-          {categoriasPai.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.nome}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger>
+            <SelectValue placeholder="Sem categoria pai" />
+          </SelectTrigger>
+
+          <SelectContent>
+            <SelectItem value="none">Sem categoria pai</SelectItem>
+            {categoriasPai.map((cat) => (
+              <SelectItem key={cat.id} value={cat.id.toString()}>
+                {cat.nome}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Botões */}

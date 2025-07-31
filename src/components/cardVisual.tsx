@@ -1,7 +1,7 @@
 "use client";
-// caso use um componente pronto
-import { CardType } from "@/types/card"; // interface que você usar
-import { formatCurrency } from "@/utils/format"; // utilidade para formatar valor em R$
+
+import { CardType } from "@/types/card";
+import { formatCurrency } from "@/utils/format";
 import { differenceInDays, format } from "date-fns";
 import { AlertTriangle } from "lucide-react";
 import EditButton from "./ui/editButton";
@@ -17,12 +17,13 @@ export function CardVisual({ card, onEdit }: CardVisualProps) {
     numero,
     tipo,
     limite,
-    gasto_total,
+    limite_disponivel,
     dia_vencimento,
     cor,
-    proximo_vencimento, // Date string do próximo vencimento
+    proximo_vencimento,
   } = card;
 
+  const gasto_total = limite - limite_disponivel;
   const percentualUsado = Math.min((gasto_total / limite) * 100, 100);
   const diasRestantes = differenceInDays(
     new Date(proximo_vencimento),
@@ -79,15 +80,12 @@ export function CardVisual({ card, onEdit }: CardVisualProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Alerta de vencimento */}
             {vencimentoExpirado && (
               <div className="flex items-center gap-1 text-red-500 font-semibold">
                 <AlertTriangle size={16} />
                 <span>{diasRestantes}d</span>
               </div>
             )}
-
-            {/* Botão de editar */}
             <div className="flex justify-end">
               <EditButton
                 onClick={() => onEdit(card)}
