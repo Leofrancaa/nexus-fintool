@@ -32,11 +32,10 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const token = localStorage.getItem("token");
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            credentials: "include", // ✅ usa cookie para autenticação
           }
         );
 
@@ -60,15 +59,14 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
     }
 
     try {
-      const token = localStorage.getItem("token");
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
+          credentials: "include", // ✅ usa cookie HTTP-only
           body: JSON.stringify({
             nome,
             cor: corSelecionada,

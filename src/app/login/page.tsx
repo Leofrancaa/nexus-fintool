@@ -29,6 +29,7 @@ export default function Login() {
       const response = await fetch("http://localhost:3001/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // ✅ necessário para enviar/receber o cookie
         body: JSON.stringify({ email, senha }),
       });
 
@@ -36,10 +37,6 @@ export default function Login() {
         const error = await response.json();
         throw new Error(error.error || "Erro ao fazer login");
       }
-
-      const data = await response.json();
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
 
       toast.success("Login realizado com sucesso!");
       router.push("/dashboard");
@@ -92,7 +89,7 @@ export default function Login() {
         </svg>
       </div>
 
-      <div className="relative z-10 w-full max-w-lg sm:max-w-md md:max-w-[60%] lg:max-w-[40%] xl:max-w-[30%] bg-[#111827] rounded-2xl shadow-lg px-6 sm:px-8 md:px-10 pb-8">
+      <div className="relative z-10 w-full max-w-lg sm:max-w-md md:max-w-[60%] lg:max-w-[40%] xl:max-w-[25%] bg-[#111827] rounded-2xl shadow-lg px-6 sm:px-8 md:px-10 pb-8">
         <div className="text-center">
           <div className="mx-auto mt-6 mb-6 w-[100px]">
             <Image

@@ -1,3 +1,6 @@
+// app/page.tsx
+import { redirect } from "next/navigation";
+
 export default function Home() {
-  return <main></main>;
+  redirect("/login"); // sempre redireciona para a tela de login
 }

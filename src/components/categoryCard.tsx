@@ -30,14 +30,11 @@ export default function CategoryCard({
   const handleDelete = async (categoryId: number) => {
     try {
       setIsDeleting(true);
-      const token = localStorage.getItem("token");
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/categories/${categoryId}`,
         {
           method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: "include", // ✅ envia cookie JWT automaticamente
         }
       );
       if (!res.ok) throw new Error("Erro ao excluir categoria");
