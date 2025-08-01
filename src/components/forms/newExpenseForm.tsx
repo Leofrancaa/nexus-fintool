@@ -79,6 +79,16 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       return;
     }
 
+    if (isNaN(parseFloat(quantidade))) {
+      toast.error("Informe um valor válido.");
+      return;
+    }
+
+    if (isNaN(parseInt(categoriaId))) {
+      toast.error("Selecione uma categoria válida.");
+      return;
+    }
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/expenses`,
@@ -90,12 +100,12 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
             tipo: descricao,
             quantidade: parseFloat(quantidade),
             metodo_pagamento: metodoPagamento,
-            categoria_id: parseInt(categoriaId),
+            category_id: categoriaId ? parseInt(categoriaId) : null,
             card_id:
               metodoPagamento === "cartao de credito" ? parseInt(cardId) : null,
             parcelas: parseInt(parcelas),
             fixo,
-            frequencia: null, // ❌ frequência removida da lógica
+            frequencia: null,
             data,
           }),
         }
@@ -109,7 +119,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
 
       toast.success("Despesa cadastrada!");
       onCreated?.();
-      onClose(); // ✅ fecha o modal com segurança
+      onClose();
     } catch {
       toast.error("Erro ao salvar despesa.");
     }
@@ -210,7 +220,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
         </div>
       )}
 
-      {/* Data sempre visível */}
+      {/* Data */}
       <div>
         <Label>Data</Label>
         <Input
@@ -221,17 +231,19 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
         />
       </div>
 
-      {/* Toggle */}
+      {/* Toggle despesa fixa */}
       <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={() => setFixo(!fixo)}
-          className={`w-11 h-6 flex items-center rounded-full px-1 transition-colors duration-300
-        ${fixo ? "bg-blue-600" : "bg-gray-400"}`}
+          className={`w-11 h-6 flex items-center rounded-full px-1 transition-colors duration-300 ${
+            fixo ? "bg-blue-600" : "bg-gray-400"
+          }`}
         >
           <div
-            className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300
-          ${fixo ? "translate-x-5" : "translate-x-0"}`}
+            className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+              fixo ? "translate-x-5" : "translate-x-0"
+            }`}
           />
         </button>
         <span className="text-white text-sm">Despesa fixa</span>

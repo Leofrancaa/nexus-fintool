@@ -69,7 +69,7 @@ export function Sidebar() {
         className={clsx(
           "hidden lg:flex h-screen bg-[#0a0a0a] text-white border-r border-white/5 transition-all duration-300",
           {
-            "w-[19%]": isOpen,
+            "w-[15%]": isOpen,
             "w-[4%]": !isOpen,
           }
         )}
