@@ -24,7 +24,7 @@ export function EditExpenseModal({ expense, onClose, onUpdated }: Props) {
               Editar Despesa
             </Dialog.Title>
             <button onClick={onClose}>
-              <X className="text-white" />
+              <X className="text-white cursor-pointer" />
             </button>
           </div>
           <EditExpenseForm

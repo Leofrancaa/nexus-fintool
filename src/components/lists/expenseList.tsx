@@ -7,8 +7,6 @@ import ConfirmDialog from "../ui/confirmDialog";
 import { toast } from "react-hot-toast";
 import { EditExpenseModal } from "../modals/editExpenseModal"; // certifique-se de que o caminho está certo
 
-// ...
-
 interface Expense {
   id: number;
   tipo: string;
@@ -18,6 +16,8 @@ interface Expense {
   categoria_nome?: string;
   cor_categoria?: string;
   category_id?: number;
+  fixo?: boolean; // indicativo de despesa fixa
+  observacoes?: string;
 }
 
 interface ExpenseListProps {
@@ -139,7 +139,6 @@ export function ExpenseList({
 
       const deleted = await res.json();
 
-      // Remove todas as despesas fixas com mesmo tipo, se vierem múltiplas
       const idsRemovidos = Array.isArray(deleted)
         ? deleted.map((d: Expense) => d.id)
         : [deleted.id];
@@ -159,7 +158,7 @@ export function ExpenseList({
   };
 
   return (
-    <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full max-w-5xl text-white">
+    <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full lg:max-w-[80%] text-white">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-[#00D4D4]">Despesas Recentes</h2>
         <p className="text-base text-muted-foreground">
@@ -174,10 +173,19 @@ export function ExpenseList({
               key={expense.id}
               className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl bg-[#111] border border-[#222] p-5 hover:border-[#00D4D4] transition-all"
             >
-              {/* Detalhes */}
               <div className="flex flex-col flex-1 break-words">
-                <p className="text-lg font-bold text-white">{expense.tipo}</p>
-                <div className="text-sm text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4">
+                  <p className="text-lg font-bold text-white flex items-center gap-2">
+                    {expense.tipo}
+                    {expense.fixo && (
+                      <span className="text-xs font-semibold text-yellow-400 bg-yellow-900/30 px-2 py-0.5 rounded-full">
+                        Fixo
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                <div className=" text-sm lg:text-md text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
                   {expense.categoria_nome ? (
                     <span className="font-medium text-white">
                       {expense.categoria_nome}
@@ -193,12 +201,19 @@ export function ExpenseList({
                   <span className="text-white font-medium">
                     {new Date(expense.data).toLocaleDateString("pt-BR")}
                   </span>
+                  {expense.observacoes && (
+                    <>
+                      <span>•</span>
+                      <span className="text-muted-foreground truncate max-w-[180px]">
+                        Obs: {expense.observacoes}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
 
               <div className="flex justify-between sm:justify-end items-center gap-4 w-full sm:w-auto">
-                {/* Valor */}
-                <p className="text-cyan-400 font-bold text-lg whitespace-nowrap">
+                <p className="text-red-400 font-bold text-lg whitespace-nowrap">
                   -
                   {expense.quantidade.toLocaleString("pt-BR", {
                     style: "currency",
@@ -206,7 +221,6 @@ export function ExpenseList({
                   })}
                 </p>
 
-                {/* Botões */}
                 <div className="flex gap-2">
                   {expense.metodo_pagamento !== "cartao de credito" && (
                     <EditButton onClick={() => setEditExpense(expense)} />

@@ -1,24 +1,44 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import PageTitle from "@/components/pageTitle";
 import { NewExpenseModal } from "@/components/modals/newExpenseModal";
 import { ExpenseList } from "@/components/lists/expenseList";
 import { ExpenseFilters } from "@/components/expenseFilter";
 import { ExpenseStatsCards } from "@/components/expenseStatsCard";
+import { ExpensesByCategoryPanel } from "@/components/expenseByCategoryPanel";
 
 export default function Expenses() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [refreshKey, setRefreshKey] = useState(0);
+  // Estados
+  const now = new Date();
+  const [customMonth, setCustomMonth] = useState(String(now.getMonth() + 1)); // mês atual
+  const [customYear, setCustomYear] = useState(String(now.getFullYear())); // ano atual
 
   const [categorias, setCategorias] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("todas");
-  const [customMonth, setCustomMonth] = useState("");
-  const [customYear, setCustomYear] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  // Memoize handlers para evitar rerender do useEffect nos filhos
+  const handleSearchChange = useCallback((term: string) => {
+    setSearchTerm(term);
+  }, []);
+
+  const handleCategoryChange = useCallback((id: string) => {
+    setSelectedCategory(id);
+  }, []);
+
+  const handleMonthChange = useCallback((mes: string) => {
+    setCustomMonth(mes);
+  }, []);
+
+  const handleYearChange = useCallback((ano: string) => {
+    setCustomYear(ano);
+  }, []);
 
   // Verificação de autenticação
   useEffect(() => {
@@ -57,7 +77,7 @@ export default function Expenses() {
   if (loading) return null;
 
   return (
-    <main className="flex flex-col min-h-screen bg-black px-8 py-4">
+    <main className="flex flex-col min-h-screen bg-[#0f0f0f] px-8 py-4">
       {/* Cabeçalho */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle
@@ -84,24 +104,34 @@ export default function Expenses() {
       <div className="flex flex-col md:flex-row items-center justify-between mb-6 mt-6">
         <ExpenseFilters
           categorias={categorias}
-          onSearchChange={(term) => setSearchTerm(term)}
-          onCategoryChange={(id) => setSelectedCategory(id)}
-          onCustomMonthChange={(mes) => setCustomMonth(mes)}
-          onCustomYearChange={(ano) => setCustomYear(ano)}
+          onSearchChange={handleSearchChange}
+          onCategoryChange={handleCategoryChange}
+          onCustomMonthChange={handleMonthChange}
+          onCustomYearChange={handleYearChange}
           selectedCategory={selectedCategory}
         />
       </div>
 
-      {/* Lista de despesas */}
-      <ExpenseList
-        refreshKey={refreshKey}
-        setRefreshKey={setRefreshKey}
-        searchTerm={searchTerm}
-        categoryId={selectedCategory}
-        period="custom"
-        customMonth={customMonth}
-        customYear={customYear}
-      />
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* Lista de despesas */}
+        <ExpenseList
+          refreshKey={refreshKey}
+          setRefreshKey={setRefreshKey}
+          searchTerm={searchTerm}
+          categoryId={selectedCategory}
+          period="custom"
+          customMonth={customMonth}
+          customYear={customYear}
+        />
+
+        {customMonth && customYear && (
+          <ExpensesByCategoryPanel
+            mes={parseInt(customMonth)}
+            ano={parseInt(customYear)}
+            refreshKey={refreshKey} // ✅ passa aqui
+          />
+        )}
+      </div>
     </main>
   );
 }

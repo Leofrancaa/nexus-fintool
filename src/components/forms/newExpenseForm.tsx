@@ -107,6 +107,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
             fixo,
             frequencia: null,
             data,
+            observacoes,
           }),
         }
       );

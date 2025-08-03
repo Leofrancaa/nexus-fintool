@@ -101,8 +101,9 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <Label>Tipo</Label>
+        <Label>Descrição</Label>
         <Input
+          variant="dark"
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
           required
@@ -112,6 +113,7 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
       <div>
         <Label>Quantidade (R$)</Label>
         <Input
+          variant="dark"
           type="number"
           value={quantidade}
           onChange={(e) => setQuantidade(e.target.value)}
@@ -153,6 +155,7 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
       <div>
         <Label>Data</Label>
         <Input
+          variant="dark"
           type="date"
           value={data}
           onChange={(e) => setData(e.target.value)}

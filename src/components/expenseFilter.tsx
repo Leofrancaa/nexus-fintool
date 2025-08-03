@@ -8,7 +8,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { MONTHS } from "@/utils/constants";
 
@@ -30,6 +30,22 @@ export function ExpenseFilters({
   selectedCategory,
 }: ExpenseFiltersProps) {
   const [search, setSearch] = useState("");
+
+  const now = new Date();
+  const [selectedMonth, setSelectedMonth] = useState<string>(
+    String(now.getMonth() + 1)
+  );
+  const [selectedYear, setSelectedYear] = useState<string>(
+    String(now.getFullYear())
+  );
+
+  useEffect(() => {
+    onCustomMonthChange?.(selectedMonth);
+  }, [selectedMonth, onCustomMonthChange]);
+
+  useEffect(() => {
+    onCustomYearChange?.(selectedYear);
+  }, [selectedYear, onCustomYearChange]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -67,10 +83,13 @@ export function ExpenseFilters({
         </Select>
       </div>
 
-      {/* Linha 3: Mês e Ano (sempre na mesma linha) */}
+      {/* Linha 3: Mês e Ano */}
       <div className="flex gap-4 w-full md:w-auto">
         {/* MÊS */}
-        <Select onValueChange={(mes) => onCustomMonthChange?.(mes)}>
+        <Select
+          value={selectedMonth}
+          onValueChange={(mes) => setSelectedMonth(mes)}
+        >
           <SelectTrigger className="w-full md:w-[160px] bg-[#0D0D0D] border border-[#333] text-white rounded-xl">
             <SelectValue placeholder="Mês" />
           </SelectTrigger>
@@ -84,7 +103,10 @@ export function ExpenseFilters({
         </Select>
 
         {/* ANO */}
-        <Select onValueChange={(ano) => onCustomYearChange?.(ano)}>
+        <Select
+          value={selectedYear}
+          onValueChange={(ano) => setSelectedYear(ano)}
+        >
           <SelectTrigger className="w-full md:w-[120px] bg-[#0D0D0D] border border-[#333] text-white rounded-xl">
             <SelectValue placeholder="Ano" />
           </SelectTrigger>
