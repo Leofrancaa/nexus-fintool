@@ -6,8 +6,8 @@ import { useState, useEffect } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewExpenseModal } from "@/components/modals/newExpenseModal";
 import { ExpenseList } from "@/components/lists/expenseList";
-import { ExpenseFilters } from "../../components/expenseFilter";
-import { ExpenseStatsCards } from "../../components/expenseStatsCard";
+import { ExpenseFilters } from "@/components/expenseFilter";
+import { ExpenseStatsCards } from "@/components/expenseStatsCard";
 
 export default function Expenses() {
   const router = useRouter();
@@ -20,6 +20,7 @@ export default function Expenses() {
   const [customMonth, setCustomMonth] = useState("");
   const [customYear, setCustomYear] = useState("");
 
+  // Verificação de autenticação
   useEffect(() => {
     const checkAuth = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
@@ -36,6 +37,7 @@ export default function Expenses() {
     checkAuth();
   }, [router]);
 
+  // Carregar categorias
   useEffect(() => {
     const fetchCategorias = async () => {
       const res = await fetch(
@@ -56,6 +58,7 @@ export default function Expenses() {
 
   return (
     <main className="flex flex-col min-h-screen bg-black px-8 py-4">
+      {/* Cabeçalho */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle
           title="Despesas"
@@ -69,8 +72,15 @@ export default function Expenses() {
         </div>
       </div>
 
-      <ExpenseStatsCards customMonth={customMonth} customYear={customYear} />
+      {/* Cards de estatísticas */}
+      <ExpenseStatsCards
+        refreshKey={refreshKey}
+        customMonth={customMonth}
+        customYear={customYear}
+        categoryId={selectedCategory}
+      />
 
+      {/* Filtros */}
       <div className="flex flex-col md:flex-row items-center justify-between mb-6 mt-6">
         <ExpenseFilters
           categorias={categorias}
@@ -82,8 +92,10 @@ export default function Expenses() {
         />
       </div>
 
+      {/* Lista de despesas */}
       <ExpenseList
         refreshKey={refreshKey}
+        setRefreshKey={setRefreshKey}
         searchTerm={searchTerm}
         categoryId={selectedCategory}
         period="custom"

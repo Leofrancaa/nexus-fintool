@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import EditButton from "../ui/editButton";
 import DeleteButton from "../ui/deleteButton";
+import ConfirmDialog from "../ui/confirmDialog";
+import { toast } from "react-hot-toast";
+import { EditExpenseModal } from "../modals/editExpenseModal"; // certifique-se de que o caminho está certo
+
+// ...
 
 interface Expense {
   id: number;
@@ -17,6 +22,7 @@ interface Expense {
 
 interface ExpenseListProps {
   refreshKey: number;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
   searchTerm: string;
   categoryId: string;
   period: string;
@@ -26,6 +32,7 @@ interface ExpenseListProps {
 
 export function ExpenseList({
   refreshKey,
+  setRefreshKey,
   searchTerm,
   categoryId,
   period,
@@ -33,6 +40,11 @@ export function ExpenseList({
   customYear,
 }: ExpenseListProps) {
   const [expenses, setExpenses] = useState<Expense[] | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedExpenseId, setSelectedExpenseId] = useState<number | null>(
+    null
+  );
+  const [editExpense, setEditExpense] = useState<Expense | null>(null);
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -108,6 +120,44 @@ export function ExpenseList({
     fetchExpenses();
   }, [refreshKey, searchTerm, categoryId, period, customMonth, customYear]);
 
+  const handleDelete = async (id: number) => {
+    const toastId = toast.loading("Excluindo despesa...");
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Erro ao excluir despesa.");
+      }
+
+      const deleted = await res.json();
+
+      // Remove todas as despesas fixas com mesmo tipo, se vierem múltiplas
+      const idsRemovidos = Array.isArray(deleted)
+        ? deleted.map((d: Expense) => d.id)
+        : [deleted.id];
+
+      setExpenses(
+        (prev) => prev?.filter((e) => !idsRemovidos.includes(e.id)) || []
+      );
+
+      setRefreshKey((prev) => prev + 1);
+      toast.success("Despesa excluída com sucesso!", { id: toastId });
+    } catch (err: unknown) {
+      console.error(err);
+      const errorMessage =
+        err instanceof Error ? err.message : "Erro ao excluir despesa.";
+      toast.error(errorMessage, { id: toastId });
+    }
+  };
+
   return (
     <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full max-w-5xl text-white">
       <div className="mb-6">
@@ -158,11 +208,15 @@ export function ExpenseList({
 
                 {/* Botões */}
                 <div className="flex gap-2">
-                  <EditButton
-                    onClick={() => console.log("Editar", expense.id)}
-                  />
+                  {expense.metodo_pagamento !== "cartao de credito" && (
+                    <EditButton onClick={() => setEditExpense(expense)} />
+                  )}
+
                   <DeleteButton
-                    onClick={() => console.log("Excluir", expense.id)}
+                    onClick={() => {
+                      setSelectedExpenseId(expense.id);
+                      setConfirmOpen(true);
+                    }}
                   />
                 </div>
               </div>
@@ -174,6 +228,31 @@ export function ExpenseList({
           </p>
         )}
       </div>
+
+      {selectedExpenseId !== null && (
+        <ConfirmDialog
+          open={confirmOpen}
+          onOpenChange={setConfirmOpen}
+          onCancel={() => setSelectedExpenseId(null)}
+          onConfirm={() => {
+            if (selectedExpenseId !== null) {
+              handleDelete(selectedExpenseId);
+              setSelectedExpenseId(null);
+            }
+          }}
+        />
+      )}
+
+      {editExpense && (
+        <EditExpenseModal
+          expense={editExpense}
+          onClose={() => setEditExpense(null)}
+          onUpdated={() => {
+            setEditExpense(null);
+            setRefreshKey((prev) => prev + 1);
+          }}
+        />
+      )}
     </div>
   );
 }

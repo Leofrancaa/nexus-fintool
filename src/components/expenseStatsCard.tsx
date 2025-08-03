@@ -13,9 +13,16 @@ interface Stats {
 interface Props {
   customMonth?: string;
   customYear?: string;
+  refreshKey: number;
+  categoryId: string;
 }
 
-export function ExpenseStatsCards({ customMonth, customYear }: Props) {
+export function ExpenseStatsCards({
+  customMonth,
+  customYear,
+  refreshKey,
+  categoryId,
+}: Props) {
   const [stats, setStats] = useState<Stats>({
     total: 0,
     fixas: 0,
@@ -29,13 +36,21 @@ export function ExpenseStatsCards({ customMonth, customYear }: Props) {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/stats?month=${monthToUse}&year=${yearToUse}`,
-          { credentials: "include" }
+        const url = new URL(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/stats`
         );
+        url.searchParams.set("month", monthToUse);
+        url.searchParams.set("year", yearToUse);
+
+        if (categoryId && categoryId !== "todas") {
+          url.searchParams.set("categoryId", categoryId);
+        }
+
+        const res = await fetch(url.toString(), {
+          credentials: "include",
+        });
 
         const data = await res.json();
-        console.log("📊 Dados recebidos:", data);
         setStats({
           total: Number(data.total || 0),
           fixas: Number(data.fixas || 0),
@@ -48,7 +63,7 @@ export function ExpenseStatsCards({ customMonth, customYear }: Props) {
     };
 
     fetchStats();
-  }, [monthToUse, yearToUse]);
+  }, [monthToUse, yearToUse, refreshKey, categoryId]);
 
   const cards = [
     {
