@@ -12,7 +12,7 @@ import {
   FolderKanban,
   Target,
   Banknote,
-  Gem,
+  TargetIcon,
   Menu,
   X,
   ChevronLeft,
@@ -28,7 +28,7 @@ const navItems = [
   { name: "Categorias", href: "/categorias", icon: FolderKanban },
   { name: "Limites", href: "/limites", icon: Target },
   { name: "Investimentos", href: "/investimentos", icon: Banknote },
-  { name: "Planos", href: "/planos", icon: Gem },
+  { name: "Planos", href: "/planos", icon: TargetIcon },
 ];
 
 export function Sidebar() {
