@@ -3,6 +3,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
 import { ContributeForm } from "../forms/contributeForm";
+import { TrendingUp } from "lucide-react";
 
 interface Props {
   planId: number;
@@ -15,8 +16,9 @@ export function ContributeModal({ planId, onContributed }: Props) {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button className="flex items-center gap-2 text-black bg-cyan-400 hover:bg-cyan-300 px-4 py-2 rounded-xl font-medium text-sm transition-all">
-          Contribuir
+        <button className="flex items-center gap-2 text-black cursor-pointer bg-cyan-400 hover:bg-cyan-300 px-4 py-2 rounded-xl font-medium text-sm transition-all">
+          <span className="text-[16px]">Contribuir</span>
+          <TrendingUp></TrendingUp>
         </button>
       </Dialog.Trigger>
 

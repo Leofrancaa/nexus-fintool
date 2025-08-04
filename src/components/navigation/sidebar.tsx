@@ -12,7 +12,7 @@ import {
   FolderKanban,
   Target,
   Banknote,
-  TargetIcon,
+  Gauge,
   Menu,
   X,
   ChevronLeft,
@@ -26,9 +26,9 @@ const navItems = [
   { name: "Receitas", href: "/receitas", icon: TrendingUp },
   { name: "Cartões", href: "/cartoes", icon: CreditCard },
   { name: "Categorias", href: "/categorias", icon: FolderKanban },
-  { name: "Limites", href: "/limites", icon: Target },
+  { name: "Limites", href: "/limites", icon: Gauge },
   { name: "Investimentos", href: "/investimentos", icon: Banknote },
-  { name: "Planos", href: "/planos", icon: TargetIcon },
+  { name: "Planos", href: "/planos", icon: Target },
 ];
 
 export function Sidebar() {
