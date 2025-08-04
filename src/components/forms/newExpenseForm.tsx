@@ -46,7 +46,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
   useEffect(() => {
     const fetchCategorias = async () => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/categories?tipo=despesa`, // ✅ filtro no endpoint
         { credentials: "include" }
       );
       const data = await res.json();

@@ -13,10 +13,10 @@ interface CategoriaResumo {
 interface Props {
   mes: number;
   ano: number;
-  refreshKey: number; // ✅ NOVO
+  refreshKey: number;
 }
 
-export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
+export function IncomesByCategoryPanel({ mes, ano, refreshKey }: Props) {
   const [dados, setDados] = useState<CategoriaResumo[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,20 +26,23 @@ export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/resumo-categorias?mes=${mes}&ano=${ano}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/incomes/resumo-categorias?mes=${mes}&ano=${ano}`,
           { credentials: "include" }
         );
         const json = await res.json();
         setDados(json);
       } catch (error) {
-        console.error("Erro ao carregar resumo de categorias", error);
+        console.error(
+          "Erro ao carregar resumo de categorias de receitas",
+          error
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [mes, ano, refreshKey]); // ✅ adiciona refreshKey aqui também
+  }, [mes, ano, refreshKey]);
 
   if (loading) {
     return (
@@ -65,10 +68,10 @@ export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
     <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full lg:max-w-sm 3xl:max-w-xl text-white">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-[#00D4D4]">
-          Gastos por Categoria
+          Receitas por Categoria
         </h2>
         <p className="text-md text-muted-foreground">
-          Distribuição dos seus gastos
+          Distribuição das suas entradas
         </p>
       </div>
 
@@ -83,7 +86,7 @@ export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
                 />
                 <span className="text-lg font-semibold">{item.nome}</span>
               </div>
-              <span className="text-cyan-400 font-bold text-lg mt-1">
+              <span className="text-green-400 font-bold text-lg mt-1">
                 {item.total.toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
