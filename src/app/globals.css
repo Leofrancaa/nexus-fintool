@@ -44,3 +44,21 @@ body {
 [data-sonner-toast][data-type="error"] {
   border-color: #ef4444; /* nexus.error */
 }
+
+/* Scrollbar padrão Nexus */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
