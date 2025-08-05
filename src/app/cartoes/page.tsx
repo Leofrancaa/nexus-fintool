@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewCardModal } from "@/components/modals/newCardModal";
 import { EditCardModal } from "@/components/modals/editCardModal"; // 👈 importar o modal
-import { CardVisual } from "@/components/cardVisual";
+import { CardVisual } from "@/components/cards/cardVisual";
 import { CardType } from "@/types/card";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";

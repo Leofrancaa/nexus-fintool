@@ -6,9 +6,9 @@ import { useCallback, useEffect, useState } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewExpenseModal } from "@/components/modals/newExpenseModal";
 import { ExpenseList } from "@/components/lists/expenseList";
-import { ExpenseFilters } from "@/components/expenseFilter";
-import { ExpenseStatsCards } from "@/components/expenseStatsCard";
-import { ExpensesByCategoryPanel } from "@/components/expenseByCategoryPanel";
+import { ExpenseFilters } from "@/components/filters/expenseFilter";
+import { ExpenseStatsCards } from "@/components/cards/expenseStatsCard";
+import { ExpensesByCategoryPanel } from "@/components/panels/expenseByCategoryPanel";
 
 export default function Expenses() {
   const router = useRouter();

@@ -2,7 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import LayoutWrapper from "../components/navigation/layoutWrapper";
-import { DateProvider } from "../contexts/dateContext"; // Adjust the path as needed
+import { DateProvider } from "../contexts/dateContext";
+import { ThemeProvider } from "@/contexts/themeContext"; // Adjust the path as needed
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -24,7 +25,9 @@ export default function RootLayout({
     <html lang="pt-BR" className={manrope.variable}>
       <body className="antialiased bg-gray-50 min-h-screen font-sans">
         <DateProvider>
-          <LayoutWrapper>{children}</LayoutWrapper>
+          <ThemeProvider>
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </ThemeProvider>
         </DateProvider>
       </body>
     </html>

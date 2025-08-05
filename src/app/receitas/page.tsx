@@ -5,10 +5,10 @@ import { useCallback, useEffect, useState } from "react";
 
 import PageTitle from "@/components/pageTitle";
 import { NewIncomeModal } from "@/components/modals/newIncomeModal";
-import { IncomeFilters } from "@/components/incomeFilter";
+import { IncomeFilters } from "@/components/filters/incomeFilter";
 import { IncomeList } from "@/components/lists/incomeList";
-import { IncomeStatsCards } from "@/components/incomesStatsCard";
-import { IncomesByCategoryPanel } from "@/components/incomeByCategoryPanel";
+import { IncomeStatsCards } from "@/components/cards/incomesStatsCard";
+import { IncomesByCategoryPanel } from "@/components/panels/incomeByCategoryPanel";
 
 export default function Incomes() {
   const router = useRouter();

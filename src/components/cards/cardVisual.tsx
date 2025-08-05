@@ -4,7 +4,7 @@ import { CardType } from "@/types/card";
 import { formatCurrency } from "@/utils/format";
 import { differenceInDays, format } from "date-fns";
 import { AlertTriangle } from "lucide-react";
-import EditButton from "./ui/editButton";
+import EditButton from "../ui/editButton";
 
 interface CardVisualProps {
   card: CardType;

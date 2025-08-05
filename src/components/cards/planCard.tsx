@@ -4,8 +4,8 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import EditButton from "@/components/ui/editButton";
 import DeleteButton from "@/components/ui/deleteButton";
-import { ContributeModal } from "./modals/contributeModal";
-import { EditPlanModal } from "./modals/editPlanModal";
+import { ContributeModal } from "../modals/contributeModal";
+import { EditPlanModal } from "../modals/editPlanModal";
 import ConfirmDialog from "@/components/ui/confirmDialog";
 
 interface Plano {

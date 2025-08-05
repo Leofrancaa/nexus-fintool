@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewThresholdModal } from "@/components/modals/newThresholdModal";
-import ThresholdCard from "@/components/thresholdCard";
+import ThresholdCard from "@/components/cards/thresholdCard";
 import { Threshold } from "@/types/threshold";
 import { toast } from "react-hot-toast";
 import { EditThresholdModal } from "@/components/modals/editThresholdModal"; // 👈 importar modal

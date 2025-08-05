@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewCategoryModal } from "@/components/modals/newCategoryModal";
-import CategoryCard from "@/components/categoryCard";
+import CategoryCard from "@/components/cards/categoryCard";
 import { Categoria } from "@/types/category";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";

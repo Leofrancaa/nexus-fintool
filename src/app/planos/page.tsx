@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PageTitle from "@/components/pageTitle";
 import { NewPlanModal } from "@/components/modals/newPlanModal";
-import PlanCard from "@/components/planCard";
+import PlanCard from "@/components/cards/planCard";
 
 interface Plano {
   id: number;
@@ -63,6 +63,13 @@ export default function Plans() {
           ))
         )}
       </section>
+
+      <div className="p-4 bg-white text-black dark:bg-black dark:text-white rounded">
+        Teste de tema dinâmico:{" "}
+        {document.documentElement.classList.contains("dark")
+          ? "🌙 Escuro"
+          : "☀️ Claro"}
+      </div>
     </main>
   );
 }

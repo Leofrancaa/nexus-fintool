@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PageTitle from "@/components/pageTitle";
-import { DashboardCards } from "@/components/dashboardStatsCard";
+import { DashboardCards } from "@/components/cards/dashboardStatsCard";
 import { NewExpenseModal } from "@/components/modals/newExpenseModal";
 import { NewIncomeModal } from "@/components/modals/newIncomeModal";
-import BalanceChart from "@/components/balanceChart";
-import { ExpenseByCategoryChart } from "../../components/expenseByCategoryChart";
-import { IncomeByCategoryPieChart } from "../../components/incomeByCategoryPieChart";
+import BalanceChart from "@/components/charts/balanceChart";
+import { ExpenseByCategoryChart } from "../../components/charts/expenseByCategoryChart";
+import { IncomeByCategoryPieChart } from "../../components/charts/incomeByCategoryPieChart";
 
 export default function Dashboard() {
   const router = useRouter();

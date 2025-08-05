@@ -6,9 +6,9 @@ import { useCallback, useEffect, useState } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewInvestmentModal } from "@/components/modals/newInvestmentModal";
 import { InvestmentList } from "@/components/lists/investmentList";
-import { InvestmentFilters } from "@/components/investmentFilter";
-import { InvestmentStatsCards } from "@/components/investmentStatsCard";
-import { InvestmentPanel } from "@/components/investmentPanel"; // agora funcionando como painel lateral
+import { InvestmentFilters } from "@/components/filters/investmentFilter";
+import { InvestmentStatsCards } from "@/components/cards/investmentStatsCard";
+import { InvestmentPanel } from "@/components/panels/investmentPanel"; // agora funcionando como painel lateral
 
 export default function Investments() {
   const router = useRouter();
