@@ -1,12 +1,21 @@
 "use client";
-import PageTitle from "@/components/pageTitle";
-import { YearSelect } from "@/components/navigation/yearSelect";
-import { MonthSelect } from "@/components/navigation/monthSelect";
-import { useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import PageTitle from "@/components/pageTitle";
+import { DashboardCards } from "@/components/dashboardStatsCard";
+import { NewExpenseModal } from "@/components/modals/newExpenseModal";
+import { NewIncomeModal } from "@/components/modals/newIncomeModal";
+import BalanceChart from "@/components/balanceChart";
+import { ExpenseByCategoryChart } from "../../components/expenseByCategoryChart";
+import { IncomeByCategoryPieChart } from "../../components/incomeByCategoryPieChart";
 
 export default function Dashboard() {
   const router = useRouter();
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const currentMonth = String(new Date().getMonth() + 1);
+  const currentYear = String(new Date().getFullYear());
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -23,23 +32,44 @@ export default function Dashboard() {
   }, [router]);
 
   return (
-    <main className="flex flex-col  min-h-screen bg-black px-8 py-4">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <PageTitle
-            title="Dashboard"
-            subTitle="Gerencie e acompanhe suas finanças"
+    <main className="flex flex-col min-h-screen bg-black px-8 py-4 w-full">
+      <div className="flex flex-col lg:flex-row w-full items-start justify-between gap-4 mt-14 lg:mt-0">
+        <PageTitle
+          title="Dashboard"
+          subTitle="Gerencie e acompanhe suas finanças"
+        />
+
+        <div className="flex justify-between lg:gap-4 w-full lg:w-auto">
+          <NewIncomeModal onCreated={() => setRefreshKey((prev) => prev + 1)} />
+          <NewExpenseModal
+            onCreated={() => setRefreshKey((prev) => prev + 1)}
           />
         </div>
+      </div>
 
-        <div className="flex gap-4 shrink-0">
-          <div className="shrink-0 min-w-[200px]">
-            <YearSelect />
-          </div>
-          <div className="shrink-0 min-w-[200px]">
-            <MonthSelect />
-          </div>
-        </div>
+      <DashboardCards
+        customMonth={currentMonth}
+        customYear={currentYear}
+        refreshKey={refreshKey}
+      />
+
+      {/* ✅ Gráfico de Balanço Mensal */}
+      <div className="mt-10 w-full">
+        <BalanceChart />
+      </div>
+
+      <div className="mt-10 w-full flex flex-col lg:flex-row justify-between gap-4">
+        <ExpenseByCategoryChart
+          mes={Number(currentMonth)}
+          ano={Number(currentYear)}
+          refreshKey={refreshKey}
+        />
+
+        <IncomeByCategoryPieChart
+          mes={Number(currentMonth)}
+          ano={Number(currentYear)}
+          refreshKey={refreshKey}
+        />
       </div>
     </main>
   );

@@ -1,0 +1,122 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { toast } from "react-hot-toast";
+
+interface CategoriaResumo {
+  nome: string;
+  cor: string;
+  total: number;
+  quantidade: number;
+  percentual: number;
+}
+
+interface Props {
+  mes: number;
+  ano: number;
+  refreshKey: number;
+}
+
+export function IncomeByCategoryPieChart({ mes, ano, refreshKey }: Props) {
+  const [dados, setDados] = useState<CategoriaResumo[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!mes || !ano || isNaN(mes) || isNaN(ano)) return;
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/incomes/resumo-categorias?mes=${mes}&ano=${ano}`,
+          { credentials: "include" }
+        );
+        const json = await res.json();
+        setDados(json);
+      } catch (error) {
+        console.error("Erro ao carregar gráfico de receitas", error);
+        toast.error("Erro ao carregar gráfico de receitas");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [mes, ano, refreshKey]);
+
+  if (loading) return <p className="text-white">Carregando gráfico...</p>;
+
+  if (dados.length === 0)
+    return <p className="text-white">Nenhuma receita encontrada</p>;
+
+  return (
+    <div className="bg-[#111] p-6 rounded-xl shadow-lg w-full lg:max-w-[35%] flex flex-col lg:flex-row gap-2">
+      <div className="flex-1">
+        <h2 className="text-white text-lg font-semibold mb-4">
+          Receitas por Categoria
+        </h2>
+
+        <ResponsiveContainer width="100%" height={300}>
+          <PieChart>
+            <Pie
+              data={dados}
+              dataKey="total"
+              nameKey="nome"
+              innerRadius={70}
+              outerRadius={110}
+              stroke="#0A0A0A"
+            >
+              {dados.map((item, index) => (
+                <Cell key={index} fill={item.cor || "#22d3ee"} />
+              ))}
+            </Pie>
+            <Tooltip
+              formatter={(value: number, name: string) => [
+                `R$ ${value.toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                })}`,
+                name,
+              ]}
+              contentStyle={{
+                backgroundColor: "#1f1f1f",
+                borderColor: "#444",
+                borderRadius: 8,
+              }}
+              labelStyle={{ color: "#ffffff" }}
+              itemStyle={{ color: "#ffffff" }} // ✅ cor do texto da categoria: valor
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* ✅ Legenda */}
+      <div className="flex flex-col justify-center gap-3 text-sm text-white w-full lg:w-[40%]">
+        {dados.map((item, i) => (
+          <div
+            key={i}
+            className="flex items-center justify-between border-b border-white/10 pb-2"
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className="w-3.5 h-3.5 rounded-full"
+                style={{ backgroundColor: item.cor || "#22d3ee" }}
+              />
+              <span className="font-medium">{item.nome}</span>
+            </div>
+            <div className="text-right">
+              <p className="text-green-400 font-bold">
+                {item.total.toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {item.percentual.toFixed(1)}%
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

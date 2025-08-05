@@ -138,7 +138,7 @@ export function InvestmentList({
                 </div>
 
                 <div className="flex flex-col sm:items-end items-start gap-1">
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-md text-muted-foreground">
                     Investido:{" "}
                     <span className="text-white font-medium">
                       {inv.valor_investido.toLocaleString("pt-BR", {
@@ -147,7 +147,7 @@ export function InvestmentList({
                       })}
                     </span>
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-md text-muted-foreground">
                     Valor Atual:{" "}
                     <span className="text-white font-medium">
                       {valorAtual !== null
@@ -159,7 +159,7 @@ export function InvestmentList({
                     </span>
                   </p>
                   <p
-                    className={`text-sm font-bold ${
+                    className={`text-md font-bold ${
                       rendimento && rendimento >= 0
                         ? "text-green-400"
                         : "text-red-400"

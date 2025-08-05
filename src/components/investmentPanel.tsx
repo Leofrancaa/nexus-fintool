@@ -38,9 +38,7 @@ export function InvestmentPanel() {
       }
     };
 
-    fetchData();
-    const interval = setInterval(fetchData, 1000 * 60 * 5);
-    return () => clearInterval(interval);
+    fetchData(); // só chama uma vez
   }, []);
 
   const formatValor = (valor: number | null, moeda: string) => {
