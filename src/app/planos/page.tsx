@@ -44,7 +44,10 @@ export default function Plans() {
   }, [refreshKey]);
 
   return (
-    <main className="flex flex-col min-h-screen bg-black px-8 py-4">
+    <main
+      className="flex flex-col min-h-screen px-8 py-4"
+      style={{ background: "var(--page-bg)" }}
+    >
       <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle title="Planos" subTitle="Gerencie e acompanhe seus planos" />
         <NewPlanModal onCreated={() => setRefreshKey((k) => k + 1)} />
@@ -52,7 +55,7 @@ export default function Plans() {
 
       <section className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {planos.length === 0 ? (
-          <p className="text-white/60">Nenhum plano cadastrado.</p>
+          <p className="text-[var(--card-text)]/60">Nenhum plano cadastrado.</p>
         ) : (
           planos.map((plano) => (
             <PlanCard
@@ -63,13 +66,6 @@ export default function Plans() {
           ))
         )}
       </section>
-
-      <div className="p-4 bg-white text-black dark:bg-black dark:text-white rounded">
-        Teste de tema dinâmico:{" "}
-        {document.documentElement.classList.contains("dark")
-          ? "🌙 Escuro"
-          : "☀️ Claro"}
-      </div>
     </main>
   );
 }

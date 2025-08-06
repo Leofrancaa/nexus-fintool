@@ -6,7 +6,7 @@ import { NewThresholdModal } from "@/components/modals/newThresholdModal";
 import ThresholdCard from "@/components/cards/thresholdCard";
 import { Threshold } from "@/types/threshold";
 import { toast } from "react-hot-toast";
-import { EditThresholdModal } from "@/components/modals/editThresholdModal"; // 👈 importar modal
+import { EditThresholdModal } from "@/components/modals/editThresholdModal";
 import { useRouter } from "next/navigation";
 
 const fetchGastoPorCategoria = async (categoryId: number): Promise<number> => {
@@ -42,7 +42,7 @@ export default function Limits() {
 
   const [limites, setLimites] = useState<Threshold[]>([]);
   const [gastos, setGastos] = useState<Record<number, number>>({});
-  const [editando, setEditando] = useState<Threshold | null>(null); // 👈 controle de edição
+  const [editando, setEditando] = useState<Threshold | null>(null);
 
   const carregarLimites = async () => {
     try {
@@ -72,7 +72,10 @@ export default function Limits() {
   }, []);
 
   return (
-    <main className="flex flex-col min-h-screen bg-black px-8 py-4">
+    <main
+      className="flex flex-col min-h-screen px-8 py-4"
+      style={{ background: "var(--page-bg)" }}
+    >
       <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle
           title="Limites"
@@ -88,12 +91,17 @@ export default function Limits() {
               key={limite.id}
               threshold={limite}
               gastoAtual={gastos[limite.category_id] || 0}
-              onEdit={(limite) => setEditando(limite)} // 👈 dispara modal de edição
+              onEdit={(limite) => setEditando(limite)}
             />
           ) : (
             <div
               key={limite.id}
-              className="p-4 border border-white/10 rounded-lg bg-[#1B1B1B] text-white text-sm"
+              className="p-4 rounded-lg text-sm shadow-md"
+              style={{
+                background: "var(--card-bg)",
+                border: "1px solid var(--card-border)",
+                color: "var(--card-text)",
+              }}
             >
               Limite sem categoria vinculada
             </div>
@@ -101,7 +109,6 @@ export default function Limits() {
         )}
       </div>
 
-      {/* Modal de edição */}
       {editando && (
         <EditThresholdModal
           threshold={editando}

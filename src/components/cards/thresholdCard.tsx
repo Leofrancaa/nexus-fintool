@@ -23,24 +23,35 @@ export default function ThresholdCard({
   const passouDoLimite = gastoAtual > limite;
 
   return (
-    <div className="flex flex-col gap-2 border border-white/10 rounded-lg p-4 bg-[#1B1B1B] shadow-md text-white">
+    <div
+      className="flex flex-col gap-2 rounded-lg p-4 shadow-md"
+      style={{
+        backgroundColor: "var(--card-bg)",
+        border: "1px solid var(--card-border)",
+        color: "var(--card-text)",
+      }}
+    >
       {/* Topo com nome e alerta */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <div
-            className="w-3 h-3 rounded-full"
+            className="w-4 h-4 rounded-full"
             style={{ backgroundColor: corCategoria }}
           />
-          <p className="font-semibold">{threshold.categoria.nome}</p>
+          <p className="font-semibold text-lg">{threshold.categoria.nome}</p>
         </div>
 
         {passouDoLimite && <BadgeAlert className="text-red-500 w-5 h-5" />}
       </div>
 
-      <div className="text-sm mt-2 text-gray-300">
+      <div className="text-md mt-2 text-[var(--card-text)]">
         <div className="flex justify-between">
-          <span>Utilizado</span>
-          <span className={passouDoLimite ? "text-red-500 font-bold" : ""}>
+          <span className="text-md">Utilizado</span>
+          <span
+            className={`font-semibold ${
+              passouDoLimite ? "text-red-500" : "text-[var(--card-text)]"
+            }`}
+          >
             {porcentagem.toFixed(1)}%
           </span>
         </div>
@@ -57,16 +68,16 @@ export default function ThresholdCard({
         )}
 
         <div className="flex justify-between items-center mt-2">
-          <div className="flex flex-col gap-[2px]">
+          <div className="flex flex-col gap-[2px] text-md text-[var(--card-text)]">
             <span>
               Gasto:{" "}
-              <span className="text-red-400 font-medium">
+              <span className="text-red-500 font-medium">
                 R$ {gastoAtual.toFixed(2).replace(".", ",")}
               </span>
             </span>
             <span>
               Limite:{" "}
-              <span className="text-white font-semibold">
+              <span className="text-[var(--card-text)] font-semibold">
                 R$ {limite.toFixed(2).replace(".", ",")}
               </span>
             </span>
@@ -80,7 +91,6 @@ export default function ThresholdCard({
             )}
           </div>
 
-          {/* Botão de editar à direita */}
           <EditButton
             onClick={() => onEdit(threshold)}
             title="Editar limite"

@@ -93,7 +93,7 @@ export function IncomeStatsCards({
       {cards.map((card, i) => (
         <div
           key={i}
-          className="flex items-center gap-4 bg-[var(--card-bg)] text-[var(--card-text)] rounded-xl p-5 border border-[var(--card-border)]"
+          className="flex items-center gap-4 bg-[var(--stats-card-bg)] text-[var(--card-text)] rounded-xl p-5 border border-[var(--card-border)]"
         >
           <div
             className={`w-10 h-10 rounded-lg flex items-center justify-center ${card.bg}`}

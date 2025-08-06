@@ -4,6 +4,7 @@
   --background: #f9fafb;
   --foreground: #111111;
   --card-bg: #f9fafb;
+  --stats-card-bg: #f9fafb;
   --card-text: #111111;
   --card-border: #d1d5db;
   --page-bg: #e5e7eb;
@@ -40,12 +41,15 @@
   --select-check: #00d4d4;
   --list-bg: #f4f4f5;
   --card-list-bg: #f9f9f9;
+  --plan-card-text: #0a0a0a; /* Tailwind gray-700 */
+  --progress-bg: #e5e7eb;
 }
 
 .dark {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --card-bg: #18181b; /* fundo original do card */
+  --card-bg: #111; /* fundo original do card */
+  --stats-card-bg: #18181b;
   --card-text: #ffffff;
   --card-border: #262626;
   --page-bg: #0a0a0a;
@@ -82,6 +86,8 @@
   --select-check: #00d4d4;
   --list-bg: #0a0a0a;
   --card-list-bg: #111;
+  --plan-card-text: #99a1af;
+  --progress-bg: rgba(255, 255, 255, 0.1);
 }
 
 @theme inline {

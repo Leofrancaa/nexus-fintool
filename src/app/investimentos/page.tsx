@@ -8,7 +8,7 @@ import { NewInvestmentModal } from "@/components/modals/newInvestmentModal";
 import { InvestmentList } from "@/components/lists/investmentList";
 import { InvestmentFilters } from "@/components/filters/investmentFilter";
 import { InvestmentStatsCards } from "@/components/cards/investmentStatsCard";
-import { InvestmentPanel } from "@/components/panels/investmentPanel"; // agora funcionando como painel lateral
+import { InvestmentPanel } from "@/components/panels/investmentPanel"; // painel lateral
 
 export default function Investments() {
   const router = useRouter();
@@ -51,7 +51,7 @@ export default function Investments() {
     setCustomYear(ano);
   }, []);
 
-  // Auth
+  // Auth check
   useEffect(() => {
     const checkAuth = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
@@ -71,7 +71,10 @@ export default function Investments() {
   if (loading) return null;
 
   return (
-    <main className="flex flex-col min-h-screen bg-[#0f0f0f] px-8 py-4">
+    <main
+      className="flex flex-col min-h-screen px-8 py-4"
+      style={{ background: "var(--page-bg)" }}
+    >
       {/* Cabeçalho */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle

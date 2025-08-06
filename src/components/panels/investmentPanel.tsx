@@ -38,7 +38,7 @@ export function InvestmentPanel() {
       }
     };
 
-    fetchData(); // só chama uma vez
+    fetchData();
   }, []);
 
   const formatValor = (valor: number | null, moeda: string) => {
@@ -55,20 +55,34 @@ export function InvestmentPanel() {
   };
 
   if (loading)
-    return <div className="text-sm text-white/60">Carregando mercado...</div>;
+    return (
+      <div className="text-sm text-[var(--card-text)]/60">
+        Carregando mercado...
+      </div>
+    );
 
   return (
     <aside
       className="w-full lg:max-w-[40%] flex-shrink-0"
       role="region"
       aria-label="Painel do mercado financeiro"
+      style={{ backgroundColor: "var(--page-bg)" }}
     >
-      <div className="bg-[#0D0D0D] border border-[#222] rounded-xl p-4">
-        <h2 className="text-lg font-semibold text-white mb-4">
+      <div
+        className="rounded-xl p-4 border"
+        style={{
+          backgroundColor: "var(--list-bg)",
+          borderColor: "var(--card-border)",
+        }}
+      >
+        <h2 className="text-lg font-semibold mb-4 text-[var(--card-text)]">
           Panorama do Mercado
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[540px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-[#333] scrollbar-track-transparent hover:scrollbar-thumb-[#555]">
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[540px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-[#333] scrollbar-track-transparent hover:scrollbar-thumb-[#555]"
+          // você pode customizar scrollbar com variáveis se quiser
+        >
           {Object.entries(data).map(([key, item]) => {
             const precoFormatado = formatValor(item.preco, item.moeda);
             const variacaoFormatada =
@@ -93,7 +107,11 @@ export function InvestmentPanel() {
             return (
               <div
                 key={key}
-                className="flex items-center gap-4 bg-[#18181b] rounded-xl p-4 border border-[#262626]"
+                className="flex items-center gap-4 rounded-xl p-4 border"
+                style={{
+                  backgroundColor: "var(--card-bg)",
+                  borderColor: "var(--card-border)",
+                }}
               >
                 <div
                   className={`w-10 h-10 rounded-lg flex items-center justify-center ${bgColor}`}
@@ -104,7 +122,7 @@ export function InvestmentPanel() {
                   <span className="text-sm text-muted-foreground">
                     {item.nome}
                   </span>
-                  <span className="text-xl font-bold text-white">
+                  <span className="text-xl font-bold text-[var(--card-text)]">
                     {precoFormatado}
                   </span>
                   {variacaoFormatada && (

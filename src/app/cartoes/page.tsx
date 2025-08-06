@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewCardModal } from "@/components/modals/newCardModal";
-import { EditCardModal } from "@/components/modals/editCardModal"; // 👈 importar o modal
+import { EditCardModal } from "@/components/modals/editCardModal";
 import { CardVisual } from "@/components/cards/cardVisual";
 import { CardType } from "@/types/card";
 import { toast } from "react-hot-toast";
@@ -11,8 +11,7 @@ import { useRouter } from "next/navigation";
 
 export default function Cards() {
   const [cards, setCards] = useState<CardType[]>([]);
-  const [editando, setEditando] = useState<CardType | null>(null); // 👈 controle do modal
-
+  const [editando, setEditando] = useState<CardType | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -48,7 +47,10 @@ export default function Cards() {
   }, []);
 
   return (
-    <main className="flex flex-col min-h-screen bg-black px-8 py-4">
+    <main
+      className="flex flex-col min-h-screen px-8 py-4"
+      style={{ background: "var(--page-bg)" }}
+    >
       <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle
           title="Cartões"
@@ -62,14 +64,14 @@ export default function Cards() {
           <CardVisual
             key={card.id}
             card={card}
-            onEdit={() => setEditando(card)} // abre o modal
+            onEdit={() => setEditando(card)}
           />
         ))}
       </section>
 
       {editando && (
         <EditCardModal
-          card={editando} // ✅ aqui o editando já nunca será null
+          card={editando}
           open={!!editando}
           onClose={() => setEditando(null)}
           onUpdated={() => {

@@ -32,7 +32,7 @@ export function CardVisual({ card, onEdit }: CardVisualProps) {
   const vencimentoExpirado = diasRestantes < 0;
 
   return (
-    <div className="rounded-xl shadow-md overflow-hidden bg-[#1b1b1b] border border-[#2e2e2e]">
+    <div className="rounded-xl shadow-md overflow-hidden border bg-[var(--card-bg)] border-[var(--card-border)] text-[var(--card-text)]">
       {/* Topo com cor do cartão */}
       <div
         className="p-4 text-white flex justify-between items-start"
@@ -52,29 +52,38 @@ export function CardVisual({ card, onEdit }: CardVisualProps) {
       </div>
 
       {/* Corpo: limite usado */}
-      <div className="p-4 text-white">
+      <div className="p-4">
         <div className="flex justify-between mb-2 text-sm">
           <span>Limite usado</span>
           <span className="font-semibold">{percentualUsado.toFixed(1)}%</span>
         </div>
 
-        <div className="h-2 w-full bg-[#2e2e2e] rounded-full overflow-hidden mb-2">
+        <div className="h-2 w-full rounded-full overflow-hidden mb-2 bg-[var(--card-border)]">
           <div
-            className="h-full bg-[#00D4D4] transition-all duration-300"
-            style={{ width: `${percentualUsado}%` }}
+            className="h-full transition-all duration-300"
+            style={{
+              width: `${percentualUsado}%`,
+              backgroundColor: "#00D4D4",
+            }}
           />
         </div>
 
-        <div className="flex justify-between text-xs text-gray-300 mb-4">
-          <span>{formatCurrency(gasto_total)}</span>
-          <span>{formatCurrency(limite)}</span>
+        <div className="flex justify-between text-xs text-gray-500 dark:text-gray-300 mb-4">
+          <span className="text-[var(--card-text)]">
+            {formatCurrency(gasto_total)}
+          </span>
+          <span className="text-[var(--card-text)]">
+            {formatCurrency(limite)}
+          </span>
         </div>
 
         {/* Próximo vencimento */}
         <div className="flex justify-between items-center text-sm">
           <div>
-            <p className="text-gray-400">Próximo vencimento</p>
-            <p className="text-white font-medium">
+            <p className="text-gray-500 dark:text-gray-400">
+              Próximo vencimento
+            </p>
+            <p className="font-medium text-[var(--card-text)]">
               {format(new Date(proximo_vencimento), "dd/MM/yyyy")}
             </p>
           </div>

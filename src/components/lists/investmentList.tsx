@@ -88,7 +88,7 @@ export function InvestmentList({
   }, [refreshKey, searchTerm, assetKey, customMonth, customYear]);
 
   return (
-    <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full lg:max-w-[60%] text-white">
+    <div className="bg-[var(--list-bg)] border border-[var(--card-border)] rounded-2xl p-6 w-full lg:max-w-[60%] text-[var(--card-text)]">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-[#00D4D4]">
           Investimentos Simulados
@@ -111,19 +111,19 @@ export function InvestmentList({
             return (
               <div
                 key={inv.id}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl bg-[#111] border border-[#222] p-5 hover:border-[#00D4D4] transition-all"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] p-5 hover:border-[#00D4D4] transition-all"
               >
                 <div className="flex flex-col flex-1 break-words">
-                  <p className="text-lg font-bold text-white">
+                  <p className="text-lg font-bold text-[var(--card-text)]">
                     {inv.descricao}
                   </p>
 
                   <div className="text-sm lg:text-md text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
-                    <span className="text-white font-medium">
+                    <span className="text-[var(--card-text)] font-medium">
                       {inv.ativo.toUpperCase()}
                     </span>
                     <span>•</span>
-                    <span className="text-white font-medium">
+                    <span className="text-[var(--card-text)] font-medium">
                       {new Date(inv.data).toLocaleDateString("pt-BR")}
                     </span>
                     {inv.observacoes && (
@@ -138,18 +138,18 @@ export function InvestmentList({
                 </div>
 
                 <div className="flex flex-col sm:items-end items-start gap-1">
-                  <p className="text-md text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Investido:{" "}
-                    <span className="text-white font-medium">
+                    <span className="text-[var(--card-text)] font-medium">
                       {inv.valor_investido.toLocaleString("pt-BR", {
                         style: "currency",
                         currency: "BRL",
                       })}
                     </span>
                   </p>
-                  <p className="text-md text-muted-foreground">
+                  <p className="text-sm text-muted-foreground">
                     Valor Atual:{" "}
-                    <span className="text-white font-medium">
+                    <span className="text-[var(--card-text)] font-medium">
                       {valorAtual !== null
                         ? valorAtual.toLocaleString("pt-BR", {
                             style: "currency",
@@ -159,7 +159,7 @@ export function InvestmentList({
                     </span>
                   </p>
                   <p
-                    className={`text-md font-bold ${
+                    className={`text-sm font-bold ${
                       rendimento && rendimento >= 0
                         ? "text-green-400"
                         : "text-red-400"

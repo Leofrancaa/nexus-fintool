@@ -27,12 +27,7 @@ export default function CategoryCard({
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [subToDelete, setSubToDelete] = useState<number | null>(null);
-  const [stats, setStats] = useState<{
-    total: number;
-    media: number;
-    percentual: number;
-    quantidade: number;
-  }>({
+  const [stats, setStats] = useState({
     total: 0,
     media: 0,
     percentual: 0,
@@ -92,7 +87,14 @@ export default function CategoryCard({
   };
 
   return (
-    <div className="flex flex-col gap-4 border border-white/10 rounded-lg p-5 bg-[#1B1B1B] shadow-md text-white">
+    <div
+      className="flex flex-col gap-4 border rounded-lg p-5 shadow-md"
+      style={{
+        backgroundColor: "var(--card-bg)",
+        borderColor: "var(--card-border)",
+        color: "var(--card-text)",
+      }}
+    >
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div
@@ -103,7 +105,9 @@ export default function CategoryCard({
             <p className="text-lg font-bold" style={{ color: cor }}>
               {nome}
             </p>
-            <p className="text-sm text-gray-400 capitalize">{tipo}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+              {tipo}
+            </p>
           </div>
         </div>
 
@@ -113,7 +117,6 @@ export default function CategoryCard({
         />
       </div>
 
-      {/* Estatísticas para despesa ou receita */}
       <div className="flex flex-col gap-2 text-sm text-muted-foreground">
         <div className="flex justify-between">
           <div className="flex flex-col">
@@ -136,7 +139,7 @@ export default function CategoryCard({
           <span className="text-md">
             {tipo === "receita" ? "Receita total" : "Gasto total"}
           </span>
-          <span className="text-cyan-300 font-bold text-base">
+          <span className="text-cyan-600 font-bold text-base">
             {stats.total.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
@@ -157,7 +160,6 @@ export default function CategoryCard({
         </div>
       </div>
 
-      {/* Subcategorias + botão */}
       <div className="flex justify-between mt-3 items-center flex-wrap gap-2">
         <div className="flex flex-wrap gap-2">
           {subcategorias.map((sub) => (
@@ -167,7 +169,7 @@ export default function CategoryCard({
               style={{
                 color: cor,
                 borderColor: cor,
-                backgroundColor: "#111",
+                backgroundColor: "var(--card-list-bg)",
               }}
             >
               {sub.nome}
@@ -175,20 +177,20 @@ export default function CategoryCard({
           ))}
         </div>
         <button
-          onClick={() => {
-            if (tipo === "receita") {
-              router.push("/receitas");
-            } else {
-              router.push("/despesas");
-            }
+          onClick={() =>
+            router.push(tipo === "receita" ? "/receitas" : "/despesas")
+          }
+          className="text-sm px-4 py-2 rounded-md border hover:bg-white/10 transition cursor-pointer"
+          style={{
+            borderColor: "var(--card-border)",
+            color: "var(--card-text)",
           }}
-          className="text-sm px-4 py-2 rounded-md border border-white/20 hover:bg-white/10 transition cursor-pointer"
         >
           {tipo === "receita" ? "Ver Receitas" : "Ver Despesas"}
         </button>
       </div>
 
-      {/* Confirmação para categoria pai */}
+      {/* Confirmações */}
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
@@ -197,8 +199,6 @@ export default function CategoryCard({
         onCancel={() => setConfirmOpen(false)}
         onConfirm={() => handleDelete(id)}
       />
-
-      {/* Confirmação para subcategoria */}
       <ConfirmDialog
         open={subToDelete !== null}
         onOpenChange={(open) => !open && setSubToDelete(null)}

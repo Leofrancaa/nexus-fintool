@@ -75,13 +75,22 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
 
   return (
     <>
-      <div className="rounded-xl border border-white/10 bg-[#111] p-5 text-white shadow-lg space-y-2 relative">
+      <div
+        className="rounded-xl border p-5 shadow-lg space-y-2 relative"
+        style={{
+          backgroundColor: "var(--card-bg)",
+          borderColor: "var(--card-border)",
+          color: "var(--card-text)",
+        }}
+      >
         {/* Nome e status */}
         <div className="flex justify-between items-start mb-4">
           <div>
             <h3 className="text-xl font-semibold">{plano.nome}</h3>
             {plano.descricao && (
-              <p className="text-sm text-white/50">{plano.descricao}</p>
+              <p className="text-sm text-[var(--plan-card-text)]">
+                {plano.descricao}
+              </p>
             )}
           </div>
 
@@ -95,8 +104,13 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
 
         {/* Barra de progresso */}
         <div>
-          <p className="text-sm font-medium text-white/70 mb-1">Progresso</p>
-          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+            Progresso
+          </p>
+          <div
+            className="w-full h-2 rounded-full overflow-hidden"
+            style={{ backgroundColor: "var(--progress-bg)" }}
+          >
             <div
               className="h-2 rounded-full transition-all"
               style={{
@@ -105,7 +119,8 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
               }}
             />
           </div>
-          <p className="text-sm mt-1 text-right font-bold">
+
+          <p className="text-sm mt-1 text-right font-bold text-[var(--card-text)]">
             {progresso.toFixed(1)}%
           </p>
         </div>
@@ -113,7 +128,7 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
         {/* Valores */}
         <div className="grid grid-cols-2 gap-4 text-md">
           <div>
-            <p className="text-white/50">Atual</p>
+            <p className="text-[var(--plan-card-text)]">Atual</p>
             <p className="text-green-400 font-medium">
               R${" "}
               {plano.total_contribuido.toLocaleString("pt-BR", {
@@ -123,8 +138,8 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
           </div>
 
           <div>
-            <p className="text-white/50">Meta</p>
-            <p className="text-white font-medium">
+            <p className="text-[var(--plan-card-text)]">Meta</p>
+            <p className="font-medium text-[var(--card-text)]">
               R${" "}
               {plano.meta.toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
@@ -133,7 +148,7 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
           </div>
 
           <div>
-            <p className="text-white/50">Restante</p>
+            <p className="text-[var(--plan-card-text)]">Restante</p>
             <p className="text-red-400 font-medium">
               R${" "}
               {restante.toLocaleString("pt-BR", {
@@ -143,15 +158,18 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
           </div>
 
           <div>
-            <p className="text-white/50">Prazo</p>
-            <p className="text-white font-medium">
+            <p className="text-[var(--plan-card-text)]">Prazo</p>
+            <p className="font-medium text-[var(--card-text)]">
               {new Date(plano.prazo).toLocaleDateString("pt-BR")}
             </p>
           </div>
         </div>
 
         {/* Ações */}
-        <div className="flex justify-between items-center pt-3 border-t border-white/10">
+        <div
+          className="flex justify-between items-center pt-3 border-t"
+          style={{ borderColor: "var(--card-border)" }}
+        >
           <ContributeModal planId={plano.id} onContributed={onRefresh} />
 
           <div className="flex items-center gap-2">

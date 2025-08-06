@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 
 export default function Categories() {
   const router = useRouter();
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -25,15 +26,11 @@ export default function Categories() {
     checkAuth();
   }, [router]);
 
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
-
   const fetchCategorias = async () => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
-        {
-          credentials: "include", // ✅ envia o cookie automaticamente
-        }
+        { credentials: "include" }
       );
 
       if (!res.ok) throw new Error("Erro ao buscar categorias");
@@ -54,7 +51,10 @@ export default function Categories() {
     categorias.filter((cat) => cat.parent_id === id);
 
   return (
-    <main className="flex flex-col min-h-screen bg-black px-8 py-4">
+    <main
+      className="flex flex-col min-h-screen px-8 py-4"
+      style={{ background: "var(--page-bg)" }}
+    >
       <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle
           title="Categorias"

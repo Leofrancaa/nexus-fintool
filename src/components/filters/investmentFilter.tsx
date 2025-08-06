@@ -53,23 +53,35 @@ export function InvestmentFilters({
   };
 
   return (
-    <div className="w-full flex flex-col md:flex-row gap-4 bg-[#111] border border-[#222] rounded-xl p-4 items-center justify-between">
+    <div
+      className="w-full flex flex-col md:flex-row gap-4 rounded-xl p-4 items-center justify-between"
+      style={{
+        backgroundColor: "var(--filter-bg)",
+        border: "1px solid var(--filter-border)",
+      }}
+    >
       {/* Busca */}
       <div className="relative w-full md:w-[60%]">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+        <Search
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--filter-placeholder)] w-5 h-5"
+          aria-hidden="true"
+        />
         <Input
           variant="dark"
           value={search}
           onChange={handleSearch}
           placeholder="Buscar investimentos…"
-          className="pl-10 text-white placeholder:text-muted-foreground bg-[#0D0D0D] border border-[#333] rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="pl-10 text-[var(--filter-text)] placeholder:text-[var(--filter-placeholder)] bg-[var(--filter-input-bg)] border border-[var(--filter-input-border)] rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0"
         />
       </div>
 
       {/* Ativo */}
       <div className="w-full md:w-[20%]">
         <Select value={selectedAsset} onValueChange={onAssetChange}>
-          <SelectTrigger className="w-full bg-[#0D0D0D] border border-[#333] text-white rounded-xl">
+          <SelectTrigger
+            className="w-full bg-[var(--filter-input-bg)] border border-[var(--filter-input-border)] text-[var(--filter-text)] rounded-xl"
+            aria-label="Selecionar ativo"
+          >
             <SelectValue placeholder="Todos os ativos" />
           </SelectTrigger>
           <SelectContent>
@@ -90,7 +102,7 @@ export function InvestmentFilters({
           value={selectedMonth}
           onValueChange={(mes) => setSelectedMonth(mes)}
         >
-          <SelectTrigger className="w-full md:w-[160px] bg-[#0D0D0D] border border-[#333] text-white rounded-xl">
+          <SelectTrigger className="w-full md:w-[160px] bg-[var(--filter-input-bg)] border border-[var(--filter-input-border)] text-[var(--filter-text)] rounded-xl">
             <SelectValue placeholder="Mês" />
           </SelectTrigger>
           <SelectContent>
@@ -107,7 +119,7 @@ export function InvestmentFilters({
           value={selectedYear}
           onValueChange={(ano) => setSelectedYear(ano)}
         >
-          <SelectTrigger className="w-full md:w-[120px] bg-[#0D0D0D] border border-[#333] text-white rounded-xl">
+          <SelectTrigger className="w-full md:w-[120px] bg-[var(--filter-input-bg)] border border-[var(--filter-input-border)] text-[var(--filter-text)] rounded-xl">
             <SelectValue placeholder="Ano" />
           </SelectTrigger>
           <SelectContent>

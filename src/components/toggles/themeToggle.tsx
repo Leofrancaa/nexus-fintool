@@ -12,7 +12,7 @@ export function ThemeToggle() {
         id="theme-toggle"
         type="checkbox"
         className="theme-input peer"
-        checked={theme === "light"}
+        checked={theme === "dark"}
         onChange={toggleTheme}
       />
       <label htmlFor="theme-toggle" className="theme-toggle">

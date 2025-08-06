@@ -68,34 +68,34 @@ export function InvestmentStatsCards({
   const cards = [
     {
       title: "Total Investido",
-      value: `R$ ${stats.totalInvestido.toLocaleString("pt-BR", {
+      value: `R$ ${Number(stats.totalInvestido).toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
       })}`,
-      icon: <DollarSign className="text-teal-400" />,
-      bg: "bg-teal-900/30",
+      icon: <DollarSign className="text-green-400" />,
+      bg: "bg-[var(--card-icon-bg-green)]",
     },
     {
       title: "Simulações",
       value: stats.totalSimulacoes,
-      icon: <Activity className="text-yellow-300" />,
-      bg: "bg-yellow-900/30",
+      icon: <Activity className="text-cyan-400" />,
+      bg: "bg-[var(--card-icon-bg-neutral)]",
     },
     {
       title: "Valor Atual",
-      value: `R$ ${stats.valorAtual.toLocaleString("pt-BR", {
+      value: `R$ ${Number(stats.valorAtual).toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
       })}`,
-      icon: <TrendingUp className="text-green-400" />,
-      bg: "bg-green-900/30",
+      icon: <TrendingUp className="text-yellow-300" />,
+      bg: "bg-[var(--card-icon-bg-yellow)]",
     },
     {
       title: "Rentabilidade Média",
       value:
-        !isNaN(stats.rentabilidadeMedia) && stats.totalSimulacoes > 0
-          ? `${stats.rentabilidadeMedia.toFixed(2)}%`
+        stats.totalSimulacoes > 0 && !isNaN(Number(stats.rentabilidadeMedia))
+          ? `${Number(stats.rentabilidadeMedia).toFixed(2)}%`
           : "-",
       icon: <Divide className="text-blue-400" />,
-      bg: "bg-blue-900/30",
+      bg: "bg-[var(--card-icon-bg-blue)]",
     },
   ];
 
@@ -104,7 +104,12 @@ export function InvestmentStatsCards({
       {cards.map((card, i) => (
         <div
           key={i}
-          className="flex items-center gap-4 bg-[#18181b] rounded-xl p-5 border border-[#262626]"
+          className="flex items-center gap-4 rounded-xl p-5 border shadow-md"
+          style={{
+            backgroundColor: "var(--stats-card-bg)",
+            borderColor: "var(--card-border)",
+            color: "var(--card-text)",
+          }}
         >
           <div
             className={`w-10 h-10 rounded-lg flex items-center justify-center ${card.bg}`}
@@ -112,8 +117,10 @@ export function InvestmentStatsCards({
             {card.icon}
           </div>
           <div className="flex flex-col">
-            <span className="text-sm text-muted-foreground">{card.title}</span>
-            <span className="text-xl font-bold text-white">{card.value}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {card.title}
+            </span>
+            <span className="text-xl font-bold">{card.value}</span>
           </div>
         </div>
       ))}
