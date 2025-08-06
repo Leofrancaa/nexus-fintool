@@ -53,23 +53,23 @@ export function ExpenseFilters({
   };
 
   return (
-    <div className="w-full flex flex-col md:flex-row gap-4 bg-[#111] border border-[#222] rounded-xl p-4 items-center justify-between">
+    <div className="w-full flex flex-col md:flex-row gap-4 bg-[var(--filter-bg)] border border-[var(--filter-border)] rounded-xl p-4 items-center justify-between">
       {/* Linha 1: Busca */}
       <div className="relative w-full md:w-[60%]">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--filter-placeholder)] w-5 h-5" />
         <Input
           variant="dark"
           value={search}
           onChange={handleSearch}
           placeholder="Buscar despesas…"
-          className="pl-10 text-white placeholder:text-muted-foreground bg-[#0D0D0D] border border-[#333] rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="pl-10 text-[var(--filter-text)] placeholder:text-[var(--filter-placeholder)] bg-[var(--filter-input-bg)] border border-[var(--filter-input-border)] rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0"
         />
       </div>
 
       {/* Linha 2: Categoria */}
       <div className="w-full md:w-[20%]">
         <Select value={selectedCategory} onValueChange={onCategoryChange}>
-          <SelectTrigger className="w-full bg-[#0D0D0D] border border-[#333] text-white rounded-xl">
+          <SelectTrigger className="w-full bg-[var(--filter-input-bg)] border border-[var(--filter-input-border)] text-[var(--filter-text)] rounded-xl">
             <SelectValue placeholder="Todas as categorias" />
           </SelectTrigger>
           <SelectContent>
@@ -90,7 +90,7 @@ export function ExpenseFilters({
           value={selectedMonth}
           onValueChange={(mes) => setSelectedMonth(mes)}
         >
-          <SelectTrigger className="w-full md:w-[160px] bg-[#0D0D0D] border border-[#333] text-white rounded-xl">
+          <SelectTrigger className="w-full md:w-[160px] bg-[var(--filter-input-bg)] border border-[var(--filter-input-border)] text-[var(--filter-text)] rounded-xl">
             <SelectValue placeholder="Mês" />
           </SelectTrigger>
           <SelectContent>
@@ -107,7 +107,7 @@ export function ExpenseFilters({
           value={selectedYear}
           onValueChange={(ano) => setSelectedYear(ano)}
         >
-          <SelectTrigger className="w-full md:w-[120px] bg-[#0D0D0D] border border-[#333] text-white rounded-xl">
+          <SelectTrigger className="w-full md:w-[120px] bg-[var(--filter-input-bg)] border border-[var(--filter-input-border)] text-[var(--filter-text)] rounded-xl">
             <SelectValue placeholder="Ano" />
           </SelectTrigger>
           <SelectContent>

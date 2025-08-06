@@ -73,7 +73,7 @@ export default function Incomes() {
   if (loading) return null;
 
   return (
-    <main className="flex flex-col min-h-screen bg-[#0f0f0f] px-8 py-4">
+    <main className="flex flex-col min-h-screen bg-[var(--page-bg)] px-8 py-4">
       {/* Cabeçalho */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle

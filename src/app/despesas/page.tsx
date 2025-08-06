@@ -12,10 +12,10 @@ import { ExpensesByCategoryPanel } from "@/components/panels/expenseByCategoryPa
 
 export default function Expenses() {
   const router = useRouter();
-  // Estados
+
   const now = new Date();
-  const [customMonth, setCustomMonth] = useState(String(now.getMonth() + 1)); // mês atual
-  const [customYear, setCustomYear] = useState(String(now.getFullYear())); // ano atual
+  const [customMonth, setCustomMonth] = useState(String(now.getMonth() + 1));
+  const [customYear, setCustomYear] = useState(String(now.getFullYear()));
 
   const [categorias, setCategorias] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,7 +23,6 @@ export default function Expenses() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Memoize handlers para evitar rerender do useEffect nos filhos
   const handleSearchChange = useCallback((term: string) => {
     setSearchTerm(term);
   }, []);
@@ -40,7 +39,6 @@ export default function Expenses() {
     setCustomYear(ano);
   }, []);
 
-  // Verificação de autenticação
   useEffect(() => {
     const checkAuth = async () => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
@@ -57,16 +55,12 @@ export default function Expenses() {
     checkAuth();
   }, [router]);
 
-  // Carregar categorias
   useEffect(() => {
     const fetchCategorias = async () => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
-        {
-          credentials: "include",
-        }
+        { credentials: "include" }
       );
-
       const data = await res.json();
       setCategorias(data);
     };
@@ -77,7 +71,7 @@ export default function Expenses() {
   if (loading) return null;
 
   return (
-    <main className="flex flex-col min-h-screen bg-[#0f0f0f] px-8 py-4">
+    <main className="flex flex-col min-h-screen bg-[var(--page-bg)] px-8 py-4">
       {/* Cabeçalho */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle
@@ -112,8 +106,8 @@ export default function Expenses() {
         />
       </div>
 
+      {/* Lista + painel */}
       <div className="flex flex-col lg:flex-row gap-4">
-        {/* Lista de despesas */}
         <ExpenseList
           refreshKey={refreshKey}
           setRefreshKey={setRefreshKey}
@@ -128,7 +122,7 @@ export default function Expenses() {
           <ExpensesByCategoryPanel
             mes={parseInt(customMonth)}
             ano={parseInt(customYear)}
-            refreshKey={refreshKey} // ✅ passa aqui
+            refreshKey={refreshKey}
           />
         )}
       </div>

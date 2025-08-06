@@ -44,15 +44,18 @@ export function IncomeByCategoryPieChart({ mes, ano, refreshKey }: Props) {
     fetchData();
   }, [mes, ano, refreshKey]);
 
-  if (loading) return <p className="text-white">Carregando gráfico...</p>;
+  if (loading)
+    return <p className="text-[var(--chart-title)]">Carregando gráfico...</p>;
 
   if (dados.length === 0)
-    return <p className="text-white">Nenhuma receita encontrada</p>;
+    return (
+      <p className="text-[var(--chart-title)]">Nenhuma receita encontrada</p>
+    );
 
   return (
-    <div className="bg-[#111] p-6 rounded-xl shadow-lg w-full lg:max-w-[35%] flex flex-col lg:flex-row gap-2">
+    <div className="bg-[var(--chart-bg)] p-6 rounded-xl shadow-lg w-full lg:max-w-[35%] flex flex-col lg:flex-row gap-2">
       <div className="flex-1">
-        <h2 className="text-white text-lg font-semibold mb-4">
+        <h2 className="text-[var(--chart-title)] text-lg font-semibold mb-4">
           Receitas por Categoria
         </h2>
 
@@ -64,7 +67,7 @@ export function IncomeByCategoryPieChart({ mes, ano, refreshKey }: Props) {
               nameKey="nome"
               innerRadius={70}
               outerRadius={110}
-              stroke="#0A0A0A"
+              stroke="var(--chart-stroke)"
             >
               {dados.map((item, index) => (
                 <Cell key={index} fill={item.cor || "#22d3ee"} />
@@ -78,23 +81,24 @@ export function IncomeByCategoryPieChart({ mes, ano, refreshKey }: Props) {
                 name,
               ]}
               contentStyle={{
-                backgroundColor: "#1f1f1f",
-                borderColor: "#444",
+                backgroundColor: "var(--chart-tooltip-bg)",
+                borderColor: "var(--chart-tooltip-border)",
                 borderRadius: 8,
               }}
-              labelStyle={{ color: "#ffffff" }}
-              itemStyle={{ color: "#ffffff" }} // ✅ cor do texto da categoria: valor
+              labelStyle={{ color: "var(--chart-tooltip-label)" }}
+              itemStyle={{ color: "var(--chart-tooltip-item)" }}
             />
           </PieChart>
         </ResponsiveContainer>
       </div>
 
       {/* ✅ Legenda */}
-      <div className="flex flex-col justify-center gap-3 text-sm text-white w-full lg:w-[40%]">
+      <div className="flex flex-col justify-center gap-3 text-sm text-[var(--chart-legend-text)] w-full lg:w-[40%]">
         {dados.map((item, i) => (
           <div
             key={i}
-            className="flex items-center justify-between border-b border-white/10 pb-2"
+            className="flex items-center justify-between border-b pb-2"
+            style={{ borderColor: "var(--chart-legend-border)" }}
           >
             <div className="flex items-center gap-2">
               <span

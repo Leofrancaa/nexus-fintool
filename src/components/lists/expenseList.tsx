@@ -5,7 +5,7 @@ import EditButton from "../ui/editButton";
 import DeleteButton from "../ui/deleteButton";
 import ConfirmDialog from "../ui/confirmDialog";
 import { toast } from "react-hot-toast";
-import { EditExpenseModal } from "../modals/editExpenseModal"; // certifique-se de que o caminho está certo
+import { EditExpenseModal } from "../modals/editExpenseModal";
 
 interface Expense {
   id: number;
@@ -16,7 +16,7 @@ interface Expense {
   categoria_nome?: string;
   cor_categoria?: string;
   category_id?: number;
-  fixo?: boolean; // indicativo de despesa fixa
+  fixo?: boolean;
   observacoes?: string;
 }
 
@@ -158,7 +158,7 @@ export function ExpenseList({
   };
 
   return (
-    <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full lg:max-w-[80%] text-white">
+    <div className="bg-[var(--list-bg)] border border-[var(--card-border)] rounded-2xl p-6 w-full lg:max-w-[80%] text-[var(--card-text)]">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-[#00D4D4]">Despesas Recentes</h2>
         <p className="text-base text-muted-foreground">
@@ -171,11 +171,12 @@ export function ExpenseList({
           expenses.map((expense) => (
             <div
               key={expense.id}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl bg-[#111] border border-[#222] p-5 hover:border-[#00D4D4] transition-all"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl p-5 border transition-all
+    bg-[var(--card-list-bg)] border-[var(--card-border)] hover:border-[#00D4D4]"
             >
               <div className="flex flex-col flex-1 break-words">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4">
-                  <p className="text-lg font-bold text-white flex items-center gap-2">
+                  <p className="text-lg font-bold flex items-center gap-2">
                     {expense.tipo}
                     {expense.fixo && (
                       <span className="text-xs font-semibold text-yellow-400 bg-yellow-900/30 px-2 py-0.5 rounded-full">
@@ -185,20 +186,20 @@ export function ExpenseList({
                   </p>
                 </div>
 
-                <div className=" text-sm lg:text-md text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
+                <div className="text-sm lg:text-md text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
                   {expense.categoria_nome ? (
-                    <span className="font-medium text-white">
+                    <span className="font-medium">
                       {expense.categoria_nome}
                     </span>
                   ) : (
                     <span className="text-red-400">Sem categoria</span>
                   )}
                   <span>•</span>
-                  <span className="text-white font-medium">
+                  <span className="font-medium">
                     {expense.metodo_pagamento}
                   </span>
                   <span>•</span>
-                  <span className="text-white font-medium">
+                  <span className="font-medium">
                     {new Date(expense.data).toLocaleDateString("pt-BR")}
                   </span>
                   {expense.observacoes && (
@@ -213,7 +214,7 @@ export function ExpenseList({
               </div>
 
               <div className="flex justify-between sm:justify-end items-center gap-4 w-full sm:w-auto">
-                <p className="text-red-400 font-bold text-lg whitespace-nowrap">
+                <p className="text-red-500 font-bold text-lg whitespace-nowrap">
                   -
                   {expense.quantidade.toLocaleString("pt-BR", {
                     style: "currency",
@@ -225,7 +226,6 @@ export function ExpenseList({
                   {expense.metodo_pagamento !== "cartao de credito" && (
                     <EditButton onClick={() => setEditExpense(expense)} />
                   )}
-
                   <DeleteButton
                     onClick={() => {
                       setSelectedExpenseId(expense.id);

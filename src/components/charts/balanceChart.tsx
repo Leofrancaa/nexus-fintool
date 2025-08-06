@@ -80,22 +80,22 @@ export default function BalanceChart() {
   if (loading) return <p>Carregando gráfico...</p>;
 
   return (
-    <div className="bg-[#111] p-6 rounded-xl shadow-lg w-full">
-      <h2 className="text-white text-lg font-semibold mb-4">
+    <div className="bg-[var(--chart-bg)] p-6 rounded-xl shadow-lg w-full">
+      <h2 className="text-[var(--chart-title)] text-lg font-semibold mb-4">
         Despesas vs Receitas
       </h2>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-          <XAxis dataKey="mes" stroke="#ccc" />
-          <YAxis stroke="#ccc" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+          <XAxis dataKey="mes" stroke="var(--chart-axis)" />
+          <YAxis stroke="var(--chart-axis)" />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#1f1f1f",
-              borderColor: "#444",
+              backgroundColor: "var(--chart-tooltip-bg)",
+              borderColor: "var(--chart-tooltip-border)",
               borderRadius: 8,
             }}
-            labelStyle={{ color: "#ffffff" }}
+            labelStyle={{ color: "var(--chart-tooltip-label)" }}
             formatter={(value: number) =>
               value.toLocaleString("pt-BR", {
                 style: "currency",

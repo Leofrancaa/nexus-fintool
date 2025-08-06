@@ -46,7 +46,7 @@ export function IncomesByCategoryPanel({ mes, ano, refreshKey }: Props) {
 
   if (loading) {
     return (
-      <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full max-w-sm text-white">
+      <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-2xl p-6 w-full max-w-sm text-[var(--foreground)]">
         <p className="text-sm text-muted-foreground">
           Carregando categorias...
         </p>
@@ -56,7 +56,7 @@ export function IncomesByCategoryPanel({ mes, ano, refreshKey }: Props) {
 
   if (dados.length === 0) {
     return (
-      <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full max-w-sm text-white">
+      <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-2xl p-6 w-full max-w-sm text-[var(--foreground)]">
         <p className="text-sm text-muted-foreground">
           Nenhuma categoria encontrada
         </p>
@@ -65,7 +65,7 @@ export function IncomesByCategoryPanel({ mes, ano, refreshKey }: Props) {
   }
 
   return (
-    <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full lg:max-w-sm 3xl:max-w-xl text-white">
+    <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-2xl p-6 w-full lg:max-w-sm 3xl:max-w-xl text-[var(--foreground)]">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-[#00D4D4]">
           Receitas por Categoria
@@ -95,9 +95,7 @@ export function IncomesByCategoryPanel({ mes, ano, refreshKey }: Props) {
             </div>
 
             <div className="flex flex-col items-end gap-1">
-              <span className="text-md text-white">
-                {item.percentual.toFixed(1)}%
-              </span>
+              <span className="text-md">{item.percentual.toFixed(1)}%</span>
               <span className="bg-emerald-500 text-black text-sm font-bold px-2 py-0.5 rounded-full">
                 {item.quantidade}
               </span>

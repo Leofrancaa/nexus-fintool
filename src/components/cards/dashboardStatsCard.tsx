@@ -111,27 +111,27 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
       value: `R$ ${saldoAtual.toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
       })}`,
-      comparacao: calcVariação(saldoAtual, saldoAnterior, true), // saldo maior = bom
-      icon: <Wallet className="text-white" />,
-      bg: "bg-white/20",
+      comparacao: calcVariação(saldoAtual, saldoAnterior, true),
+      icon: <Wallet className="text-[var(--card-icon)]" />,
+      bg: "bg-[var(--card-icon-bg-neutral)]",
     },
     {
       title: "Receitas do Mês",
       value: `R$ ${incomes.total.toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
       })}`,
-      comparacao: calcVariação(incomes.total, incomes.anterior, true), // receita maior = bom
-      icon: <TrendingUp className="text-green-400" />,
-      bg: "bg-green-900/30",
+      comparacao: calcVariação(incomes.total, incomes.anterior, true),
+      icon: <TrendingUp className="text-green-600" />,
+      bg: "bg-[var(--card-icon-bg-green)]",
     },
     {
       title: "Despesas do Mês",
       value: `R$ ${expenses.total.toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
       })}`,
-      comparacao: calcVariação(expenses.total, expenses.anterior, false), // despesa maior = ruim
-      icon: <TrendingDown className="text-red-400" />,
-      bg: "bg-red-900/30",
+      comparacao: calcVariação(expenses.total, expenses.anterior, false),
+      icon: <TrendingDown className="text-red-500" />,
+      bg: "bg-[var(--card-icon-bg-red)]",
     },
     {
       title: "Investimentos",
@@ -142,9 +142,9 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
         investments.totalInvestido,
         investments.anterior,
         true
-      ), // investimento maior = bom
-      icon: <PiggyBank className="text-yellow-400" />,
-      bg: "bg-yellow-900/30",
+      ),
+      icon: <PiggyBank className="text-yellow-500" />,
+      bg: "bg-[var(--card-icon-bg-yellow)]",
     },
   ];
 
@@ -153,7 +153,7 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
       {cards.map((card, i) => (
         <div
           key={i}
-          className="flex flex-col justify-between bg-[#18181b] rounded-xl p-5 border border-[#262626] h-full"
+          className="flex flex-col justify-between bg-[var(--card-bg)] text-[var(--card-text)] border border-[var(--card-border)] rounded-xl p-5 h-full"
         >
           <div className="flex items-center gap-4">
             <div
@@ -165,7 +165,7 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
               <span className="text-sm text-muted-foreground">
                 {card.title}
               </span>
-              <span className="text-xl font-bold text-white">{card.value}</span>
+              <span className="text-xl font-bold">{card.value}</span>
             </div>
           </div>
           {card.comparacao && (

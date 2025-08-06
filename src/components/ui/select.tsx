@@ -16,7 +16,8 @@ export const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-14 w-full items-center justify-between rounded-xl border border-[#2E2E2E] bg-[#1B1B1B] px-4 py-3 text-base text-white shadow-sm transition-all",
+      "flex h-14 w-full items-center justify-between rounded-xl border px-4 py-3 text-base shadow-sm transition-all",
+      "bg-[var(--select-trigger-bg)] border-[var(--select-trigger-border)] text-[var(--select-trigger-text)]",
       "focus:outline-none focus:ring-2 focus:ring-[#00D4D4] focus:border-[#00D4D4]",
       className
     )}
@@ -24,7 +25,7 @@ export const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 text-[#00D4D4]" />
+      <ChevronDown className="h-4 w-4 text-[var(--select-icon)]" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -39,13 +40,14 @@ export const SelectContent = React.forwardRef<
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        "z-50 mt-1 overflow-hidden rounded-md border border-[#2F2F2F] bg-[#1B1B1B] shadow-md max-h-60 text-white",
+        "z-50 mt-1 overflow-hidden rounded-md border shadow-md max-h-60",
+        "bg-[var(--select-content-bg)] border-[var(--select-trigger-border)] text-[var(--select-trigger-text)]",
         className
       )}
       position="popper"
     >
       <SelectPrimitive.ScrollUpButton className="flex justify-center py-1">
-        <ChevronUp className="h-4 w-4 text-[#00D4D4]" />
+        <ChevronUp className="h-4 w-4 text-[var(--select-icon)]" />
       </SelectPrimitive.ScrollUpButton>
 
       <SelectPrimitive.Viewport
@@ -56,7 +58,7 @@ export const SelectContent = React.forwardRef<
       </SelectPrimitive.Viewport>
 
       <SelectPrimitive.ScrollDownButton className="flex justify-center py-1">
-        <ChevronDown className="h-4 w-4 text-[#00D4D4]" />
+        <ChevronDown className="h-4 w-4 text-[var(--select-icon)]" />
       </SelectPrimitive.ScrollDownButton>
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
@@ -71,15 +73,15 @@ export const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-pointer select-none items-center justify-between rounded-md px-4 py-2 text-base text-white",
-      "hover:bg-[#2e2e2e] focus:bg-[#2e2e2e] focus:outline-none",
+      "relative flex cursor-pointer select-none items-center justify-between rounded-md px-4 py-2 text-base",
+      "text-[var(--select-trigger-text)] hover:bg-[var(--select-item-hover)] focus:bg-[var(--select-item-hover)] focus:outline-none",
       className
     )}
     {...props}
   >
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     <SelectPrimitive.ItemIndicator className="absolute right-2">
-      <Check className="h-4 w-4 text-[#00D4D4]" />
+      <Check className="h-4 w-4 text-[var(--select-check)]" />
     </SelectPrimitive.ItemIndicator>
   </SelectPrimitive.Item>
 ));

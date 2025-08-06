@@ -137,7 +137,7 @@ export function IncomeList({
   };
 
   return (
-    <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full lg:max-w-[80%] text-white">
+    <div className="bg-[var(--list-bg)] border border-[var(--card-border)] rounded-2xl p-6 w-full lg:max-w-[80%] text-[var(--foreground)]">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-[#00D4D4]">Receitas Recentes</h2>
         <p className="text-base text-muted-foreground">
@@ -150,25 +150,27 @@ export function IncomeList({
           incomes.map((income) => (
             <div
               key={income.id}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl bg-[#111] border border-[#222] p-5 hover:border-[#00D4D4] transition-all"
+              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-xl bg-[var(--card-list-bg)] border border-[var(--card-border)] p-5 hover:border-[#00D4D4] transition-all"
             >
               <div className="flex flex-col flex-1 break-words">
-                <p className="text-lg font-bold text-white flex items-center gap-2">
+                <p className="text-lg font-bold text-[var(--card-text)] flex items-center gap-2">
                   {income.tipo}
                 </p>
 
                 <div className="text-sm lg:text-md text-muted-foreground mt-2 flex flex-wrap gap-2 items-center">
                   {income.categoria_nome ? (
-                    <span className="font-medium text-white">
+                    <span className="font-medium text-[var(--card-text)]">
                       {income.categoria_nome}
                     </span>
                   ) : (
                     <span className="text-red-400">Sem categoria</span>
                   )}
                   <span>•</span>
-                  <span className="text-white font-medium">{income.fonte}</span>
+                  <span className="text-[var(--card-text)] font-medium">
+                    {income.fonte}
+                  </span>
                   <span>•</span>
-                  <span className="text-white font-medium">
+                  <span className="text-[var(--card-text)] font-medium">
                     {new Date(income.data).toLocaleDateString("pt-BR")}
                   </span>
                   {income.observacoes && (

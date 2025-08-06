@@ -13,7 +13,7 @@ interface CategoriaResumo {
 interface Props {
   mes: number;
   ano: number;
-  refreshKey: number; // ✅ NOVO
+  refreshKey: number;
 }
 
 export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
@@ -39,11 +39,11 @@ export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
     };
 
     fetchData();
-  }, [mes, ano, refreshKey]); // ✅ adiciona refreshKey aqui também
+  }, [mes, ano, refreshKey]);
 
   if (loading) {
     return (
-      <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full max-w-sm text-white">
+      <div className="bg-[var(--list-bg)] border border-[var(--card-border)] rounded-2xl p-6 w-full max-w-sm text-[var(--card-text)]">
         <p className="text-sm text-muted-foreground">
           Carregando categorias...
         </p>
@@ -53,7 +53,7 @@ export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
 
   if (dados.length === 0) {
     return (
-      <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full max-w-sm text-white">
+      <div className="bg-[var(--list-bg)] border border-[var(--card-border)] rounded-2xl p-6 w-full max-w-sm text-[var(--card-text)]">
         <p className="text-sm text-muted-foreground">
           Nenhuma categoria encontrada
         </p>
@@ -62,7 +62,7 @@ export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
   }
 
   return (
-    <div className="bg-[#0A0A0A] border border-[#1F1F1F] rounded-2xl p-6 w-full lg:max-w-sm 3xl:max-w-xl text-white">
+    <div className="bg-[var(--list-bg)] border border-[var(--card-border)] rounded-2xl p-6 w-full lg:max-w-sm 3xl:max-w-xl text-[var(--card-text)]">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-[#00D4D4]">
           Gastos por Categoria
@@ -83,7 +83,7 @@ export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
                 />
                 <span className="text-lg font-semibold">{item.nome}</span>
               </div>
-              <span className="text-cyan-400 font-bold text-lg mt-1">
+              <span className="text-cyan-500 font-bold text-lg mt-1">
                 {item.total.toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
@@ -92,9 +92,7 @@ export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
             </div>
 
             <div className="flex flex-col items-end gap-1">
-              <span className="text-md text-white">
-                {item.percentual.toFixed(1)}%
-              </span>
+              <span className="text-md">{item.percentual.toFixed(1)}%</span>
               <span className="bg-emerald-500 text-black text-sm font-bold px-2 py-0.5 rounded-full">
                 {item.quantidade}
               </span>

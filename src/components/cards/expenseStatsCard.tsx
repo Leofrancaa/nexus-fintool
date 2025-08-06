@@ -72,19 +72,19 @@ export function ExpenseStatsCards({
         minimumFractionDigits: 2,
       })}`,
       icon: <DollarSign className="text-red-500" />,
-      bg: "bg-red-900/30",
+      bg: "bg-[var(--card-icon-bg-red)]",
     },
     {
       title: "Despesas Fixas",
       value: stats.fixas,
       icon: <CalendarDays className="text-yellow-400" />,
-      bg: "bg-yellow-900/30",
+      bg: "bg-[var(--card-icon-bg-yellow)]",
     },
     {
       title: "Transações",
       value: stats.transacoes,
       icon: <CreditCard className="text-blue-500" />,
-      bg: "bg-blue-900/30",
+      bg: "bg-[var(--card-icon-bg-blue)]",
     },
     {
       title: "Média por Despesa",
@@ -93,7 +93,7 @@ export function ExpenseStatsCards({
           ? `R$ ${Number(stats.media).toFixed(2)}`
           : "-",
       icon: <Divide className="text-green-400" />,
-      bg: "bg-green-900/30",
+      bg: "bg-[var(--card-icon-bg-green)]",
     },
   ];
 
@@ -102,7 +102,7 @@ export function ExpenseStatsCards({
       {cards.map((card, i) => (
         <div
           key={i}
-          className="flex items-center gap-4 bg-[#18181b] rounded-xl p-5 border border-[#262626]"
+          className="flex items-center gap-4 bg-[var(--card-bg)] text-[var(--card-text)] rounded-xl p-5 border border-[var(--card-border)]"
         >
           <div
             className={`w-10 h-10 rounded-lg flex items-center justify-center ${card.bg}`}
@@ -111,7 +111,7 @@ export function ExpenseStatsCards({
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-muted-foreground">{card.title}</span>
-            <span className="text-xl font-bold text-white">{card.value}</span>
+            <span className="text-xl font-bold">{card.value}</span>
           </div>
         </div>
       ))}

@@ -52,21 +52,22 @@ export function ExpenseByCategoryChart({ mes, ano, refreshKey }: Props) {
     fetchData();
   }, [mes, ano, refreshKey]);
 
-  if (loading) return <p className="text-white">Carregando gráfico...</p>;
+  if (loading)
+    return <p className="text-[var(--chart-title)]">Carregando gráfico...</p>;
 
   if (dados.length === 0)
-    return <p className="text-white">Nenhum dado encontrado.</p>;
+    return <p className="text-[var(--chart-title)]">Nenhum dado encontrado.</p>;
 
   return (
-    <div className="bg-[#111] p-6 rounded-xl shadow-lg w-full">
-      <h2 className="text-white text-lg font-semibold mb-4">
+    <div className="bg-[var(--chart-bg)] p-6 rounded-xl shadow-lg w-full">
+      <h2 className="text-[var(--chart-title)] text-lg font-semibold mb-4">
         Gastos por Categoria
       </h2>
 
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={dados}>
-          <XAxis dataKey="nome" stroke="#ccc" />
-          <YAxis stroke="#ccc" />
+          <XAxis dataKey="nome" stroke="var(--chart-axis)" />
+          <YAxis stroke="var(--chart-axis)" />
           <Tooltip
             formatter={(value: number) =>
               value.toLocaleString("pt-BR", {
@@ -75,12 +76,12 @@ export function ExpenseByCategoryChart({ mes, ano, refreshKey }: Props) {
               })
             }
             contentStyle={{
-              backgroundColor: "#1f1f1f",
-              borderColor: "#444",
+              backgroundColor: "var(--chart-tooltip-bg)",
+              borderColor: "var(--chart-tooltip-border)",
               borderRadius: 8,
             }}
-            labelStyle={{ color: "#fff" }}
-            itemStyle={{ color: "#ffffff" }}
+            labelStyle={{ color: "var(--chart-tooltip-label)" }}
+            itemStyle={{ color: "var(--chart-tooltip-item)" }}
           />
           <Bar dataKey="total" radius={[6, 6, 0, 0]}>
             {dados.map((item, index) => (

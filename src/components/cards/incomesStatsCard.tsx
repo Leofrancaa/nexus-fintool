@@ -69,13 +69,13 @@ export function IncomeStatsCards({
         minimumFractionDigits: 2,
       })}`,
       icon: <DollarSign className="text-green-400" />,
-      bg: "bg-green-900/30",
+      bg: "bg-[var(--card-icon-bg-green)]",
     },
     {
       title: "Receitas Registradas",
       value: stats.transacoes,
       icon: <ListOrdered className="text-cyan-400" />,
-      bg: "bg-cyan-900/30",
+      bg: "bg-[var(--card-icon-bg-neutral)]",
     },
     {
       title: "Média por Receita",
@@ -84,7 +84,7 @@ export function IncomeStatsCards({
           ? `R$ ${Number(stats.media).toFixed(2)}`
           : "-",
       icon: <Divide className="text-yellow-300" />,
-      bg: "bg-yellow-900/30",
+      bg: "bg-[var(--card-icon-bg-yellow)]",
     },
   ];
 
@@ -93,7 +93,7 @@ export function IncomeStatsCards({
       {cards.map((card, i) => (
         <div
           key={i}
-          className="flex items-center gap-4 bg-[#18181b] rounded-xl p-5 border border-[#262626]"
+          className="flex items-center gap-4 bg-[var(--card-bg)] text-[var(--card-text)] rounded-xl p-5 border border-[var(--card-border)]"
         >
           <div
             className={`w-10 h-10 rounded-lg flex items-center justify-center ${card.bg}`}
@@ -102,7 +102,9 @@ export function IncomeStatsCards({
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-muted-foreground">{card.title}</span>
-            <span className="text-xl font-bold text-white">{card.value}</span>
+            <span className="text-xl font-bold text-[var(--card-text)]">
+              {card.value}
+            </span>
           </div>
         </div>
       ))}
