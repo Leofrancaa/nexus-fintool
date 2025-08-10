@@ -72,12 +72,11 @@ export function Sidebar() {
       {/* Sidebar Desktop */}
       <aside
         className={clsx(
-          "hidden lg:flex sticky top-0 self-start h-screen transition-all duration-300",
+          "hidden md:flex sticky top-0 self-start h-screen transition-all duration-300",
           "bg-[var(--background)] text-[var(--foreground)] border-r border-[color:var(--sidebar-border)]",
-          {
-            "w-[15%]": isOpen,
-            "w-[4%]": !isOpen,
-          }
+          isOpen
+            ? "md:w-[22%] lg:w-[18%] xl:w-[15%] 2xl:w-[12%]"
+            : "md:w-[8%]  lg:w-[6%]  xl:w-[5%]  2xl:w-[3%]"
         )}
       >
         <div className="flex flex-col w-full h-full">
