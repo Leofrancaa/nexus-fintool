@@ -87,19 +87,22 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
   const saldoAtual = incomes.total - expenses.total;
   const saldoAnterior = incomes.anterior - expenses.anterior;
 
+  // substitua a sua calcVariação por esta
   const calcVariação = (
     atual: number,
     anterior: number,
     positivoQuandoMaior: boolean
   ) => {
-    if (anterior === 0) return null;
-    const variacao = ((atual - anterior) / anterior) * 100;
-    const isPositiva = positivoQuandoMaior ? variacao >= 0 : variacao <= 0;
-    const texto = `${variacao >= 0 ? "+" : ""}${variacao.toFixed(
-      0
-    )}% em relação ao mês anterior`;
+    if (anterior === 0) return null; // evita divisão por 0
+
+    const delta = atual - anterior; // direção real da mudança
+    const variacao = (delta / Math.abs(anterior)) * 100; // base sempre positiva
+    const isPositiva = positivoQuandoMaior ? delta >= 0 : delta <= 0;
+
     return {
-      texto,
+      texto: `${variacao >= 0 ? "+" : ""}${variacao.toFixed(
+        0
+      )}% em relação ao mês anterior`,
       classe: isPositiva ? "text-green-500" : "text-red-500",
       icone: isPositiva ? "↑" : "↓",
     };

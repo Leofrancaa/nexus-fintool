@@ -98,7 +98,7 @@ export default function Signup() {
 
       <div className="relative z-10 w-full max-w-lg sm:max-w-md md:max-w-[60%] lg:max-w-[40%] xl:max-w-[30%] bg-[#111827] rounded-2xl shadow-lg px-6 sm:px-8 md:px-10 pb-8">
         <div className="text-center">
-          <div className="mx-auto mt-6 mb-6 w-[100px]">
+          <div className="mx-auto mt-6 mb-6 w-[140px]">
             <Image
               src="/logo-nexus.png"
               alt="Logo Nexus"
@@ -202,11 +202,11 @@ export default function Signup() {
             Criar Conta
           </Button>
 
-          <p className="text-sm text-center text-[#9CA3AF] mt-4">
+          <p className="text-md text-center text-[#9CA3AF] mt-4">
             Já tem uma conta?{" "}
             <Link
               href="/login"
-              className="text-[#3B82F6] hover:underline font-medium"
+              className="text-[#3B82F6] hover:underline font-medium text-lg"
             >
               Entre aqui
             </Link>

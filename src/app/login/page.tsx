@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 import Button from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RightShowcase } from "@/components/rightShowCase";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -19,19 +20,18 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!email || !senha) {
-      toast.error("Preencha todos os campos.");
-      return;
-    }
+    if (!email || !senha) return toast.error("Preencha todos os campos.");
 
     try {
-      const response = await fetch("http://localhost:3001/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include", // ✅ necessário para enviar/receber o cookie
-        body: JSON.stringify({ email, senha }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email, senha }),
+        }
+      );
 
       if (!response.ok) {
         const error = await response.json();
@@ -41,16 +41,15 @@ export default function Login() {
       toast.success("Login realizado com sucesso!");
       router.push("/dashboard");
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Ocorreu um erro desconhecido.");
-      }
+      toast.error(
+        error instanceof Error ? error.message : "Ocorreu um erro desconhecido."
+      );
     }
   };
 
   return (
-    <main className="relative min-h-screen flex items-center justify-center bg-[#0E1116] px-4 overflow-hidden">
+    <main className="relative min-h-screen bg-[#0E1116] overflow-hidden">
+      {/* linhas do fundo que você já tinha */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <svg
           className="w-full h-full"
@@ -89,82 +88,91 @@ export default function Login() {
         </svg>
       </div>
 
-      <div className="relative z-10 w-full max-w-lg sm:max-w-md md:max-w-[60%] lg:max-w-[40%] xl:max-w-[25%] bg-[#111827] rounded-2xl shadow-lg px-6 sm:px-8 md:px-10 pb-8">
-        <div className="text-center">
-          <div className="mx-auto mt-6 mb-6 w-[100px]">
-            <Image
-              src="/logo-nexus.png"
-              alt="Logo Nexus"
-              width={0}
-              height={0}
-              sizes="100vw"
-              style={{ width: "100%", height: "auto" }}
-              priority
-            />
-          </div>
+      <div className="relative z-10 grid w-full min-h-screen lg:grid-cols-2">
+        {/* ESQUERDA: form (inalterado) */}
+        <div className="flex items-center justify-center px-4 py-10">
+          <div className="w-full max-w-lg sm:max-w-md lg:max-w-lg bg-[#111827] rounded-2xl shadow-lg px-6 sm:px-8 md:px-10 pb-8 border border-white/10">
+            <div className="text-center">
+              <div className="mx-auto mt-6 mb-6 w-[140px]">
+                <Image
+                  src="/logo-nexus.png"
+                  alt="Logo Nexus"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                  style={{ width: "100%", height: "auto" }}
+                  priority
+                />
+              </div>
+              <h1 className="text-2xl font-semibold text-white">
+                Entrar na conta
+              </h1>
+            </div>
 
-          <h1 className="text-xl font-semibold text-white">Entrar na conta</h1>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5 mt-2 flex flex-col"
+            >
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <div className="relative mt-1">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="seu@email.com"
+                    className="pl-10 max-w-full"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="senha">Senha</Label>
+                <div className="relative mt-1">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                  <Input
+                    id="senha"
+                    type={showSenha ? "text" : "password"}
+                    value={senha}
+                    onChange={(e) => setSenha(e.target.value)}
+                    placeholder="Sua senha"
+                    className="pl-10 pr-10 max-w-full"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSenha(!showSenha)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] cursor-pointer hover:text-black"
+                  >
+                    {showSenha ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <Button type="submit" className="h-12 max-w-full">
+                Entrar
+              </Button>
+
+              <p className="text-md text-center text-[#9CA3AF] mt-4">
+                Não tem uma conta?{" "}
+                <Link
+                  href="/register"
+                  className="text-[#3B82F6] hover:underline font-medium text-lg"
+                >
+                  Crie agora
+                </Link>
+              </p>
+            </form>
+          </div>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5 mt-2 flex flex-col 3xl:gap-4"
-        >
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <div className="relative mt-1">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
-                className="pl-10 max-w-full"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="senha">Senha</Label>
-            <div className="relative mt-1">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
-              <Input
-                id="senha"
-                type={showSenha ? "text" : "password"}
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                placeholder="Sua senha"
-                className="pl-10 pr-10 max-w-full"
-              />
-              <button
-                type="button"
-                onClick={() => setShowSenha(!showSenha)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-white"
-              >
-                {showSenha ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <Button type="submit" className="h-12 max-w-full">
-            Entrar
-          </Button>
-
-          <p className="text-sm text-center text-[#9CA3AF] mt-4">
-            Não tem uma conta?{" "}
-            <Link
-              href="/register"
-              className="text-[#3B82F6] hover:underline font-medium"
-            >
-              Crie agora
-            </Link>
-          </p>
-        </form>
+        {/* DIREITA: painel estilo Lovable */}
+        <RightShowcase />
       </div>
     </main>
   );

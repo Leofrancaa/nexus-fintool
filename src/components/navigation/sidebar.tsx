@@ -17,6 +17,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  BookOpen, // ⬅️ IMPORT novo
 } from "lucide-react";
 import clsx from "clsx";
 import { ThemeToggle } from "@/components/toggles/themeToggle";
@@ -30,6 +31,7 @@ const navItems = [
   { name: "Limites", href: "/limites", icon: Gauge },
   { name: "Investimentos", href: "/investimentos", icon: Banknote },
   { name: "Planos", href: "/planos", icon: Target },
+  { name: "Manual", href: "/manual", icon: BookOpen }, // ⬅️ NOVO ITEM
 ];
 
 export function Sidebar() {
@@ -46,7 +48,6 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Topo Mobile com logo + menu */}
       {!isMobileOpen && (
         <div className="lg:hidden fixed top-0 left-0 w-full flex items-center justify-between px-8 py-3 z-40 shadow-md bg-[var(--background)] text-[var(--foreground)]">
           <div className="w-[80px]">
@@ -69,18 +70,17 @@ export function Sidebar() {
         </div>
       )}
 
-      {/* Sidebar Desktop */}
+      {/* Desktop */}
       <aside
         className={clsx(
           "hidden md:flex sticky top-0 self-start h-screen transition-all duration-300",
           "bg-[var(--background)] text-[var(--foreground)] border-r border-[color:var(--sidebar-border)]",
           isOpen
             ? "md:w-[22%] lg:w-[18%] xl:w-[15%] 2xl:w-[12%]"
-            : "md:w-[8%]  lg:w-[6%]  xl:w-[5%]  2xl:w-[3%]"
+            : "md:w-[8%] lg:w-[6%] xl:w-[5%] 2xl:w-[3%]"
         )}
       >
         <div className="flex flex-col w-full h-full">
-          {/* Logo + botão retrátil */}
           <div className="flex items-center justify-between px-4 pt-6">
             {isOpen ? (
               <div className="w-[110px] transition-all">
@@ -111,11 +111,9 @@ export function Sidebar() {
 
           <div className="border-t border-[color:var(--sidebar-border)] mx-4 my-4" />
 
-          {/* Navegação */}
           <nav className="flex flex-col gap-2 px-2">
             {navItems.map(({ name, href, icon: Icon }) => {
               const isActive = pathname === href;
-
               return (
                 <Link
                   key={href}
@@ -137,7 +135,6 @@ export function Sidebar() {
             })}
           </nav>
 
-          {/* Theme Toggle Desktop */}
           {isOpen && (
             <div className="mt-auto px-4 pb-24">
               <ThemeToggle />
@@ -146,7 +143,7 @@ export function Sidebar() {
         </div>
       </aside>
 
-      {/* Sidebar Mobile */}
+      {/* Mobile */}
       {isMobileOpen && (
         <div className="fixed top-0 left-0 z-40 h-full w-full shadow-lg transition-transform duration-300 lg:hidden bg-[var(--background)] text-[var(--foreground)]">
           <div className="flex justify-end p-4">
@@ -158,7 +155,6 @@ export function Sidebar() {
             </button>
           </div>
 
-          {/* Logo */}
           <div className="flex justify-center py-4">
             <div className="w-[100px]">
               <Image
@@ -178,7 +174,6 @@ export function Sidebar() {
           <nav className="flex flex-col gap-2 px-4">
             {navItems.map(({ name, href, icon: Icon }) => {
               const isActive = pathname === href;
-
               return (
                 <Link
                   key={href}
@@ -201,14 +196,12 @@ export function Sidebar() {
             })}
           </nav>
 
-          {/* Theme Toggle Mobile */}
           <div className="flex justify-center mt-6">
             <ThemeToggle />
           </div>
         </div>
       )}
 
-      {/* Overlay com blur no mobile */}
       {isMobileOpen && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"

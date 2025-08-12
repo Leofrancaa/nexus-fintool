@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { Toaster } from "react-hot-toast";
 
-const publicRoutes = ["/login", "/register"];
+const publicRoutes = ["/login", "/register", "/"];
 
 export default function LayoutWrapper({
   children,
