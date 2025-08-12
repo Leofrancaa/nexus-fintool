@@ -133,7 +133,6 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Descrição</Label>
           <Input
-            variant="dark"
             placeholder="Ex: Almoço, Gasolina..."
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
@@ -143,7 +142,6 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Valor</Label>
           <Input
-            variant="dark"
             type="number"
             placeholder="Ex: 50.00"
             value={quantidade}
@@ -210,7 +208,6 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
           <div>
             <Label>Parcelas</Label>
             <Input
-              variant="dark"
               type="number"
               min={1}
               value={parcelas}
@@ -225,7 +222,6 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       <div>
         <Label>Data</Label>
         <Input
-          variant="dark"
           type="date"
           value={data}
           onChange={(e) => setData(e.target.value)}
@@ -254,7 +250,6 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       <div>
         <Label>Observações</Label>
         <Textarea
-          variant="dark"
           placeholder="Observações adicionais..."
           value={observacoes}
           onChange={(e) => setObservacoes(e.target.value)}

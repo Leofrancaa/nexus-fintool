@@ -143,7 +143,6 @@ export function NewThresholdForm({
       <div>
         <Label>Valor do Limite (R$)</Label>
         <Input
-          variant="dark"
           type="number"
           placeholder="Ex: 1000"
           value={valor}

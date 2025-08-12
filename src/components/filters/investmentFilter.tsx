@@ -67,7 +67,6 @@ export function InvestmentFilters({
           aria-hidden="true"
         />
         <Input
-          variant="dark"
           value={search}
           onChange={handleSearch}
           placeholder="Buscar investimentos…"

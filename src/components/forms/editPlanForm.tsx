@@ -70,17 +70,12 @@ export function EditPlanForm({ plano, onClose, onUpdated }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label>Nome do Plano</Label>
-          <Input
-            variant="dark"
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-          />
+          <Input value={nome} onChange={(e) => setNome(e.target.value)} />
         </div>
 
         <div>
           <Label>Meta (R$)</Label>
           <Input
-            variant="dark"
             type="number"
             value={meta}
             onChange={(e) => setMeta(e.target.value)}
@@ -92,7 +87,6 @@ export function EditPlanForm({ plano, onClose, onUpdated }: Props) {
       <div>
         <Label>Prazo</Label>
         <Input
-          variant="dark"
           type="date"
           value={prazo}
           onChange={(e) => setPrazo(e.target.value)}
@@ -103,7 +97,6 @@ export function EditPlanForm({ plano, onClose, onUpdated }: Props) {
       <div>
         <Label>Descrição (opcional)</Label>
         <Textarea
-          variant="dark"
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
         />

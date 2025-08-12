@@ -76,7 +76,7 @@ export function Sidebar() {
           "hidden md:flex sticky top-0 self-start h-screen transition-all duration-300",
           "bg-[var(--background)] text-[var(--foreground)] border-r border-[color:var(--sidebar-border)]",
           isOpen
-            ? "md:w-[22%] lg:w-[18%] xl:w-[15%] 2xl:w-[12%]"
+            ? "md:w-[22%] lg:w-[18%] xl:w-[15%] 2xl:w-[16%]"
             : "md:w-[8%] lg:w-[6%] xl:w-[5%] 2xl:w-[3%]"
         )}
       >

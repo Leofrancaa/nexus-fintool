@@ -124,7 +124,6 @@ export function InvestmentForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Descrição</Label>
           <Input
-            variant="dark"
             placeholder="Ex: Compra de Bitcoin"
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
@@ -137,7 +136,6 @@ export function InvestmentForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Quantidade adquirida</Label>
           <Input
-            variant="dark"
             type="number"
             value={quantidade}
             onChange={(e) => setQuantidade(e.target.value)}
@@ -148,7 +146,6 @@ export function InvestmentForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Valor investido (R$)</Label>
           <Input
-            variant="dark"
             type="number"
             value={investido}
             onChange={(e) => setInvestido(e.target.value)}
@@ -201,7 +198,6 @@ export function InvestmentForm({ onClose, onCreated }: Props) {
       <div>
         <Label>Observações</Label>
         <Textarea
-          variant="dark"
           placeholder="Informações adicionais sobre o investimento..."
           value={observacoes}
           onChange={(e) => setObservacoes(e.target.value)}

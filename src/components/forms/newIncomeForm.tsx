@@ -92,7 +92,6 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Descrição</Label>
           <Input
-            variant="dark"
             placeholder="Ex: Salário, Venda online..."
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
@@ -101,7 +100,6 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Valor</Label>
           <Input
-            variant="dark"
             type="number"
             placeholder="Ex: 5000"
             value={valor}
@@ -115,7 +113,6 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Data</Label>
           <Input
-            variant="dark"
             type="date"
             value={data}
             onChange={(e) => setData(e.target.value)}
@@ -124,7 +121,6 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Fonte</Label>
           <Input
-            variant="dark"
             placeholder="Ex: Empresa X, Banco Y..."
             value={fonte}
             onChange={(e) => setFonte(e.target.value)}
@@ -171,7 +167,6 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
       <div>
         <Label>Nota</Label>
         <Textarea
-          variant="dark"
           placeholder="Ex: Recebido via transferência"
           value={nota}
           onChange={(e) => setNota(e.target.value)}

@@ -54,7 +54,6 @@ export function ContributeForm({ planId, onClose, onContributed }: Props) {
       <div>
         <Label>Valor da contribuição (R$)</Label>
         <Input
-          variant="dark"
           type="number"
           placeholder="Ex: 200.00"
           value={valor}

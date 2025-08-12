@@ -100,7 +100,6 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
       <div>
         <Label>Nome da Categoria</Label>
         <Input
-          variant="dark"
           placeholder="Ex: Alimentação, Transporte..."
           value={nome}
           onChange={(e) => setNome(e.target.value)}

@@ -102,7 +102,6 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
         <div>
           <Label>Descrição</Label>
           <Input
-            variant="dark"
             value={tipo}
             onChange={(e) => setTipo(e.target.value)}
             required
@@ -112,7 +111,6 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
         <div>
           <Label>Valor (R$)</Label>
           <Input
-            variant="dark"
             type="number"
             value={quantidade}
             onChange={(e) => setQuantidade(e.target.value)}
@@ -126,7 +124,6 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
         <div>
           <Label>Fonte</Label>
           <Input
-            variant="dark"
             value={fonte}
             onChange={(e) => setFonte(e.target.value)}
             required
@@ -154,7 +151,6 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
       <div>
         <Label>Data</Label>
         <Input
-          variant="dark"
           type="date"
           value={data}
           onChange={(e) => setData(e.target.value)}
@@ -166,7 +162,6 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
       <div>
         <Label>Nota</Label>
         <Textarea
-          variant="dark"
           value={nota}
           onChange={(e) => setNota(e.target.value)}
           placeholder="Observações adicionais..."

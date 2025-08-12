@@ -73,17 +73,12 @@ export function EditCardForm({ card, onClose, onUpdated }: Props) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <Label>Nome</Label>
-        <Input
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-          variant="dark"
-        />
+        <Input value={nome} onChange={(e) => setNome(e.target.value)} />
       </div>
 
       <div>
         <Label>Número (últimos 4 dígitos)</Label>
         <Input
-          variant="dark"
           value={numero}
           maxLength={4}
           onChange={(e) => setNumero(e.target.value)}
@@ -113,7 +108,6 @@ export function EditCardForm({ card, onClose, onUpdated }: Props) {
       <div>
         <Label>Limite</Label>
         <Input
-          variant="dark"
           type="number"
           value={limite}
           onChange={(e) => setLimite(e.target.value)}

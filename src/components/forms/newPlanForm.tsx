@@ -59,7 +59,6 @@ export function NewPlanForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Nome do Plano</Label>
           <Input
-            variant="dark"
             placeholder="Ex: Viagem, Novo Celular..."
             value={nome}
             onChange={(e) => setNome(e.target.value)}
@@ -69,7 +68,6 @@ export function NewPlanForm({ onClose, onCreated }: Props) {
         <div>
           <Label>Meta (R$)</Label>
           <Input
-            variant="dark"
             type="number"
             placeholder="Ex: 1000.00"
             value={meta}
@@ -82,7 +80,6 @@ export function NewPlanForm({ onClose, onCreated }: Props) {
       <div>
         <Label>Prazo</Label>
         <Input
-          variant="dark"
           type="date"
           value={prazo}
           onChange={(e) => setPrazo(e.target.value)}
@@ -93,7 +90,6 @@ export function NewPlanForm({ onClose, onCreated }: Props) {
       <div>
         <Label>Descrição (opcional)</Label>
         <Textarea
-          variant="dark"
           placeholder="Descreva o plano..."
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
