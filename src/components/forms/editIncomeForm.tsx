@@ -1,0 +1,189 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textArea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "react-hot-toast";
+import { Income } from "@/types/income";
+
+interface Categoria {
+  id: number;
+  nome: string;
+}
+
+interface Props {
+  income: Income;
+  onClose: () => void;
+  onUpdated?: () => void;
+}
+
+export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
+  const [tipo, setTipo] = useState(income.tipo || "");
+  const [quantidade, setQuantidade] = useState(String(income.quantidade || ""));
+  const [fonte, setFonte] = useState(income.fonte || "");
+  const [nota, setNota] = useState(income.observacoes || "");
+  const [data, setData] = useState(
+    income.data ? new Date(income.data).toISOString().split("T")[0] : ""
+  );
+  const [categoriaId, setCategoriaId] = useState(
+    String(income.category_id || "")
+  );
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/categories?tipo=receita`,
+          { credentials: "include" }
+        );
+        const data = await res.json();
+        setCategorias(data);
+      } catch (error) {
+        console.error("Erro ao carregar categorias:", error);
+      }
+    };
+
+    fetchCategorias();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const toastId = toast.loading("Atualizando receita...");
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/incomes/${income.id}`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            tipo,
+            quantidade: parseFloat(quantidade),
+            fonte,
+            observacoes: nota,
+            data,
+            category_id: parseInt(categoriaId),
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Erro ao atualizar receita.");
+      }
+
+      toast.success("Receita atualizada com sucesso!", { id: toastId });
+      onUpdated?.();
+    } catch (err: unknown) {
+      console.error(err);
+      const errorMessage =
+        err instanceof Error ? err.message : "Erro ao atualizar receita.";
+      toast.error(errorMessage, { id: toastId });
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Descrição e Valor */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label>Descrição</Label>
+          <Input
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <Label>Valor (R$)</Label>
+          <Input
+            type="number"
+            value={quantidade}
+            onChange={(e) => setQuantidade(e.target.value)}
+            required
+          />
+        </div>
+      </div>
+
+      {/* Fonte e Categoria */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label>Fonte</Label>
+          <Input
+            value={fonte}
+            onChange={(e) => setFonte(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <Label>Categoria</Label>
+          <Select value={categoriaId} onValueChange={setCategoriaId}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione uma categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {categorias.map((categoria) => (
+                <SelectItem key={categoria.id} value={String(categoria.id)}>
+                  {categoria.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Data */}
+      <div>
+        <Label>Data</Label>
+        <Input
+          type="date"
+          value={data}
+          onChange={(e) => setData(e.target.value)}
+          required
+        />
+      </div>
+
+      {/* Nota */}
+      <div>
+        <Label>Nota</Label>
+        <Textarea
+          value={nota}
+          onChange={(e) => setNota(e.target.value)}
+          placeholder="Observações adicionais..."
+        />
+      </div>
+
+      {/* Botões */}
+      <div className="flex justify-end gap-2 pt-2">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 rounded-md bg-[#1F2937] text-white hover:bg-[#374151] transition"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 rounded-md bg-cyan-600 text-white hover:bg-cyan-500 transition"
+        >
+          Salvar Alterações
+        </button>
+      </div>
+    </form>
+  );
+}

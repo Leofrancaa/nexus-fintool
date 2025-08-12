@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f9fafb;
+  --foreground: #111111;
+  --card-bg: #f9fafb;
+  --stats-card-bg: #f9fafb;
+  --card-text: #111111;
+  --card-border: #d1d5db;
+  --page-bg: #e5e7eb;
+  --sidebar-border: #d4d4d8;
+  --card-icon: #111111;
+  --card-icon-bg-neutral: #e5e7eb;
+  --card-icon-bg-green: #d1fae5;
+  --card-icon-bg-red: #fee2e2;
+  --card-icon-bg-yellow: #fef9c3;
+  --card-icon-bg-blue: #dbeafe;
+  --chart-bg: #f3f4f6;
+  --chart-title: #0f172a;
+  --chart-axis: #374151;
+  --chart-grid: #d1d5db;
+  --chart-tooltip-bg: #f9fafb;
+  --chart-tooltip-border: #d1d5db;
+  --chart-tooltip-label: #1f2937;
+  --chart-tooltip-item: #111827;
+  --chart-stroke: #d1d5db;
+  --chart-legend-border: #d4d4d8;
+  --chart-legend-text: #1f2937;
+  --filter-bg: #f3f4f6;
+  --filter-border: #d1d5db;
+  --filter-input-bg: #ffffff;
+  --filter-input-border: #d1d5db;
+  --filter-text: #111111;
+  --filter-placeholder: #6b7280; /* Tailwind gray-500 */
+  --select-trigger-bg: #ffffff;
+  --select-trigger-border: #d1d5db;
+  --select-trigger-text: #111111;
+  --select-icon: #00d4d4;
+  --select-content-bg: #f9f9f9;
+  --select-item-hover: #e5e7eb;
+  --select-check: #00d4d4;
+  --list-bg: #f4f4f5;
+  --card-list-bg: #f9f9f9;
+  --plan-card-text: #0a0a0a; /* Tailwind gray-700 */
+  --progress-bg: #e5e7eb;
+  --hover-bg: rgba(0, 0, 0, 0.05); /* Tailwind gray-100 */
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --card-bg: #111; /* fundo original do card */
+  --stats-card-bg: #18181b;
+  --card-text: #ffffff;
+  --card-border: #262626;
+  --page-bg: #1f1f23;
+  --sidebar-border: #3f3f46;
+  --card-icon: #ffffff;
+  --card-icon-bg-neutral: #ffffff20;
+  --card-icon-bg-green: #064e3b99; /* verde escuro com transparência */
+  --card-icon-bg-red: #7f1d1d99; /* vermelho escuro com transparência */
+  --card-icon-bg-yellow: #78350f99; /* amarelo escuro com transparência */
+  --card-icon-bg-blue: #1e3a8a99;
+  --chart-bg: #111111;
+  --chart-title: #ffffff;
+  --chart-axis: #cccccc;
+  --chart-grid: #333333;
+  --chart-tooltip-bg: #1f1f1f;
+  --chart-tooltip-border: #444444;
+  --chart-tooltip-label: #ffffff;
+  --chart-tooltip-item: #ffffff;
+  --chart-stroke: #0a0a0a;
+  --chart-legend-border: #ffffff1a;
+  --chart-legend-text: #ffffff;
+  --filter-bg: #111111;
+  --filter-border: #222222;
+  --filter-input-bg: #1b1b1b;
+  --filter-input-border: #333333;
+  --filter-text: #ffffff;
+  --filter-placeholder: #a1a1aa;
+  --select-trigger-bg: #1b1b1b;
+  --select-trigger-border: #2e2e2e;
+  --select-trigger-text: #ffffff;
+  --select-icon: #00d4d4;
+  --select-content-bg: #1b1b1b;
+  --select-item-hover: #2e2e2e;
+  --select-check: #00d4d4;
+  --list-bg: #0a0a0a;
+  --card-list-bg: #111;
+  --plan-card-text: #99a1af;
+  --progress-bg: rgba(255, 255, 255, 0.1);
+  --hover-bg: rgba(255, 255, 255, 0.2);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* globals.css */
+[data-sonner-toast] {
+  background-color: #111827; /* nexus.background */
+  color: #f3f4f6; /* nexus.text */
+  border: 1px solid #3b82f6; /* nexus.border */
+  border-radius: 0.75rem; /* rounded-xl */
+  padding: 0.75rem 1rem; /* px-4 py-3 */
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  font-family: var(--font-manrope), sans-serif;
+}
+
+[data-sonner-toast][data-type="success"] {
+  border-color: #22c55e; /* nexus.success */
+}
+
+[data-sonner-toast][data-type="error"] {
+  border-color: #ef4444; /* nexus.error */
+}
+
+/* Scrollbar padrão Nexus */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
