@@ -30,9 +30,6 @@ export function EditCardForm({ card, onClose, onUpdated }: Props) {
     card.tipo as "crédito" | "débito"
   );
   const [limite, setLimite] = useState(card.limite.toString());
-  const [diaVencimento, setDiaVencimento] = useState(
-    card.dia_vencimento.toString()
-  );
   const [corSelecionada, setCorSelecionada] = useState(card.cor);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,7 +50,6 @@ export function EditCardForm({ card, onClose, onUpdated }: Props) {
             tipo,
             cor: corSelecionada,
             limite: parseFloat(limite),
-            dia_vencimento: parseInt(diaVencimento),
           }),
         }
       );
@@ -77,12 +73,17 @@ export function EditCardForm({ card, onClose, onUpdated }: Props) {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <Label>Nome</Label>
-        <Input value={nome} onChange={(e) => setNome(e.target.value)} />
+        <Input
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          variant="dark"
+        />
       </div>
 
       <div>
         <Label>Número (últimos 4 dígitos)</Label>
         <Input
+          variant="dark"
           value={numero}
           maxLength={4}
           onChange={(e) => setNumero(e.target.value)}
@@ -112,20 +113,10 @@ export function EditCardForm({ card, onClose, onUpdated }: Props) {
       <div>
         <Label>Limite</Label>
         <Input
+          variant="dark"
           type="number"
           value={limite}
           onChange={(e) => setLimite(e.target.value)}
-        />
-      </div>
-
-      <div>
-        <Label>Dia de vencimento</Label>
-        <Input
-          type="number"
-          min={1}
-          max={31}
-          value={diaVencimento}
-          onChange={(e) => setDiaVencimento(e.target.value)}
         />
       </div>
 
