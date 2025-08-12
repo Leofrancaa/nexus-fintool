@@ -122,11 +122,11 @@ export function Sidebar() {
                   key={href}
                   href={href}
                   className={clsx(
-                    "flex items-center gap-3 rounded-lg px-3 py-3 transition-all font-medium",
+                    "flex items-center gap-3 rounded-lg px-3 py-3 transition-colors duration-200 font-medium",
                     {
                       "bg-gradient-to-r from-[#2256FF] via-[#00D4AA] to-[#00D4D4] text-white":
                         isActive,
-                      "hover:bg-black/5 dark:hover:bg-white/10 hover:text-black dark:hover:text-white":
+                      "bg-transparent text-[var(--foreground)] hover:bg-[var(--hover-bg)]":
                         !isActive,
                     }
                   )}

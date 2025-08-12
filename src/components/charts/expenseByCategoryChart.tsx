@@ -59,7 +59,7 @@ export function ExpenseByCategoryChart({ mes, ano, refreshKey }: Props) {
     return <p className="text-[var(--chart-title)]">Nenhum dado encontrado.</p>;
 
   return (
-    <div className="bg-[var(--chart-bg)] p-6 rounded-xl shadow-lg w-full">
+    <div className="bg-[var(--chart-bg)] p-6 rounded-xl shadow-lg w-full border border-[var(--card-border)]">
       <h2 className="text-[var(--chart-title)] text-lg font-semibold mb-4">
         Gastos por Categoria
       </h2>

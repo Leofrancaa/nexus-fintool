@@ -75,15 +75,13 @@ export default function Incomes() {
   return (
     <main className="flex flex-col min-h-screen bg-[var(--page-bg)] px-8 py-4">
       {/* Cabeçalho */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mt-12 lg:mt-0">
+
+      <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle
           title="Receitas"
           subTitle="Gerencie e acompanhe suas receitas"
         />
-
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
-          <NewIncomeModal onCreated={() => setRefreshKey((prev) => prev + 1)} />
-        </div>
+        <NewIncomeModal onCreated={() => setRefreshKey((prev) => prev + 1)} />
       </div>
 
       {/* Cards */}

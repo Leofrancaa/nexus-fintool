@@ -43,6 +43,7 @@
   --card-list-bg: #f9f9f9;
   --plan-card-text: #0a0a0a; /* Tailwind gray-700 */
   --progress-bg: #e5e7eb;
+  --hover-bg: rgba(0, 0, 0, 0.05); /* Tailwind gray-100 */
 }
 
 .dark {
@@ -52,7 +53,7 @@
   --stats-card-bg: #18181b;
   --card-text: #ffffff;
   --card-border: #262626;
-  --page-bg: #0a0a0a;
+  --page-bg: #1f1f23;
   --sidebar-border: #3f3f46;
   --card-icon: #ffffff;
   --card-icon-bg-neutral: #ffffff20;
@@ -88,6 +89,7 @@
   --card-list-bg: #111;
   --plan-card-text: #99a1af;
   --progress-bg: rgba(255, 255, 255, 0.1);
+  --hover-bg: rgba(255, 255, 255, 0.2);
 }
 
 @theme inline {

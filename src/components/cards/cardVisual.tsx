@@ -1,18 +1,25 @@
 "use client";
 
-import { CardType } from "@/types/card";
-import { formatCurrency } from "@/utils/format";
+import { useState } from "react";
 import { differenceInDays, format } from "date-fns";
 import { AlertTriangle } from "lucide-react";
+import { toast } from "react-hot-toast";
+
+import { CardType } from "@/types/card";
+import { formatCurrency } from "@/utils/format";
 import EditButton from "../ui/editButton";
+import DeleteButton from "../ui/deleteButton";
+import ConfirmDialog from "../ui/confirmDialog";
 
 interface CardVisualProps {
   card: CardType;
   onEdit: (card: CardType) => void;
+  onDelete: (cardId: number) => void;
 }
 
-export function CardVisual({ card, onEdit }: CardVisualProps) {
+export function CardVisual({ card, onEdit, onDelete }: CardVisualProps) {
   const {
+    id,
     nome,
     numero,
     tipo,
@@ -30,6 +37,31 @@ export function CardVisual({ card, onEdit }: CardVisualProps) {
     new Date()
   );
   const vencimentoExpirado = diasRestantes < 0;
+
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/cards/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Erro ao excluir o cartão");
+
+      toast.success(data.message || "Cartão excluído com sucesso");
+      onDelete(id);
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Erro ao excluir o cartão";
+      toast.error(errorMessage);
+    }
+  };
 
   return (
     <div className="rounded-xl shadow-md overflow-hidden border bg-[var(--card-bg)] border-[var(--card-border)] text-[var(--card-text)]">
@@ -77,7 +109,7 @@ export function CardVisual({ card, onEdit }: CardVisualProps) {
           </span>
         </div>
 
-        {/* Próximo vencimento */}
+        {/* Próximo vencimento + ações */}
         <div className="flex justify-between items-center text-sm">
           <div>
             <p className="text-gray-500 dark:text-gray-400">
@@ -95,16 +127,27 @@ export function CardVisual({ card, onEdit }: CardVisualProps) {
                 <span>{diasRestantes}d</span>
               </div>
             )}
-            <div className="flex justify-end">
-              <EditButton
-                onClick={() => onEdit(card)}
-                title="Editar cartão"
-                size="md"
-              />
-            </div>
+
+            <EditButton
+              onClick={() => onEdit(card)}
+              title="Editar cartão"
+              size="md"
+            />
+
+            <DeleteButton onClick={() => setConfirmOpen(true)} />
           </div>
         </div>
       </div>
+
+      {/* Diálogo de confirmação */}
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Deseja excluir o cartão?"
+        description="Se ele tiver despesas de meses anteriores, elas também serão removidas."
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

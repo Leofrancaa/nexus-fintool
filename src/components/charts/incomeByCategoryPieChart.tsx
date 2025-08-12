@@ -53,7 +53,7 @@ export function IncomeByCategoryPieChart({ mes, ano, refreshKey }: Props) {
     );
 
   return (
-    <div className="bg-[var(--chart-bg)] p-6 rounded-xl shadow-lg w-full lg:max-w-[35%] flex flex-col lg:flex-row gap-2">
+    <div className="bg-[var(--chart-bg)] p-6 rounded-xl shadow-lg w-full lg:max-w-[35%] flex flex-col lg:flex-row gap-2 border border-[var(--card-border)]">
       <div className="flex-1">
         <h2 className="text-[var(--chart-title)] text-lg font-semibold mb-4">
           Receitas por Categoria
@@ -93,7 +93,7 @@ export function IncomeByCategoryPieChart({ mes, ano, refreshKey }: Props) {
       </div>
 
       {/* ✅ Legenda */}
-      <div className="flex flex-col justify-center gap-3 text-sm text-[var(--chart-legend-text)] w-full lg:w-[40%]">
+      <div className="flex flex-col justify-center gap-3 text-sm text-[var(--chart-legend-text)] w-full lg:w-[40%] ">
         {dados.map((item, i) => (
           <div
             key={i}

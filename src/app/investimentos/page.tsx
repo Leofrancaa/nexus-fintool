@@ -76,17 +76,15 @@ export default function Investments() {
       style={{ background: "var(--page-bg)" }}
     >
       {/* Cabeçalho */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mt-12 lg:mt-0">
+
+      <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-12 lg:mt-0">
         <PageTitle
           title="Investimentos"
           subTitle="Gerencie e acompanhe seus investimentos"
         />
-
-        <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
-          <NewInvestmentModal
-            onCreated={() => setRefreshKey((prev) => prev + 1)}
-          />
-        </div>
+        <NewInvestmentModal
+          onCreated={() => setRefreshKey((prev) => prev + 1)}
+        />
       </div>
 
       {/* Cards de estatísticas */}

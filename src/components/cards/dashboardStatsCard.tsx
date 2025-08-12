@@ -153,7 +153,7 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
       {cards.map((card, i) => (
         <div
           key={i}
-          className="flex flex-col justify-between bg-[var(--stats-card-bg)] text-[var(--card-text)] border border-[var(--card-border)] rounded-xl p-5 h-full"
+          className="flex flex-col justify-between bg-[var(--card-bg)] text-[var(--card-text)] border border-[var(--card-border)] rounded-xl p-5 h-full"
         >
           <div className="flex items-center gap-4">
             <div

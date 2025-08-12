@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 interface MarketItem {
   nome: string;
   preco: number | null;
-  variacao: number | null;
-  moeda: string;
+  variacao: number | null; // pode vir null (ex.: SELIC)
+  moeda: string; // "BRL", "USD", "%", etc.
   erro?: boolean;
 }
 
@@ -37,7 +37,6 @@ export function InvestmentPanel() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
@@ -54,12 +53,13 @@ export function InvestmentPanel() {
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="text-sm text-[var(--card-text)]/60">
         Carregando mercado...
       </div>
     );
+  }
 
   return (
     <aside
@@ -79,30 +79,27 @@ export function InvestmentPanel() {
           Panorama do Mercado
         </h2>
 
-        <div
-          className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[540px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-[#333] scrollbar-track-transparent hover:scrollbar-thumb-[#555]"
-          // você pode customizar scrollbar com variáveis se quiser
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[540px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-[#333] hover:scrollbar-thumb-[#555]">
           {Object.entries(data).map(([key, item]) => {
             const precoFormatado = formatValor(item.preco, item.moeda);
             const variacaoFormatada =
               item.variacao !== null ? `${item.variacao.toFixed(2)}%` : null;
 
-            const icon =
-              item.variacao !== null ? (
-                item.variacao >= 0 ? (
-                  <TrendingUp className="text-green-400" />
-                ) : (
-                  <TrendingDown className="text-red-400" />
-                )
-              ) : null;
-
-            const bgColor =
+            // ícone sempre presente (Minus quando variacao === null)
+            const IconComp =
               item.variacao === null
-                ? "bg-gray-800"
+                ? Minus
                 : item.variacao >= 0
-                ? "bg-green-900/30"
-                : "bg-red-900/30";
+                ? TrendingUp
+                : TrendingDown;
+
+            // fundo do ícone via variáveis (sem classes bg-*)
+            const iconBg =
+              item.variacao === null
+                ? "var(--card-icon-bg-neutral)"
+                : item.variacao >= 0
+                ? "var(--card-icon-bg-green)"
+                : "var(--card-icon-bg-red)";
 
             return (
               <div
@@ -114,10 +111,13 @@ export function InvestmentPanel() {
                 }}
               >
                 <div
-                  className={`w-10 h-10 rounded-lg flex items-center justify-center ${bgColor}`}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center"
+                  style={{ backgroundColor: iconBg, color: "var(--card-icon)" }}
+                  aria-hidden="true"
                 >
-                  {icon}
+                  <IconComp />
                 </div>
+
                 <div className="flex flex-col">
                   <span className="text-sm text-muted-foreground">
                     {item.nome}

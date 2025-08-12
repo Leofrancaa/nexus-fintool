@@ -65,6 +65,9 @@ export default function Cards() {
             key={card.id}
             card={card}
             onEdit={() => setEditando(card)}
+            onDelete={function (cardId: number): void {
+              setCards((prev) => prev.filter((c) => c.id !== cardId));
+            }}
           />
         ))}
       </section>

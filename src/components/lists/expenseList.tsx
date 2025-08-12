@@ -160,7 +160,9 @@ export function ExpenseList({
   return (
     <div className="bg-[var(--list-bg)] border border-[var(--card-border)] rounded-2xl p-6 w-full lg:max-w-[80%] text-[var(--card-text)]">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-[#00D4D4]">Despesas Recentes</h2>
+        <h2 className="text-2xl font-bold text-[var(--card-text)]">
+          Despesas Recentes
+        </h2>
         <p className="text-base text-muted-foreground">
           Últimas movimentações registradas
         </p>

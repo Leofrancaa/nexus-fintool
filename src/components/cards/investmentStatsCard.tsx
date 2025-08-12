@@ -106,7 +106,7 @@ export function InvestmentStatsCards({
           key={i}
           className="flex items-center gap-4 rounded-xl p-5 border shadow-md"
           style={{
-            backgroundColor: "var(--stats-card-bg)",
+            backgroundColor: "var(--card-bg)",
             borderColor: "var(--card-border)",
             color: "var(--card-text)",
           }}

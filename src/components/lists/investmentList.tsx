@@ -90,7 +90,7 @@ export function InvestmentList({
   return (
     <div className="bg-[var(--list-bg)] border border-[var(--card-border)] rounded-2xl p-6 w-full lg:max-w-[60%] text-[var(--card-text)]">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-[#00D4D4]">
+        <h2 className="text-2xl font-bold text-[var(--card-text)]">
           Investimentos Simulados
         </h2>
         <p className="text-base text-muted-foreground">
