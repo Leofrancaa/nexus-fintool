@@ -40,11 +40,14 @@ export default function RootLayout({
     <html lang="pt-BR" className={manrope.variable}>
       <head>
         {/* iOS PWA metas */}
+
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
+
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body className="antialiased bg-gray-50 min-h-screen font-sans">

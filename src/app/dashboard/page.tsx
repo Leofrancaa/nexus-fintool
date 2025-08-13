@@ -32,14 +32,14 @@ export default function Dashboard() {
   }, [router]);
 
   return (
-    <main className="flex flex-col min-h-screen bg-[var(--page-bg)] px-8 py-4 w-full">
+    <main className="flex flex-col min-h-screen bg-[var(--page-bg)] px-8 py-8 w-full lg:py-4">
       <div className="flex flex-col lg:flex-row w-full items-start justify-between gap-4 mt-14 lg:mt-0">
         <PageTitle
           title="Dashboard"
           subTitle="Gerencie e acompanhe suas finanças"
         />
 
-        <div className="flex justify-between lg:gap-4 w-full lg:w-auto">
+        <div className="flex flex-col gap-4 lg:flex-row justify-between lg:gap-4 w-full lg:w-auto">
           <NewIncomeModal onCreated={() => setRefreshKey((prev) => prev + 1)} />
           <NewExpenseModal
             onCreated={() => setRefreshKey((prev) => prev + 1)}
