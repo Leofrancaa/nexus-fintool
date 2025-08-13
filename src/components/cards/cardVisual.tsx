@@ -179,7 +179,7 @@ export function CardVisual({
         )}
 
         {/* Fechamento / Vencimento / Ações */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 items-start">
           {/* Fechamento */}
           <div className="min-w-0">
             <div className="text-gray-500 dark:text-gray-400 text-sm">
@@ -225,7 +225,7 @@ export function CardVisual({
           </div>
 
           {/* Ações */}
-          <div className="flex flex-wrap md:justify-end gap-2">
+          <div className="flex flex-wrap justify-between md:justify-end gap-2">
             {isCredito && (
               <button
                 onClick={handlePayInvoice}
