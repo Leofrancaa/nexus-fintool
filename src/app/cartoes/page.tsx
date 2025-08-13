@@ -49,10 +49,10 @@ export default function Cards() {
 
   return (
     <main
-      className="flex flex-col min-h-screen px-8 py-4"
+      className="flex flex-col min-h-screen px-8 py-8 lg:py-4"
       style={{ background: "var(--page-bg)" }}
     >
-      <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-12 lg:mt-0">
+      <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-14 lg:mt-0">
         <PageTitle
           title="Cartões"
           subTitle="Gerencie e acompanhe seus cartões"
