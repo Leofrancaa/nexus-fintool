@@ -226,32 +226,31 @@ export function CardVisual({
 
           {/* Ações */}
 
-          <div className="flex w-full flex-row justify-between md:flex-wrap md:justify-end gap-2">
+          {/* Ações */}
+          <div className="flex w-full items-center justify-between gap-2 md:flex-wrap md:justify-end">
             {isCredito && (
-              <div className="flex-1 sm:flex-none w-full sm:w-auto md:order-1">
-                <button
-                  onClick={handlePayInvoice}
-                  disabled={!fechamentoPassou || pagarLoading}
-                  className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md font-semibold transition cursor-pointer w-full sm:w-auto
-        ${
-          !fechamentoPassou || pagarLoading
-            ? "bg-[#00D4D4]/50 text-black/60 cursor-not-allowed"
-            : "bg-[#00D4D4] text-black hover:opacity-90"
-        }`}
-                  title={
-                    !fechamentoPassou
-                      ? "Só é possível pagar após o fechamento da fatura"
-                      : "Pagar fatura vigente"
-                  }
-                >
-                  <Wallet size={16} />
-                  {pagarLoading ? "Pagando..." : "Pagar"}
-                </button>
-              </div>
+              <button
+                onClick={handlePayInvoice}
+                disabled={!fechamentoPassou || pagarLoading}
+                className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md font-semibold transition cursor-pointer flex-none
+      ${
+        !fechamentoPassou || pagarLoading
+          ? "bg-[#00D4D4]/50 text-black/60 cursor-not-allowed"
+          : "bg-[#00D4D4] text-black hover:opacity-90"
+      }`}
+                title={
+                  !fechamentoPassou
+                    ? "Só é possível pagar após o fechamento da fatura"
+                    : "Pagar fatura vigente"
+                }
+              >
+                <Wallet size={16} />
+                {pagarLoading ? "Pagando..." : "Pagar"}
+              </button>
             )}
 
-            {/* Container para Edit e Delete */}
-            <div className="flex items-center gap-2 flex-1 sm:flex-none w-full sm:w-auto justify-end md:order-2">
+            {/* lado direito: Edit e Delete juntos */}
+            <div className="inline-flex items-center gap-2 flex-none md:ml-auto">
               <EditButton
                 onClick={() => onEdit(card)}
                 title="Editar cartão"
