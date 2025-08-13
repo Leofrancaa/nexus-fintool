@@ -11,6 +11,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/toggles/themeToggle";
+import EmailForm from "../components/forms/emailForm";
 
 const nexusGradient = {
   background: `
@@ -300,6 +301,10 @@ export default function LandingPage() {
             </Link>
           </div>
         </div>
+      </section>
+
+      <section>
+        <EmailForm></EmailForm>
       </section>
 
       <footer className="border-t border-[var(--card-border)]">
