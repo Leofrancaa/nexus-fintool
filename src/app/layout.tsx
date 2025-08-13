@@ -6,6 +6,7 @@ import LayoutWrapper from "../components/navigation/layoutWrapper";
 import { DateProvider } from "../contexts/dateContext";
 import { ThemeProvider } from "@/contexts/themeContext";
 import SwUpdater from "@/components/swUpdater"; // se estiver usando
+import PwaLoginRedirect from "../components/pwaLoginRedirect";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -51,6 +52,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body className="antialiased bg-gray-50 min-h-screen font-sans">
+        <PwaLoginRedirect />
         <SwUpdater />
         <DateProvider>
           <ThemeProvider>
