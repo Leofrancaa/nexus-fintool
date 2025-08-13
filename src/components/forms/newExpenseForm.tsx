@@ -129,7 +129,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 text-white overflow-y-auto"
+      className="space-y-4 text-white overflow-y-auto max-h-[110dvh]"
     >
       {/* Descrição + Valor */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
