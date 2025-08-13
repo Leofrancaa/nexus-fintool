@@ -121,7 +121,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
           className="mt-1"
         />
       </div>
-      <div className="flex justify-between">
+      <div className="flex flex-col lg:flex-row lg:justify-between">
         {/* Número */}
         <div>
           <Label>Número (somente os 4 últimos)</Label>
