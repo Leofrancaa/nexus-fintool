@@ -44,7 +44,6 @@ export function NewExpenseModal({ onCreated }: { onCreated?: () => void }) {
                 className="
                   p-2 rounded-lg
                   border border-[color:var(--card-border)]
-                  bg-[var(--card-icon-bg-neutral)]
                   text-[var(--card-icon)]
                   hover:bg-[var(--hover-bg)]
                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--foreground)]
