@@ -225,37 +225,38 @@ export function CardVisual({
           </div>
 
           {/* Ações */}
-          <div className="flex flex-row w-full md:flex-wrap justify-between md:justify-end gap-2">
+
+          <div className="flex w-full flex-row justify-between md:flex-wrap md:justify-end gap-2">
             {isCredito && (
-              <button
-                onClick={handlePayInvoice}
-                disabled={!fechamentoPassou || pagarLoading}
-                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md font-semibold transition cursor-pointer w-full sm:w-auto
-                ${
-                  !fechamentoPassou || pagarLoading
-                    ? "bg-[#00D4D4]/50 text-black/60 cursor-not-allowed"
-                    : "bg-[#00D4D4] text-black hover:opacity-90"
-                }`}
-                title={
-                  !fechamentoPassou
-                    ? "Só é possível pagar após o fechamento da fatura"
-                    : "Pagar fatura vigente"
-                }
-              >
-                <Wallet size={16} />
-                {pagarLoading ? "Pagando..." : "Pagar"}
-              </button>
+              <div className="flex-1 sm:flex-none w-full sm:w-auto md:order-1">
+                <button
+                  onClick={handlePayInvoice}
+                  disabled={!fechamentoPassou || pagarLoading}
+                  className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md font-semibold transition cursor-pointer w-full sm:w-auto
+        ${
+          !fechamentoPassou || pagarLoading
+            ? "bg-[#00D4D4]/50 text-black/60 cursor-not-allowed"
+            : "bg-[#00D4D4] text-black hover:opacity-90"
+        }`}
+                  title={
+                    !fechamentoPassou
+                      ? "Só é possível pagar após o fechamento da fatura"
+                      : "Pagar fatura vigente"
+                  }
+                >
+                  <Wallet size={16} />
+                  {pagarLoading ? "Pagando..." : "Pagar"}
+                </button>
+              </div>
             )}
 
-            <div className="flex-1 sm:flex-none w-full sm:w-auto">
+            {/* Container para Edit e Delete */}
+            <div className="flex items-center gap-2 flex-1 sm:flex-none w-full sm:w-auto justify-end md:order-2">
               <EditButton
                 onClick={() => onEdit(card)}
                 title="Editar cartão"
                 size="md"
               />
-            </div>
-
-            <div className="flex-1 sm:flex-none w-full sm:w-auto">
               <DeleteButton onClick={() => setConfirmOpen(true)} />
             </div>
           </div>
