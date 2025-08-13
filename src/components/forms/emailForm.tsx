@@ -40,7 +40,7 @@ export default function EmailForm() {
   }
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-16">
+    <section className="mx-auto w-full px-4 py-16">
       <h2 className="text-2xl md:text-3xl font-bold mb-4">Entre em contato</h2>
       <p className="text-[var(--foreground)]/70 mb-8">
         Envie-nos uma mensagem com suas dúvidas, sugestões ou feedback.
