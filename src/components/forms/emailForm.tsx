@@ -20,7 +20,7 @@ export default function EmailForm() {
     try {
       await emailjs.send(
         "service_uurm7wk", // Service ID
-        "template_qlp424a", // Template ID
+        "template_kxz3f3t", // Template ID
         {
           from_name: form.name,
           from_email: form.email,
