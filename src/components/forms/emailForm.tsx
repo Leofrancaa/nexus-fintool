@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
+import { toast } from "react-hot-toast";
 
 export default function EmailForm() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -29,11 +30,24 @@ export default function EmailForm() {
         "1OWpjZGG90Jmx-8ak" // Public Key
       );
 
-      alert("Mensagem enviada com sucesso!");
+      toast.success("Mensagem enviada com sucesso!", {
+        style: {
+          background: "var(--card-bg)",
+          color: "var(--foreground)",
+          border: "1px solid var(--card-border)",
+        },
+      });
+
       setForm({ name: "", email: "", message: "" });
     } catch (error) {
       console.error(error);
-      alert("Erro ao enviar mensagem.");
+      toast.error("Erro ao enviar mensagem.", {
+        style: {
+          background: "var(--card-bg)",
+          color: "var(--foreground)",
+          border: "1px solid var(--card-border)",
+        },
+      });
     } finally {
       setLoading(false);
     }
@@ -79,7 +93,7 @@ export default function EmailForm() {
         <button
           type="submit"
           disabled={loading}
-          className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#0066FF] via-[#00D4AA] to-[#00D4D4] text-white hover:opacity-95 disabled:opacity-50"
+          className="px-5 py-3 rounded-xl bg-gradient-to-r cursor-pointer from-[#0066FF] via-[#00D4AA] to-[#00D4D4] text-white hover:opacity-95 disabled:opacity-50"
         >
           {loading ? "Enviando..." : "Enviar mensagem"}
         </button>
