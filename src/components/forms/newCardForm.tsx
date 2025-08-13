@@ -109,7 +109,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 max-h-[100dvh] overflow-y-auto"
+      className="space-y-4 max-h-[99dvh] overflow-y-auto"
     >
       {/* Nome */}
       <div>
