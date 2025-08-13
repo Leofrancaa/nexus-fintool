@@ -55,7 +55,7 @@ export default function Dashboard() {
 
       {/* ✅ Gráfico de Balanço Mensal */}
       <div className="mt-10 w-full">
-        <BalanceChart />
+        <BalanceChart refreshKey={refreshKey} />
       </div>
 
       <div className="mt-10 w-full flex flex-col lg:flex-row justify-between gap-4">
