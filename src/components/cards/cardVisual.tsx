@@ -225,7 +225,7 @@ export function CardVisual({
           </div>
 
           {/* Ações */}
-          <div className="flex flex-wrap justify-between md:justify-end gap-2">
+          <div className="flex flex-row md:flex-wrap justify-between md:justify-end gap-2">
             {isCredito && (
               <button
                 onClick={handlePayInvoice}
