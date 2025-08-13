@@ -303,8 +303,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section>
-        <EmailForm></EmailForm>
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <EmailForm />
       </section>
 
       <footer className="border-t border-[var(--card-border)]">
