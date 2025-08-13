@@ -47,7 +47,7 @@ export default function EmailForm() {
       </p>
       <form
         onSubmit={handleSubmit}
-        className="grid gap-4 max-w-lg bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-2xl"
+        className="grid gap-4 w-full bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-2xl"
       >
         <input
           type="text"
