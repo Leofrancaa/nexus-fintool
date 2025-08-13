@@ -225,9 +225,16 @@ export function CardVisual({
           </div>
 
           {/* Ações */}
-
           {/* Ações */}
-          <div className="flex w-full items-center justify-between gap-2 md:flex-wrap md:justify-end">
+          <div
+            className="
+    col-span-2                 /* ocupa a linha toda no mobile */
+    xl:col-span-1              /* volta ao normal no xl */
+    grid grid-cols-[1fr_auto]  /* pagar à esquerda | editar/excluir à direita */
+    items-center gap-2
+    md:flex md:flex-wrap md:justify-end
+  "
+          >
             {isCredito && (
               <button
                 onClick={handlePayInvoice}
@@ -249,8 +256,8 @@ export function CardVisual({
               </button>
             )}
 
-            {/* lado direito: Edit e Delete juntos */}
-            <div className="inline-flex items-center gap-2 flex-none md:ml-auto">
+            {/* Direita: Edit e Delete juntos */}
+            <div className="inline-flex items-center gap-2 flex-none justify-self-end md:justify-self-auto md:ml-2">
               <EditButton
                 onClick={() => onEdit(card)}
                 title="Editar cartão"
