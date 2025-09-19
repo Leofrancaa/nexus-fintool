@@ -13,6 +13,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
+import { apiRequest } from "@/lib/auth";
 
 interface Props {
   onClose: () => void;
@@ -36,10 +37,7 @@ export function NewThresholdForm({
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
-          { credentials: "include" }
-        );
+        const res = await apiRequest("/api/categories");
 
         if (!res.ok) throw new Error();
         const data: Categoria[] = await res.json();
@@ -47,7 +45,8 @@ export function NewThresholdForm({
           (cat) => !cat.parent_id && cat.tipo === "despesa"
         );
         setCategorias(pais);
-      } catch {
+      } catch (error) {
+        console.error("Erro ao carregar categorias:", error);
         toast.error("Erro ao carregar categorias");
       }
     };
@@ -74,27 +73,22 @@ export function NewThresholdForm({
       let res;
 
       if (mode === "edit" && threshold) {
-        res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/thresholds/${threshold.id}`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-              category_id: categoriaId,
-              valor: parseFloat(valor),
-            }),
-          }
-        );
+        res = await apiRequest(`/api/thresholds/${threshold.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            category_id: categoriaId,
+            valor: parseFloat(valor),
+          }),
+        });
 
         if (!res.ok) throw new Error();
         toast.success("Limite atualizado!");
         onUpdated?.();
       } else {
-        res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/thresholds`, {
+        res = await apiRequest("/api/thresholds", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          credentials: "include",
           body: JSON.stringify({
             category_id: categoriaId,
             valor: parseFloat(valor),
@@ -108,8 +102,10 @@ export function NewThresholdForm({
       }
 
       onClose();
-    } catch {
-      toast.error("Erro ao salvar limite");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao salvar limite"
+      );
     }
   };
 

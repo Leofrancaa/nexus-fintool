@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "@/lib/auth";
 
 interface Card {
   id: number;
@@ -45,20 +46,23 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
 
   useEffect(() => {
     const fetchCategorias = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories?tipo=despesa`, // ✅ filtro no endpoint
-        { credentials: "include" }
-      );
-      const data = await res.json();
-      setCategorias(data);
+      try {
+        const res = await apiRequest("/api/categories?tipo=despesa");
+        const data = await res.json();
+        setCategorias(data);
+      } catch (error) {
+        console.error("Erro ao carregar categorias:", error);
+      }
     };
 
     const fetchCartoes = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cards`, {
-        credentials: "include",
-      });
-      const data = await res.json();
-      setCartoes(data);
+      try {
+        const res = await apiRequest("/api/cards");
+        const data = await res.json();
+        setCartoes(data);
+      } catch (error) {
+        console.error("Erro ao carregar cartões:", error);
+      }
     };
 
     fetchCategorias();
@@ -90,27 +94,23 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
     }
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/expenses`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            tipo: descricao,
-            quantidade: parseFloat(quantidade),
-            metodo_pagamento: metodoPagamento,
-            category_id: categoriaId ? parseInt(categoriaId) : null,
-            card_id:
-              metodoPagamento === "cartao de credito" ? parseInt(cardId) : null,
-            parcelas: parseInt(parcelas),
-            fixo,
-            frequencia: null,
-            data,
-            observacoes,
-          }),
-        }
-      );
+      const res = await apiRequest("/api/expenses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo: descricao,
+          quantidade: parseFloat(quantidade),
+          metodo_pagamento: metodoPagamento,
+          category_id: categoriaId ? parseInt(categoriaId) : null,
+          card_id:
+            metodoPagamento === "cartao de credito" ? parseInt(cardId) : null,
+          parcelas: parseInt(parcelas),
+          fixo,
+          frequencia: null,
+          data,
+          observacoes,
+        }),
+      });
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
@@ -121,8 +121,10 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       toast.success("Despesa cadastrada!");
       onCreated?.();
       onClose();
-    } catch {
-      toast.error("Erro ao salvar despesa.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao salvar despesa."
+      );
     }
   };
 

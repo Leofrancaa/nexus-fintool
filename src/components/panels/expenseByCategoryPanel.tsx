@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { apiRequest } from "@/lib/auth";
 
 interface CategoriaResumo {
   nome: string;
@@ -25,9 +26,8 @@ export function ExpensesByCategoryPanel({ mes, ano, refreshKey }: Props) {
 
     const fetchData = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/resumo-categorias?mes=${mes}&ano=${ano}`,
-          { credentials: "include" }
+        const res = await apiRequest(
+          `/api/expenses/resumo-categorias?mes=${mes}&ano=${ano}`
         );
         const json = await res.json();
         setDados(json);

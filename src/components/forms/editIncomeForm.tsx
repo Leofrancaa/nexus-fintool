@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "react-hot-toast";
 import { Income } from "@/types/income";
+import { apiRequest } from "@/lib/auth";
 
 interface Categoria {
   id: number;
@@ -41,10 +42,7 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/categories?tipo=receita`,
-          { credentials: "include" }
-        );
+        const res = await apiRequest("/api/categories?tipo=receita");
         const data = await res.json();
         setCategorias(data);
       } catch (error) {
@@ -61,24 +59,20 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
     const toastId = toast.loading("Atualizando receita...");
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/incomes/${income.id}`,
-        {
-          method: "PUT",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            tipo,
-            quantidade: parseFloat(quantidade),
-            fonte,
-            observacoes: nota,
-            data,
-            category_id: parseInt(categoriaId),
-          }),
-        }
-      );
+      const res = await apiRequest(`/api/incomes/${income.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          tipo,
+          quantidade: parseFloat(quantidade),
+          fonte,
+          observacoes: nota,
+          data,
+          category_id: parseInt(categoriaId),
+        }),
+      });
 
       if (!res.ok) {
         const errorData = await res.json();

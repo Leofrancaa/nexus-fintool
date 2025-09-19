@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textArea";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "@/lib/auth";
 
 interface Plano {
   id: number;
@@ -35,20 +36,16 @@ export function EditPlanForm({ plano, onClose, onUpdated }: Props) {
     }
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/plans/${plano.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            nome,
-            meta: parseFloat(meta),
-            prazo,
-            descricao,
-          }),
-        }
-      );
+      const res = await apiRequest(`/api/plans/${plano.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome,
+          meta: parseFloat(meta),
+          prazo,
+          descricao,
+        }),
+      });
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
@@ -59,8 +56,10 @@ export function EditPlanForm({ plano, onClose, onUpdated }: Props) {
       toast.success("Plano atualizado!");
       onUpdated?.();
       onClose();
-    } catch {
-      toast.error("Erro ao atualizar plano.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao atualizar plano."
+      );
     }
   };
 

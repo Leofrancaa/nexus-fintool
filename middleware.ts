@@ -23,18 +23,16 @@ export function middleware(request: NextRequest) {
 
     const isPublicRoute = PUBLIC_ROUTES.includes(path);
 
-    // Para rotas protegidas, verificamos no client-side se há token
-    // O middleware do Next.js não pode acessar localStorage diretamente
+    // Para rotas protegidas, adicionar header personalizado
     if (isProtectedRoute) {
-        // Adicionar header personalizado para identificar rotas protegidas
         const response = NextResponse.next();
         response.headers.set('x-protected-route', 'true');
         return response;
     }
 
-    // Rota raiz redireciona para dashboard (será tratado no client)
+    // Rota raiz: redirecionar para login (AuthGuard vai lidar com a autenticação)
     if (path === '/') {
-        return NextResponse.redirect(new URL('/dashboard', request.url));
+        return NextResponse.redirect(new URL('/login', request.url));
     }
 
     return NextResponse.next();

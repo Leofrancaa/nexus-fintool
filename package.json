@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ducanh2912/next-pwa": "^10.2.9",
     "@emailjs/browser": "^4.4.1",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-label": "^2.1.7",
@@ -25,8 +24,7 @@
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "recharts": "^3.1.2",
-    "sonner": "^2.0.6",
-    "workbox-window": "^7.3.0"
+    "sonner": "^2.0.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

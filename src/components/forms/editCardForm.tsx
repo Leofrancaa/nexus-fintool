@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-hot-toast";
 import { CardType } from "@/types/card";
+import { apiRequest } from "@/lib/auth";
 
 const cores = [
   "#6366f1",
@@ -36,23 +37,19 @@ export function EditCardForm({ card, onClose, onUpdated }: Props) {
     e.preventDefault();
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/cards/${card.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            nome,
-            numero,
-            tipo,
-            cor: corSelecionada,
-            limite: parseFloat(limite),
-          }),
-        }
-      );
+      const res = await apiRequest(`/api/cards/${card.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nome,
+          numero,
+          tipo,
+          cor: corSelecionada,
+          limite: parseFloat(limite),
+        }),
+      });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erro");
