@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PageTitle from "@/components/pageTitle";
 import { DashboardCards } from "@/components/cards/dashboardStatsCard";
+import { DashboardFilter } from "@/components/filters/dashboardFilter";
 import { NewExpenseModal } from "@/components/modals/newExpenseModal";
 import { NewIncomeModal } from "@/components/modals/newIncomeModal";
 import BalanceChart from "@/components/charts/balanceChart";
@@ -14,8 +15,13 @@ export default function Dashboard() {
   const router = useRouter();
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const currentMonth = String(new Date().getMonth() + 1);
-  const currentYear = String(new Date().getFullYear());
+  // 🔥 Estados para controlar mês/ano personalizados
+  const [customMonth, setCustomMonth] = useState<string>(
+    String(new Date().getMonth() + 1)
+  );
+  const [customYear, setCustomYear] = useState<string>(
+    String(new Date().getFullYear())
+  );
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -31,15 +37,24 @@ export default function Dashboard() {
     checkAuth();
   }, [router]);
 
+  // 🔥 Handlers para mudança de mês/ano
+  const handleMonthChange = (mes: string) => {
+    setCustomMonth(mes);
+  };
+
+  const handleYearChange = (ano: string) => {
+    setCustomYear(ano);
+  };
+
   return (
-    <main className="flex flex-col min-h-screen bg-[var(--page-bg)] px-8 py-4 w-full">
+    <main className="flex flex-col min-h-screen bg-[var(--page-bg)] px-8 py-8 w-full lg:py-4">
       <div className="flex flex-col lg:flex-row w-full items-start justify-between gap-4 mt-14 lg:mt-0">
         <PageTitle
           title="Dashboard"
           subTitle="Gerencie e acompanhe suas finanças"
         />
 
-        <div className="flex justify-between lg:gap-4 w-full lg:w-auto">
+        <div className="flex flex-col gap-4 lg:flex-row justify-between lg:gap-4 w-full lg:w-auto">
           <NewIncomeModal onCreated={() => setRefreshKey((prev) => prev + 1)} />
           <NewExpenseModal
             onCreated={() => setRefreshKey((prev) => prev + 1)}
@@ -47,27 +62,37 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* 🔥 NOVO: Filtro de Mês/Ano */}
+      <div className="mt-6">
+        <DashboardFilter
+          onCustomMonthChange={handleMonthChange}
+          onCustomYearChange={handleYearChange}
+        />
+      </div>
+
+      {/* Cards de Estatísticas com mês/ano personalizados */}
       <DashboardCards
-        customMonth={currentMonth}
-        customYear={currentYear}
+        customMonth={customMonth}
+        customYear={customYear}
         refreshKey={refreshKey}
       />
 
-      {/* ✅ Gráfico de Balanço Mensal */}
+      {/* Gráfico de Balanço Mensal */}
       <div className="mt-10 w-full">
-        <BalanceChart />
+        <BalanceChart refreshKey={refreshKey} />
       </div>
 
+      {/* Gráficos por Categoria com mês/ano personalizados */}
       <div className="mt-10 w-full flex flex-col lg:flex-row justify-between gap-4">
         <ExpenseByCategoryChart
-          mes={Number(currentMonth)}
-          ano={Number(currentYear)}
+          mes={Number(customMonth)}
+          ano={Number(customYear)}
           refreshKey={refreshKey}
         />
 
         <IncomeByCategoryPieChart
-          mes={Number(currentMonth)}
-          ano={Number(currentYear)}
+          mes={Number(customMonth)}
+          ano={Number(customYear)}
           refreshKey={refreshKey}
         />
       </div>

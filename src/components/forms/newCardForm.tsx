@@ -107,7 +107,10 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 max-h-[99dvh] overflow-y-auto"
+    >
       {/* Nome */}
       <div>
         <Label>Nome do Cartão</Label>
@@ -118,7 +121,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
           className="mt-1"
         />
       </div>
-      <div className="flex justify-between">
+      <div className="flex flex-col lg:flex-row lg:justify-between gap-4 lg:gap-0">
         {/* Número */}
         <div>
           <Label>Número (somente os 4 últimos)</Label>

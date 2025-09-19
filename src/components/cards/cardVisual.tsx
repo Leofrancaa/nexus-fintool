@@ -179,7 +179,7 @@ export function CardVisual({
         )}
 
         {/* Fechamento / Vencimento / Ações */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
+        <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 items-start">
           {/* Fechamento */}
           <div className="min-w-0">
             <div className="text-gray-500 dark:text-gray-400 text-sm">
@@ -225,17 +225,26 @@ export function CardVisual({
           </div>
 
           {/* Ações */}
-          <div className="flex flex-wrap md:justify-end gap-2">
+          {/* Ações */}
+          <div
+            className="
+    col-span-2                 /* ocupa a linha toda no mobile */
+    xl:col-span-1              /* volta ao normal no xl */
+    grid grid-cols-[1fr_auto]  /* pagar à esquerda | editar/excluir à direita */
+    items-center gap-2
+    md:flex md:flex-wrap md:justify-end
+  "
+          >
             {isCredito && (
               <button
                 onClick={handlePayInvoice}
                 disabled={!fechamentoPassou || pagarLoading}
-                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-md font-semibold transition cursor-pointer w-full sm:w-auto
-                ${
-                  !fechamentoPassou || pagarLoading
-                    ? "bg-[#00D4D4]/50 text-black/60 cursor-not-allowed"
-                    : "bg-[#00D4D4] text-black hover:opacity-90"
-                }`}
+                className={`inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md font-semibold transition cursor-pointer flex-none
+      ${
+        !fechamentoPassou || pagarLoading
+          ? "bg-[#00D4D4]/50 text-black/60 cursor-not-allowed"
+          : "bg-[#00D4D4] text-black hover:opacity-90"
+      }`}
                 title={
                   !fechamentoPassou
                     ? "Só é possível pagar após o fechamento da fatura"
@@ -247,15 +256,13 @@ export function CardVisual({
               </button>
             )}
 
-            <div className="flex-1 sm:flex-none w-full sm:w-auto">
+            {/* Direita: Edit e Delete juntos */}
+            <div className="inline-flex items-center gap-2 flex-none justify-self-end md:justify-self-auto md:ml-2">
               <EditButton
                 onClick={() => onEdit(card)}
                 title="Editar cartão"
                 size="md"
               />
-            </div>
-
-            <div className="flex-1 sm:flex-none w-full sm:w-auto">
               <DeleteButton onClick={() => setConfirmOpen(true)} />
             </div>
           </div>

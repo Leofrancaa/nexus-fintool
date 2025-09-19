@@ -63,9 +63,19 @@ export function Sidebar() {
           </div>
           <button
             onClick={toggleMobile}
-            className="p-2 bg-gray-200 dark:bg-gray-800 rounded-md text-[var(--foreground)]"
+            aria-label="Abrir menu"
+            aria-expanded={isMobileOpen}
+            className="
+    p-2.5 rounded-xl
+    border border-[color:var(--card-border)]
+    bg-[var(--card-icon-bg-neutral)]
+    text-[var(--card-icon)]
+    shadow-sm transition-colors
+    hover:bg-[var(--hover-bg)]
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--foreground)]
+  "
           >
-            <Menu />
+            <Menu className="w-6 h-6" strokeWidth={2.25} />
           </button>
         </div>
       )}
