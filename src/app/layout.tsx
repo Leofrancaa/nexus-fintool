@@ -2,7 +2,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
-import { Toaster } from "react-hot-toast";
 import LayoutWrapper from "../components/navigation/layoutWrapper";
 import { DateProvider } from "../contexts/dateContext";
 import { ThemeProvider } from "@/contexts/themeContext";
@@ -41,17 +40,6 @@ export default function RootLayout({
           <DateProvider>
             <ThemeProvider>
               <LayoutWrapper>{children}</LayoutWrapper>
-              <Toaster
-                position="top-center"
-                toastOptions={{
-                  duration: 4000,
-                  style: {
-                    background: "#1F2937",
-                    color: "#F9FAFB",
-                    border: "1px solid #374151",
-                  },
-                }}
-              />
             </ThemeProvider>
           </DateProvider>
         </AuthGuard>

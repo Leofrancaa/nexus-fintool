@@ -13,6 +13,11 @@ import {
 } from "@/components/ui/select";
 import { toast } from "react-hot-toast";
 import { apiRequest } from "@/lib/auth";
+import {
+  getApiErrorMessage,
+  getContextualErrorMessage,
+  generateToastId,
+} from "@/utils/errorUtils";
 
 interface Card {
   id: number;
@@ -72,6 +77,10 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Criar ID único para evitar toasts duplicados
+    const toastId = generateToastId("save", "expense");
+
+    // Validação dos campos obrigatórios
     if (
       !descricao ||
       !quantidade ||
@@ -79,21 +88,42 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       !categoriaId ||
       !data
     ) {
-      toast.error("Preencha todos os campos obrigatórios.");
+      toast.error(
+        "Os campos Descrição, Valor, Método de pagamento e Categoria são obrigatórios",
+        {
+          id: toastId,
+        }
+      );
       return;
     }
 
-    if (isNaN(parseFloat(quantidade))) {
-      toast.error("Informe um valor válido.");
+    // Validação do valor
+    if (isNaN(parseFloat(quantidade)) || parseFloat(quantidade) <= 0) {
+      toast.error("O valor deve ser um número positivo", {
+        id: toastId,
+      });
       return;
     }
 
+    // Validação específica para cartão de crédito
+    if (metodoPagamento === "cartao de credito" && !cardId) {
+      toast.error("Selecione um cartão para pagamento no crédito", {
+        id: toastId,
+      });
+      return;
+    }
+
+    // Validação de categoria
     if (isNaN(parseInt(categoriaId))) {
-      toast.error("Selecione uma categoria válida.");
+      toast.error("Selecione uma categoria válida", {
+        id: toastId,
+      });
       return;
     }
 
     try {
+      toast.loading("Salvando despesa...", { id: toastId });
+
       const res = await apiRequest("/api/expenses", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -104,7 +134,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
           category_id: categoriaId ? parseInt(categoriaId) : null,
           card_id:
             metodoPagamento === "cartao de credito" ? parseInt(cardId) : null,
-          parcelas: parseInt(parcelas),
+          parcelas: parseInt(parcelas) || 1,
           fixo,
           frequencia: null,
           data,
@@ -113,18 +143,20 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       });
 
       if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        toast.error(data?.error || "Erro ao salvar despesa.");
+        const errorMessage = await getApiErrorMessage(
+          res,
+          "Erro ao salvar despesa. Verifique os dados informados"
+        );
+        toast.error(errorMessage, { id: toastId });
         return;
       }
 
-      toast.success("Despesa cadastrada!");
+      toast.success("Despesa cadastrada com sucesso!", { id: toastId });
       onCreated?.();
       onClose();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Erro ao salvar despesa."
-      );
+      const errorMessage = getContextualErrorMessage(error, "save", "despesa");
+      toast.error(errorMessage, { id: toastId });
     }
   };
 
@@ -136,7 +168,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       {/* Descrição + Valor */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label>Descrição</Label>
+          <Label>Descrição *</Label>
           <Input
             placeholder="Ex: Almoço, Gasolina..."
             value={descricao}
@@ -145,9 +177,11 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
         </div>
 
         <div>
-          <Label>Valor</Label>
+          <Label>Valor *</Label>
           <Input
             type="number"
+            step="0.01"
+            min="0"
             placeholder="Ex: 50.00"
             value={quantidade}
             onChange={(e) => setQuantidade(e.target.value)}
@@ -158,14 +192,14 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       {/* Categoria + Forma de Pagamento */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label>Categoria</Label>
+          <Label>Categoria *</Label>
           <Select value={categoriaId} onValueChange={setCategoriaId}>
             <SelectTrigger>
               <SelectValue placeholder="Selecione uma categoria" />
             </SelectTrigger>
             <SelectContent>
               {categorias.map((c) => (
-                <SelectItem key={c.id} value={c.id.toString()}>
+                <SelectItem key={c.id} value={String(c.id)}>
                   {c.nome}
                 </SelectItem>
               ))}
@@ -174,36 +208,36 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
         </div>
 
         <div>
-          <Label>Forma de Pagamento</Label>
+          <Label>Método de Pagamento *</Label>
           <Select value={metodoPagamento} onValueChange={setMetodoPagamento}>
             <SelectTrigger>
-              <SelectValue placeholder="Selecione a forma de pagamento" />
+              <SelectValue placeholder="Como foi pago?" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="dinheiro">Dinheiro</SelectItem>
-              <SelectItem value="pix">PIX</SelectItem>
-              <SelectItem value="cartao de debito">Cartão de Débito</SelectItem>
               <SelectItem value="cartao de credito">
                 Cartão de Crédito
               </SelectItem>
+              <SelectItem value="debito">Débito</SelectItem>
+              <SelectItem value="pix">Pix</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      {/* Cartão + Parcelas */}
+      {/* Cartão (se crédito) + Parcelas */}
       {metodoPagamento === "cartao de credito" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label>Cartão</Label>
+            <Label>Cartão *</Label>
             <Select value={cardId} onValueChange={setCardId}>
               <SelectTrigger>
-                <SelectValue placeholder="Selecione um cartão" />
+                <SelectValue placeholder="Selecione o cartão" />
               </SelectTrigger>
               <SelectContent>
-                {cartoes.map((c) => (
-                  <SelectItem key={c.id} value={c.id.toString()}>
-                    {c.nome} ****{c.numero}
+                {cartoes.map((card) => (
+                  <SelectItem key={card.id} value={String(card.id)}>
+                    {card.nome} - *{card.numero}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -214,10 +248,11 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
             <Label>Parcelas</Label>
             <Input
               type="number"
-              min={1}
+              min="1"
+              max="24"
+              placeholder="1"
               value={parcelas}
               onChange={(e) => setParcelas(e.target.value)}
-              placeholder="Ex: 1"
             />
           </div>
         </div>
@@ -225,7 +260,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
 
       {/* Data */}
       <div>
-        <Label>Data</Label>
+        <Label>Data *</Label>
         <Input
           type="date"
           value={data}
@@ -233,12 +268,12 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
         />
       </div>
 
-      {/* Toggle despesa fixa */}
-      <div className="flex items-center gap-2">
+      {/* Toggle Despesa Fixa */}
+      <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => setFixo(!fixo)}
-          className={`w-11 h-6 flex items-center rounded-full px-1 transition-colors duration-300 ${
+          className={`relative w-10 h-5 rounded-full transition-colors duration-300 ${
             fixo ? "bg-blue-600" : "bg-gray-400"
           }`}
         >

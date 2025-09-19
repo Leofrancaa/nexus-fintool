@@ -13,6 +13,13 @@ import {
 import { toast } from "react-hot-toast";
 import { Expense } from "@/types/expense";
 import { apiRequest } from "@/lib/auth";
+import {
+  getApiErrorMessage,
+  getContextualErrorMessage,
+  generateToastId,
+  validateRequiredFields,
+  validatePositiveNumber,
+} from "@/utils/errorUtils";
 
 interface Categoria {
   id: number;
@@ -44,11 +51,14 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await apiRequest("/api/categories");
+        const res = await apiRequest("/api/categories?tipo=despesa");
         const data = await res.json();
         setCategorias(data.data || []);
       } catch (error) {
         console.error("Erro ao carregar categorias:", error);
+        toast.error("Erro ao carregar categorias", {
+          id: "load-expense-categories-edit",
+        });
       }
     };
 
@@ -58,9 +68,36 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const toastId = toast.loading("Atualizando despesa...");
+    // Validação dos campos obrigatórios
+    const requiredFieldsValidation = validateRequiredFields({
+      Descrição: tipo,
+      Valor: quantidade,
+      "Método de pagamento": metodoPagamento,
+      Data: data,
+      Categoria: categoriaId,
+    });
+
+    if (requiredFieldsValidation) {
+      toast.error(requiredFieldsValidation, {
+        id: "expense-edit-validation",
+      });
+      return;
+    }
+
+    // Validação do valor
+    const valueValidation = validatePositiveNumber(quantidade, "O valor");
+    if (valueValidation) {
+      toast.error(valueValidation, {
+        id: "expense-edit-value-validation",
+      });
+      return;
+    }
+
+    const toastId = generateToastId("update", "expense", expense.id);
 
     try {
+      toast.loading("Atualizando despesa...", { id: toastId });
+
       const res = await apiRequest(`/api/expenses/${expense.id}`, {
         method: "PUT",
         headers: {
@@ -76,16 +113,23 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Erro ao atualizar despesa.");
+        const errorMessage = await getApiErrorMessage(
+          res,
+          "Erro ao atualizar despesa. Verifique os dados informados"
+        );
+        toast.error(errorMessage, { id: toastId });
+        return;
       }
 
       toast.success("Despesa atualizada com sucesso!", { id: toastId });
       onUpdated?.();
-    } catch (err: unknown) {
-      console.error(err);
-      const errorMessage =
-        err instanceof Error ? err.message : "Erro ao atualizar despesa.";
+      onClose();
+    } catch (error) {
+      const errorMessage = getContextualErrorMessage(
+        error,
+        "update",
+        "despesa"
+      );
       toast.error(errorMessage, { id: toastId });
     }
   };
@@ -93,8 +137,9 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <Label>Descrição</Label>
+        <Label>Descrição *</Label>
         <Input
+          placeholder="Ex: Almoço, Gasolina..."
           value={tipo}
           onChange={(e) => setTipo(e.target.value)}
           required
@@ -102,9 +147,12 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
       </div>
 
       <div>
-        <Label>Quantidade (R$)</Label>
+        <Label>Valor (R$) *</Label>
         <Input
           type="number"
+          step="0.01"
+          min="0"
+          placeholder="Ex: 50.00"
           value={quantidade}
           onChange={(e) => setQuantidade(e.target.value)}
           required
@@ -112,7 +160,7 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
       </div>
 
       <div>
-        <Label>Método de Pagamento</Label>
+        <Label>Método de Pagamento *</Label>
         <Select value={metodoPagamento} onValueChange={setMetodoPagamento}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Selecione o método" />
@@ -127,7 +175,7 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
       </div>
 
       <div>
-        <Label>Categoria</Label>
+        <Label>Categoria *</Label>
         <Select value={categoriaId} onValueChange={setCategoriaId}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Selecione uma categoria" />
@@ -143,7 +191,7 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
       </div>
 
       <div>
-        <Label>Data</Label>
+        <Label>Data *</Label>
         <Input
           type="date"
           value={data}
