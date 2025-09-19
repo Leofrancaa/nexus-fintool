@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import PageTitle from "../../components/pageTitle";
 
 type Section = {
   id: string;
@@ -79,6 +80,49 @@ export default function ManualPage() {
           </>
         ),
       },
+      {
+        id: "instalar-app",
+        title: "Instalar no Celular",
+        body: (
+          <>
+            <p className="mb-3">
+              O <strong>Nexus</strong> pode ser instalado como um{" "}
+              <strong>aplicativo</strong> no seu celular, funcionando em tela
+              cheia e com acesso rápido a partir da tela inicial.
+            </p>
+            <p className="font-semibold mb-2">Android (Chrome, Edge, Brave)</p>
+            <ul className="list-disc pl-5 space-y-1 mb-3">
+              <li>Acesse o Nexus pelo navegador do celular.</li>
+              <li>
+                Toque no menu <strong>⋮</strong> no canto superior direito.
+              </li>
+              <li>
+                Selecione <em>Adicionar à tela inicial</em> ou{" "}
+                <em>Instalar app</em>.
+              </li>
+              <li>Confirme e o ícone aparecerá junto aos seus apps.</li>
+            </ul>
+            <p className="font-semibold mb-2">iOS (Safari)</p>
+            <ul className="list-disc pl-5 space-y-1 mb-3">
+              <li>Acesse o Nexus pelo Safari.</li>
+              <li>
+                Toque no botão de <em>Compartilhar</em> (ícone de quadrado com
+                seta).
+              </li>
+              <li>
+                Escolha <em>Adicionar à Tela de Início</em>.
+              </li>
+              <li>Confirme e o ícone aparecerá na tela inicial.</li>
+            </ul>
+            <p>
+              Depois de instalado, o Nexus abrirá em <strong>tela cheia</strong>
+              , sem a barra do navegador, proporcionando uma experiência mais
+              parecida com um aplicativo nativo.
+            </p>
+          </>
+        ),
+      },
+
       {
         id: "dashboard",
         title: "Dashboard",
@@ -568,17 +612,13 @@ export default function ManualPage() {
   }, [q, sections]);
 
   return (
-    <main className="min-h-screen px-5 sm:px-8 lg:px-10 py-8 bg-[var(--page-bg)] text-[var(--foreground)]">
+    <main className="min-h-screen px-5 sm:px-8 lg:px-10 py-8 lg:py-4 bg-[var(--page-bg)] text-[var(--foreground)]">
       <div className="w-full mx-auto">
-        <div className="flex items-center gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              Manual do Usuário
-            </h1>
-            <p className="text-sm sm:text-base text-[var(--foreground)]/70">
-              Aprenda a usar o Nexus passo a passo.
-            </p>
-          </div>
+        <div className="mt-14 mb-6">
+          <PageTitle
+            title="Manual"
+            subTitle="Aprenda a usar o Nexus passo a passo."
+          />
         </div>
 
         <div className="mb-8">
