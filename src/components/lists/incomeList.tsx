@@ -7,6 +7,7 @@ import ConfirmDialog from "../ui/confirmDialog";
 import { toast } from "react-hot-toast";
 import { EditIncomeModal } from "../modals/editIncomeModal";
 import { Income } from "@/types/income";
+import { apiRequest } from "@/lib/auth";
 
 interface IncomeListProps {
   refreshKey: number;
@@ -76,9 +77,8 @@ export function IncomeList({
           }
         }
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/incomes?start_date=${startDate}&end_date=${endDate}`,
-          { credentials: "include" }
+        const res = await apiRequest(
+          `/api/incomes?start_date=${startDate}&end_date=${endDate}`
         );
 
         const data = await res.json();
@@ -110,13 +110,9 @@ export function IncomeList({
     const toastId = toast.loading("Excluindo receita...");
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/incomes/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const res = await apiRequest(`/api/incomes/${id}`, {
+        method: "DELETE",
+      });
 
       if (!res.ok) {
         const errorData = await res.json();

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "@/lib/auth";
 
 const cores = [
   "#6366f1",
@@ -90,10 +91,9 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
         // body.limite = 0;
       }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cards`, {
+      const res = await apiRequest("/api/cards", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(body),
       });
 
@@ -101,8 +101,10 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
       toast.success("Cartão cadastrado com sucesso!");
       onCreated?.();
       onClose();
-    } catch {
-      toast.error("Erro ao salvar cartão");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao salvar cartão"
+      );
     }
   };
 

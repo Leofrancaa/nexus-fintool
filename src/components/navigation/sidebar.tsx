@@ -11,7 +11,6 @@ import {
   CreditCard,
   FolderKanban,
   Target,
-  Banknote,
   Gauge,
   Menu,
   X,
@@ -29,7 +28,6 @@ const navItems = [
   { name: "Cartões", href: "/cartoes", icon: CreditCard },
   { name: "Categorias", href: "/categorias", icon: FolderKanban },
   { name: "Limites", href: "/limites", icon: Gauge },
-  { name: "Investimentos", href: "/investimentos", icon: Banknote },
   { name: "Planos", href: "/planos", icon: Target },
   { name: "Manual", href: "/manual", icon: BookOpen }, // ⬅️ NOVO ITEM
 ];

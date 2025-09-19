@@ -6,6 +6,7 @@ import DeleteButton from "../ui/deleteButton";
 import ConfirmDialog from "../ui/confirmDialog";
 import { toast } from "react-hot-toast";
 import { EditExpenseModal } from "../modals/editExpenseModal";
+import { apiRequest } from "@/lib/auth";
 
 interface Expense {
   id: number;
@@ -90,9 +91,8 @@ export function ExpenseList({
           }
         }
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/expenses?start_date=${startDate}&end_date=${endDate}`,
-          { credentials: "include" }
+        const res = await apiRequest(
+          `/api/expenses?start_date=${startDate}&end_date=${endDate}`
         );
 
         const data = await res.json();
@@ -124,13 +124,9 @@ export function ExpenseList({
     const toastId = toast.loading("Excluindo despesa...");
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const res = await apiRequest(`/api/expenses/${id}`, {
+        method: "DELETE",
+      });
 
       if (!res.ok) {
         const errorData = await res.json();

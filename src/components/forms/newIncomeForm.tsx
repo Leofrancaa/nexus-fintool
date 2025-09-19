@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "react-hot-toast";
 import { Categoria } from "@/types/category";
+import { apiRequest } from "@/lib/auth";
 
 interface Props {
   onClose: () => void;
@@ -31,14 +32,13 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
 
   useEffect(() => {
     const fetchCategorias = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories?tipo=receita`,
-        {
-          credentials: "include",
-        }
-      );
-      const data = await res.json();
-      setCategorias(data);
+      try {
+        const res = await apiRequest("/api/categories?tipo=receita");
+        const data = await res.json();
+        setCategorias(data);
+      } catch (error) {
+        console.error("Erro ao carregar categorias:", error);
+      }
     };
 
     fetchCategorias();
@@ -53,23 +53,19 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
     }
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/incomes`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            tipo: descricao,
-            quantidade: parseFloat(valor),
-            data,
-            fonte,
-            observacoes: nota,
-            fixo,
-            category_id: parseInt(categoriaId),
-          }),
-        }
-      );
+      const res = await apiRequest("/api/incomes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo: descricao,
+          quantidade: parseFloat(valor),
+          data,
+          fonte,
+          observacoes: nota,
+          fixo,
+          category_id: parseInt(categoriaId),
+        }),
+      });
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => null);
@@ -80,8 +76,10 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
       toast.success("Receita cadastrada!");
       onCreated?.();
       onClose();
-    } catch {
-      toast.error("Erro ao cadastrar receita.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao cadastrar receita."
+      );
     }
   };
 

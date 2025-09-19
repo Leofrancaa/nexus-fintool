@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "@/lib/auth";
 
 interface Props {
   planId: number;
@@ -25,15 +26,11 @@ export function ContributeForm({ planId, onClose, onContributed }: Props) {
     }
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/plans/${planId}/contribute`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ valor: parsedValor }),
-        }
-      );
+      const res = await apiRequest(`/api/plans/${planId}/contribute`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ valor: parsedValor }),
+      });
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
@@ -44,8 +41,10 @@ export function ContributeForm({ planId, onClose, onContributed }: Props) {
       toast.success("Contribuição adicionada!");
       onContributed?.();
       onClose();
-    } catch {
-      toast.error("Erro ao contribuir.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao contribuir."
+      );
     }
   };
 

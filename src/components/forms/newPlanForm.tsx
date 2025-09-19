@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textArea";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "@/lib/auth";
 
 interface Props {
   onClose: () => void;
@@ -26,10 +27,9 @@ export function NewPlanForm({ onClose, onCreated }: Props) {
     }
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/plans`, {
+      const res = await apiRequest("/api/plans", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({
           nome,
           meta: parseFloat(meta),
@@ -47,8 +47,10 @@ export function NewPlanForm({ onClose, onCreated }: Props) {
       toast.success("Plano cadastrado!");
       onCreated?.();
       onClose();
-    } catch {
-      toast.error("Erro ao salvar plano.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao salvar plano."
+      );
     }
   };
 

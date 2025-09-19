@@ -11,7 +11,8 @@ import {
   SelectContent,
   SelectItem,
   SelectValue,
-} from "@/components/ui/select"; // certifique-se que está importando do lugar correto
+} from "@/components/ui/select";
+import { apiRequest } from "@/lib/auth";
 
 const cores = [
   "#6366f1",
@@ -39,12 +40,7 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
-          {
-            credentials: "include", // ✅ usa cookie para autenticação
-          }
-        );
+        const res = await apiRequest("/api/categories");
 
         if (!res.ok) throw new Error();
         const data: Categoria[] = await res.json();
@@ -66,22 +62,18 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
     }
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // ✅ usa cookie HTTP-only
-          body: JSON.stringify({
-            nome,
-            cor: corSelecionada,
-            tipo,
-            parent_id: parentId,
-          }),
-        }
-      );
+      const res = await apiRequest("/api/categories", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nome,
+          cor: corSelecionada,
+          tipo,
+          parent_id: parentId,
+        }),
+      });
 
       if (!res.ok) throw new Error();
 
@@ -89,8 +81,10 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
       toast.success("Categoria criada com sucesso!");
       onCreated?.(novaCategoria);
       onClose();
-    } catch {
-      toast.error("Erro ao salvar categoria");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Erro ao salvar categoria"
+      );
     }
   };
 
