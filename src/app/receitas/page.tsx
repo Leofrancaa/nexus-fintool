@@ -9,6 +9,8 @@ import { IncomeFilters } from "@/components/filters/incomeFilter";
 import { IncomeList } from "@/components/lists/incomeList";
 import { IncomeStatsCards } from "@/components/cards/incomesStatsCard";
 import { IncomesByCategoryPanel } from "@/components/panels/incomeByCategoryPanel";
+import { apiRequest, isAuthenticated } from "@/lib/auth";
+import { toast } from "react-hot-toast";
 
 export default function Incomes() {
   const router = useRouter();
@@ -41,34 +43,34 @@ export default function Incomes() {
 
   // Autenticação
   useEffect(() => {
-    const checkAuth = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        router.push("/login");
-      } else {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+    setLoading(false);
   }, [router]);
 
   // Carregar categorias (só receitas)
-  useEffect(() => {
-    const fetchCategorias = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories?tipo=receita`,
-        { credentials: "include" }
-      );
+  const fetchCategorias = useCallback(async () => {
+    try {
+      const res = await apiRequest("/api/categories?tipo=receita");
+      if (!res.ok) throw new Error("Erro ao buscar categorias");
       const data = await res.json();
       setCategorias(data);
-    };
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Sessão expirada")) {
+        router.push("/login");
+      } else {
+        toast.error("Erro ao buscar categorias");
+      }
+    }
+  }, [router]);
 
-    fetchCategorias();
-  }, []);
+  useEffect(() => {
+    if (!loading) {
+      fetchCategorias();
+    }
+  }, [loading, fetchCategorias]);
 
   if (loading) return null;
 

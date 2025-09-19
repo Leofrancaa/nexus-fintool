@@ -10,6 +10,7 @@ import { formatCurrency } from "@/utils/format";
 import EditButton from "../ui/editButton";
 import DeleteButton from "../ui/deleteButton";
 import ConfirmDialog from "../ui/confirmDialog";
+import { apiRequest } from "@/lib/auth";
 
 interface CardVisualProps {
   card: CardType;
@@ -69,13 +70,9 @@ export function CardVisual({
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/cards/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const res = await apiRequest(`/api/cards/${id}`, {
+        method: "DELETE",
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erro ao excluir o cartão");
       toast.success(data.message || "Cartão excluído com sucesso");
@@ -90,15 +87,10 @@ export function CardVisual({
   const handlePayInvoice = async () => {
     try {
       setPagarLoading(true);
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/cards/${id}/pay-invoice`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({}), // envie { mes, ano } se quiser pagar uma competência específica
-        }
-      );
+      const res = await apiRequest(`/api/cards/${id}/pay-invoice`, {
+        method: "POST",
+        body: JSON.stringify({}), // envie { mes, ano } se quiser pagar uma competência específica
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Falha ao pagar fatura.");
 

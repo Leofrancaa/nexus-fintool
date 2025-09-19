@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewThresholdModal } from "@/components/modals/newThresholdModal";
 import ThresholdCard from "@/components/cards/thresholdCard";
@@ -8,12 +8,12 @@ import { Threshold } from "@/types/threshold";
 import { toast } from "react-hot-toast";
 import { EditThresholdModal } from "@/components/modals/editThresholdModal";
 import { useRouter } from "next/navigation";
+import { apiRequest, isAuthenticated } from "@/lib/auth";
 
 const fetchGastoPorCategoria = async (categoryId: number): Promise<number> => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/total-by-category/${categoryId}`,
-      { credentials: "include" }
+    const res = await apiRequest(
+      `/api/expenses/total-by-category/${categoryId}`
     );
     if (!res.ok) throw new Error();
     const data = await res.json();
@@ -27,29 +27,19 @@ export default function Limits() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        router.push("/login");
-      }
-    };
-
-    checkAuth();
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
   }, [router]);
 
   const [limites, setLimites] = useState<Threshold[]>([]);
   const [gastos, setGastos] = useState<Record<number, number>>({});
   const [editando, setEditando] = useState<Threshold | null>(null);
 
-  const carregarLimites = async () => {
+  const carregarLimites = useCallback(async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/thresholds`,
-        { credentials: "include" }
-      );
+      const res = await apiRequest("/api/thresholds");
       if (!res.ok) throw new Error();
 
       const data: Threshold[] = await res.json();
@@ -62,14 +52,18 @@ export default function Limits() {
         );
       }
       setGastos(gastosTemp);
-    } catch {
-      toast.error("Erro ao carregar limites");
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Sessão expirada")) {
+        router.push("/login");
+      } else {
+        toast.error("Erro ao carregar limites");
+      }
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     carregarLimites();
-  }, []);
+  }, [carregarLimites]);
 
   return (
     <main

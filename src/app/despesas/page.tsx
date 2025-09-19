@@ -9,6 +9,8 @@ import { ExpenseList } from "@/components/lists/expenseList";
 import { ExpenseFilters } from "@/components/filters/expenseFilter";
 import { ExpenseStatsCards } from "@/components/cards/expenseStatsCard";
 import { ExpensesByCategoryPanel } from "@/components/panels/expenseByCategoryPanel";
+import { apiRequest, isAuthenticated } from "@/lib/auth";
+import { toast } from "react-hot-toast";
 
 export default function Expenses() {
   const router = useRouter();
@@ -40,33 +42,33 @@ export default function Expenses() {
   }, []);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
-        credentials: "include",
-      });
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+    setLoading(false);
+  }, [router]);
 
-      if (!res.ok) {
+  const fetchCategorias = useCallback(async () => {
+    try {
+      const res = await apiRequest("/api/categories");
+      if (!res.ok) throw new Error("Erro ao buscar categorias");
+      const data = await res.json();
+      setCategorias(data);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Sessão expirada")) {
         router.push("/login");
       } else {
-        setLoading(false);
+        toast.error("Erro ao buscar categorias");
       }
-    };
-
-    checkAuth();
+    }
   }, [router]);
 
   useEffect(() => {
-    const fetchCategorias = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
-        { credentials: "include" }
-      );
-      const data = await res.json();
-      setCategorias(data);
-    };
-
-    fetchCategorias();
-  }, []);
+    if (!loading) {
+      fetchCategorias();
+    }
+  }, [loading, fetchCategorias]);
 
   if (loading) return null;
 

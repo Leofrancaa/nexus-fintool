@@ -7,6 +7,8 @@ import DeleteButton from "@/components/ui/deleteButton";
 import { ContributeModal } from "../modals/contributeModal";
 import { EditPlanModal } from "../modals/editPlanModal";
 import ConfirmDialog from "@/components/ui/confirmDialog";
+import { apiRequest } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 interface Plano {
   id: number;
@@ -25,6 +27,7 @@ interface PlanCardProps {
 export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
   const [editando, setEditando] = useState<Plano | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const router = useRouter();
 
   const progresso = (plano.total_contribuido / plano.meta) * 100;
   const restante = plano.meta - plano.total_contribuido;
@@ -52,13 +55,9 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/plans/${plano.id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const res = await apiRequest(`/api/plans/${plano.id}`, {
+        method: "DELETE",
+      });
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
@@ -68,8 +67,12 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
 
       toast.success("Plano excluído com sucesso!");
       onRefresh?.();
-    } catch {
-      toast.error("Erro ao excluir plano.");
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Sessão expirada")) {
+        router.push("/login");
+      } else {
+        toast.error("Erro ao excluir plano.");
+      }
     }
   };
 

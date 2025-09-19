@@ -6,6 +6,7 @@ import DeleteButton from "@/components/ui/deleteButton";
 import ConfirmDialog from "@/components/ui/confirmDialog";
 import { Categoria } from "@/types/category";
 import { useRouter } from "next/navigation";
+import { apiRequest } from "@/lib/auth";
 
 interface CategoryCardProps {
   id: number;
@@ -40,14 +41,14 @@ export default function CategoryCard({
     const fetchStats = async () => {
       try {
         const now = new Date();
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/${
+        const res = await apiRequest(
+          `/api/${
             tipo === "receita" ? "incomes" : "expenses"
           }/resumo-categorias?mes=${
             now.getMonth() + 1
-          }&ano=${now.getFullYear()}`,
-          { credentials: "include" }
+          }&ano=${now.getFullYear()}`
         );
+        if (!res.ok) throw new Error("Erro ao buscar estatísticas");
         const data = await res.json();
         const categoria = data.find((c: Categoria) => c.nome === nome);
         if (categoria) {
@@ -60,27 +61,33 @@ export default function CategoryCard({
         }
       } catch (error) {
         console.error("Erro ao carregar stats da categoria:", error);
+        if (
+          error instanceof Error &&
+          error.message.includes("Sessão expirada")
+        ) {
+          router.push("/login");
+        }
       }
     };
 
     fetchStats();
-  }, [nome, tipo]);
+  }, [nome, tipo, router]);
 
   const handleDelete = async (categoryId: number) => {
     try {
       setIsDeleting(true);
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories/${categoryId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const res = await apiRequest(`/api/categories/${categoryId}`, {
+        method: "DELETE",
+      });
       if (!res.ok) throw new Error("Erro ao excluir categoria");
       toast.success("Categoria excluída com sucesso!");
       onDelete(categoryId);
-    } catch {
-      toast.error("Erro ao excluir categoria");
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Sessão expirada")) {
+        router.push("/login");
+      } else {
+        toast.error("Erro ao excluir categoria");
+      }
     } finally {
       setIsDeleting(false);
     }
