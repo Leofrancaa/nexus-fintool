@@ -84,14 +84,18 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
           expenseData,
         });
 
+        // As APIs retornam no formato { success: true, data: {...} }
+        const incomeStats = incomeData.data || incomeData;
+        const expenseStats = expenseData.data || expenseData;
+
         setIncomes({
-          total: Number(incomeData.total || 0),
-          anterior: Number(incomeData.anterior || 0),
+          total: Number(incomeStats.total || 0),
+          anterior: Number(incomeStats.anterior || 0),
         });
 
         setExpenses({
-          total: Number(expenseData.total || 0),
-          anterior: Number(expenseData.anterior || 0),
+          total: Number(expenseStats.total || 0),
+          anterior: Number(expenseStats.anterior || 0),
         });
       } catch (err) {
         console.error("Erro ao carregar dados do dashboard:", err);
@@ -140,6 +144,8 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
     return {
       texto: `${variacao >= 0 ? "+" : ""}${variacao.toFixed(1)}%`,
       isPositiva,
+      icone: isPositiva ? "↗" : "↘",
+      classe: isPositiva ? "text-green-600" : "text-red-600",
     };
   };
 
@@ -149,126 +155,111 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
 
   if (loading) {
     return (
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-        {[...Array(4)].map((_, i) => (
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+        {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className="bg-[var(--card-bg)] p-6 rounded-xl shadow-lg border border-[var(--card-border)] animate-pulse"
+            className="flex flex-col justify-between bg-[var(--card-bg)] text-[var(--card-text)] border border-[var(--card-border)] rounded-xl p-5 h-full animate-pulse"
           >
-            <div className="h-4 bg-gray-300 rounded mb-4"></div>
-            <div className="h-8 bg-gray-300 rounded mb-2"></div>
-            <div className="h-4 bg-gray-300 rounded w-20"></div>
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-lg bg-gray-300"></div>
+              <div className="flex flex-col">
+                <div className="h-4 bg-gray-300 rounded mb-2 w-20"></div>
+                <div className="h-6 bg-gray-300 rounded w-24"></div>
+              </div>
+            </div>
           </div>
         ))}
       </div>
     );
   }
 
+  // Configurar cards com a estrutura exata solicitada
+  const cards = [
+    {
+      title: "Receitas",
+      value: incomes.total.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }),
+      icon: <TrendingUp className="text-green-600" />,
+      bg: "bg-green-100",
+      comparacao: varReceitas
+        ? {
+            icone: varReceitas.icone,
+            texto: `${varReceitas.texto} vs mês anterior`,
+            classe: varReceitas.classe,
+          }
+        : null,
+    },
+    {
+      title: "Despesas",
+      value: expenses.total.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }),
+      icon: <TrendingDown className="text-red-600" />,
+      bg: "bg-red-100",
+      comparacao: varDespesas
+        ? {
+            icone: varDespesas.icone,
+            texto: `${varDespesas.texto} vs mês anterior`,
+            classe: varDespesas.classe,
+          }
+        : null,
+    },
+    {
+      title: "Saldo",
+      value: saldoAtual.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }),
+      icon: (
+        <Wallet
+          className={saldoAtual >= 0 ? "text-blue-600" : "text-red-600"}
+        />
+      ),
+      bg: saldoAtual >= 0 ? "bg-blue-100" : "bg-red-100",
+      comparacao: varSaldo
+        ? {
+            icone: varSaldo.icone,
+            texto: `${varSaldo.texto} vs mês anterior`,
+            classe: varSaldo.classe,
+          }
+        : null,
+    },
+  ];
+
   return (
-    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-      {/* Card de Receitas */}
-      <div className="bg-[var(--card-bg)] p-6 rounded-xl shadow-lg border border-[var(--card-border)]">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[var(--card-text)] text-sm font-medium">
-              Receitas
-            </p>
-            <p className="text-2xl font-bold text-[var(--card-title)]">
-              {incomes.total.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </p>
-            {varReceitas && (
-              <p
-                className={`text-xs flex items-center gap-1 ${
-                  varReceitas.isPositiva ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {varReceitas.isPositiva ? (
-                  <TrendingUp className="h-3 w-3" />
-                ) : (
-                  <TrendingDown className="h-3 w-3" />
-                )}
-                {varReceitas.texto} vs mês anterior
-              </p>
-            )}
-          </div>
-          <div className="p-3 bg-green-100 rounded-lg">
-            <TrendingUp className="h-6 w-6 text-green-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Card de Despesas */}
-      <div className="bg-[var(--card-bg)] p-6 rounded-xl shadow-lg border border-[var(--card-border)]">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[var(--card-text)] text-sm font-medium">
-              Despesas
-            </p>
-            <p className="text-2xl font-bold text-[var(--card-title)]">
-              {expenses.total.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </p>
-            {varDespesas && (
-              <p
-                className={`text-xs flex items-center gap-1 ${
-                  varDespesas.isPositiva ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {varDespesas.isPositiva ? (
-                  <TrendingUp className="h-3 w-3" />
-                ) : (
-                  <TrendingDown className="h-3 w-3" />
-                )}
-                {varDespesas.texto} vs mês anterior
-              </p>
-            )}
-          </div>
-          <div className="p-3 bg-red-100 rounded-lg">
-            <TrendingDown className="h-6 w-6 text-red-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Card de Saldo */}
-      <div className="bg-[var(--card-bg)] p-6 rounded-xl shadow-lg border border-[var(--card-border)]">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[var(--card-text)] text-sm font-medium">Saldo</p>
-            <p
-              className={`text-2xl font-bold ${
-                saldoAtual >= 0 ? "text-green-600" : "text-red-600"
-              }`}
+    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+      {cards.map((card, i) => (
+        <div
+          key={i}
+          className="flex flex-col justify-between bg-[var(--card-bg)] text-[var(--card-text)] border border-[var(--card-border)] rounded-xl p-5 h-full"
+        >
+          <div className="flex items-center gap-4">
+            <div
+              className={`w-10 h-10 rounded-lg flex items-center justify-center ${card.bg}`}
             >
-              {saldoAtual.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </p>
-            {varSaldo && (
-              <p
-                className={`text-xs flex items-center gap-1 ${
-                  varSaldo.isPositiva ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {varSaldo.isPositiva ? (
-                  <TrendingUp className="h-3 w-3" />
-                ) : (
-                  <TrendingDown className="h-3 w-3" />
-                )}
-                {varSaldo.texto} vs mês anterior
-              </p>
-            )}
+              {card.icon}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm text-muted-foreground">
+                {card.title}
+              </span>
+              <span className="text-xl font-bold">{card.value}</span>
+            </div>
           </div>
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <Wallet className="h-6 w-6 text-blue-600" />
-          </div>
+          {card.comparacao && (
+            <div
+              className={`mt-3 text-sm flex items-center gap-1 ${card.comparacao.classe}`}
+            >
+              <span className="text-xs">{card.comparacao.icone}</span>
+              <span>{card.comparacao.texto}</span>
+            </div>
+          )}
         </div>
-      </div>
+      ))}
     </div>
   );
 }
