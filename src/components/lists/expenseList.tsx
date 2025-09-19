@@ -96,7 +96,7 @@ export function ExpenseList({
         );
 
         const data = await res.json();
-        let filtrado = data as Expense[];
+        let filtrado = (data.data || []) as Expense[];
 
         if (categoryId !== "todas") {
           filtrado = filtrado.filter(

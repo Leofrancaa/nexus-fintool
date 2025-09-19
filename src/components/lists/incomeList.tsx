@@ -82,7 +82,7 @@ export function IncomeList({
         );
 
         const data = await res.json();
-        let filtrado = data as Income[];
+        let filtrado = (data.data || []) as Income[];
 
         if (categoryId !== "todas") {
           filtrado = filtrado.filter(

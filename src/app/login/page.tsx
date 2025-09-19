@@ -17,18 +17,28 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [showSenha, setShowSenha] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !senha) return toast.error("Preencha todos os campos.");
+
+    if (!email || !senha) {
+      toast.error("Preencha todos os campos.");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await login({ email, senha });
 
       if (response.success) {
         toast.success("Login realizado com sucesso!");
-        router.push("/dashboard");
+        // Usar setTimeout para dar tempo do token ser salvo
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 500);
       } else {
         toast.error(response.message || "Erro ao fazer login");
       }
@@ -36,6 +46,8 @@ export default function Login() {
       toast.error(
         error instanceof Error ? error.message : "Ocorreu um erro desconhecido."
       );
+    } finally {
+      setLoading(false);
     }
   };
 

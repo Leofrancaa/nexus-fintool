@@ -49,7 +49,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       try {
         const res = await apiRequest("/api/categories?tipo=despesa");
         const data = await res.json();
-        setCategorias(data);
+        setCategorias(data.data || []);
       } catch (error) {
         console.error("Erro ao carregar categorias:", error);
       }
@@ -59,7 +59,7 @@ export function NewExpenseForm({ onClose, onCreated }: Props) {
       try {
         const res = await apiRequest("/api/cards");
         const data = await res.json();
-        setCartoes(data);
+        setCartoes(data.data || []);
       } catch (error) {
         console.error("Erro ao carregar cartões:", error);
       }

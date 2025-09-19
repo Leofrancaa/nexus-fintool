@@ -31,10 +31,15 @@ export default function Plans() {
 
   const fetchPlanos = useCallback(async () => {
     try {
+      // Adicione estas linhas para debug:
+      const token = localStorage.getItem("nexus_token");
+      console.log("Token no localStorage:", token ? "EXISTE" : "NÃO EXISTE");
+
       const res = await apiRequest("/api/plans");
       if (!res.ok) throw new Error("Erro ao buscar planos");
       const data = await res.json();
-      setPlanos(data);
+      console.log("Resposta da API:", data); // Adicione esta linha
+      setPlanos(data.data || []);
     } catch (error) {
       if (error instanceof Error && error.message.includes("Sessão expirada")) {
         router.push("/login");

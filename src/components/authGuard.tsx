@@ -1,4 +1,4 @@
-// src/components/AuthGuard.tsx
+// src/components/authGuard.tsx - Versão simplificada
 "use client";
 
 import { useEffect, useState } from "react";
@@ -23,28 +23,26 @@ const PUBLIC_ROUTES = ["/login", "/register"];
 
 export default function AuthGuard({ children }: AuthGuardProps) {
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthed, setIsAuthed] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     const checkAuth = () => {
       const authenticated = isAuthenticated();
-      setIsAuthed(authenticated);
 
       const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
         pathname.startsWith(route)
       );
       const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
 
+      // Se estiver em rota protegida sem autenticação -> login
       if (isProtectedRoute && !authenticated) {
-        // Rota protegida sem autenticação -> login
         router.replace("/login");
         return;
       }
 
+      // Se estiver em rota pública com autenticação -> dashboard
       if (isPublicRoute && authenticated) {
-        // Rota pública com autenticação -> dashboard
         router.replace("/dashboard");
         return;
       }
@@ -52,10 +50,11 @@ export default function AuthGuard({ children }: AuthGuardProps) {
       setIsLoading(false);
     };
 
-    checkAuth();
+    // Pequeno delay para evitar race conditions
+    const timer = setTimeout(checkAuth, 100);
+    return () => clearTimeout(timer);
   }, [pathname, router]);
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0E1116]">

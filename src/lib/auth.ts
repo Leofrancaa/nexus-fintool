@@ -16,6 +16,12 @@ interface LoginResponse {
 interface RegisterResponse {
     success: boolean;
     message: string;
+    user?: {
+        id: number;
+        nome: string;
+        email: string;
+    };
+    token?: string;
 }
 
 interface ApiError {
@@ -29,16 +35,24 @@ const TOKEN_KEY = 'nexus_token';
 export const tokenManager = {
     get: (): string | null => {
         if (typeof window === 'undefined') return null;
-        return localStorage.getItem(TOKEN_KEY);
+        const token = localStorage.getItem(TOKEN_KEY);
+        console.log('tokenManager.get() - Token recuperado:', token ? `TOKEN EXISTE (${token.length} chars)` : 'TOKEN NÃO EXISTE');
+        return token;
     },
 
     set: (token: string): void => {
         if (typeof window === 'undefined') return;
+        console.log('tokenManager.set() - Salvando token:', token ? `TOKEN VÁLIDO (${token.length} chars)` : 'TOKEN VAZIO');
         localStorage.setItem(TOKEN_KEY, token);
+
+        // Verificar imediatamente se foi salvo
+        const saved = localStorage.getItem(TOKEN_KEY);
+        console.log('tokenManager.set() - Verificação pós-save:', saved === token ? 'SUCESSO' : 'FALHA');
     },
 
     remove: (): void => {
         if (typeof window === 'undefined') return;
+        console.log('tokenManager.remove() - Removendo token');
         localStorage.removeItem(TOKEN_KEY);
     }
 };
@@ -51,7 +65,10 @@ const createHeaders = (includeAuth = true): Headers => {
     if (includeAuth) {
         const token = tokenManager.get();
         if (token) {
+            console.log('createHeaders() - Adicionando Authorization header com Bearer token');
             headers.set('Authorization', `Bearer ${token}`);
+        } else {
+            console.log('createHeaders() - NENHUM TOKEN DISPONÍVEL para Authorization header');
         }
     }
 
@@ -74,51 +91,130 @@ export const register = async (data: {
     email: string;
     senha: string;
 }): Promise<RegisterResponse> => {
+    console.log('register() - Iniciando registro para:', data.email);
+
     const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: createHeaders(false), // Não incluir auth no register
         body: JSON.stringify(data),
     });
 
+    console.log('register() - Status da resposta:', response.status);
+
     if (!response.ok) {
+        console.log('register() - Erro na resposta:', response.status, response.statusText);
         await handleApiError(response);
     }
 
-    return await response.json();
+    // Debug: Vamos ver o que está chegando do servidor
+    const responseText = await response.text();
+    console.log('register() - Resposta raw do servidor:', responseText);
+
+    let result: RegisterResponse;
+    try {
+        result = JSON.parse(responseText);
+    } catch (e) {
+        console.error('register() - Erro ao fazer parse do JSON:', e);
+        throw new Error('Resposta inválida do servidor');
+    }
+
+    console.log('register() - Resposta parseada:', {
+        success: result.success,
+        hasUser: !!result.user,
+        hasToken: !!result.token,
+        tokenLength: result.token ? result.token.length : undefined,
+        allKeys: Object.keys(result)
+    });
+
+    // Salvar token se fornecido no registro
+    if (result.success && result.token) {
+        console.log('register() - Salvando token no localStorage');
+        tokenManager.set(result.token);
+    } else {
+        console.log('register() - Registro bem-sucedido mas sem token');
+    }
+
+    return result;
 };
 
 export const login = async (data: {
     email: string;
     senha: string;
 }): Promise<LoginResponse> => {
+    console.log('login() - Iniciando login para:', data.email);
+
     const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: createHeaders(false), // Não incluir auth no login
         body: JSON.stringify(data),
     });
 
+    console.log('login() - Status da resposta:', response.status);
+
     if (!response.ok) {
+        console.log('login() - Erro na resposta:', response.status, response.statusText);
         await handleApiError(response);
     }
 
-    const result: LoginResponse = await response.json();
+    // Debug: Vamos ver o que está chegando do servidor
+    const responseText = await response.text();
+    console.log('login() - Resposta raw do servidor:', responseText);
+
+    let result: LoginResponse;
+    try {
+        result = JSON.parse(responseText);
+    } catch (e) {
+        console.error('login() - Erro ao fazer parse do JSON:', e);
+        throw new Error('Resposta inválida do servidor');
+    }
+
+    console.log('login() - Resposta parseada completa:', result);
+    console.log('login() - Análise da resposta:', {
+        success: result.success,
+        hasUser: !!result.user,
+        hasToken: !!result.token,
+        tokenLength: result.token ? result.token.length : undefined,
+        tokenPreview: result.token ? result.token.substring(0, 20) + '...' : 'N/A',
+        allKeys: Object.keys(result),
+        messageExists: !!result.message
+    });
 
     // Salvar token no localStorage
     if (result.success && result.token) {
+        console.log('login() - Token encontrado, salvando no localStorage');
         tokenManager.set(result.token);
+
+        // Verificar se foi salvo
+        const savedToken = tokenManager.get();
+        console.log('login() - Token salvo com sucesso:', !!savedToken);
+
+        if (savedToken !== result.token) {
+            console.error('login() - ERRO: Token salvo não confere com o recebido!');
+        }
+    } else if (result.success && !result.token) {
+        console.error('login() - ERRO CRÍTICO: Login bem-sucedido mas sem token!');
+        console.error('login() - Resposta completa:', JSON.stringify(result, null, 2));
     }
 
     return result;
 };
 
 export const logout = (): void => {
+    console.log('logout() - Removendo token e fazendo logout');
     tokenManager.remove();
     // Redirecionar para login será feito no componente
 };
 
 // Verificar se o usuário está autenticado
 export const isAuthenticated = (): boolean => {
-    return !!tokenManager.get();
+    const token = tokenManager.get();
+    const authenticated = !!token; // Correção: removida a negação dupla
+    console.log('isAuthenticated() - Verificando autenticação:', {
+        hasToken: !!token,
+        authenticated,
+        tokenLength: token ? token.length : 0
+    });
+    return authenticated;
 };
 
 // Helper genérico para fazer requisições autenticadas
@@ -127,6 +223,7 @@ export const apiRequest = async (
     options: RequestInit = {}
 ): Promise<Response> => {
     const url = endpoint.startsWith('http') ? endpoint : `${API_URL}${endpoint}`;
+    console.log('apiRequest() - Fazendo requisição para:', endpoint);
 
     const headers = createHeaders(true);
 
@@ -143,10 +240,12 @@ export const apiRequest = async (
         headers,
     });
 
+    console.log('apiRequest() - Resposta:', response.status, response.statusText);
+
     // Se receber 401, o token provavelmente expirou
     if (response.status === 401) {
+        console.log('apiRequest() - Token expirado (401), removendo e redirecionando');
         tokenManager.remove();
-        // Redirecionar para login será tratado no middleware
         throw new Error('Sessão expirada. Faça login novamente.');
     }
 

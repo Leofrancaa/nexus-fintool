@@ -56,7 +56,7 @@ export default function Incomes() {
       const res = await apiRequest("/api/categories?tipo=receita");
       if (!res.ok) throw new Error("Erro ao buscar categorias");
       const data = await res.json();
-      setCategorias(data);
+      setCategorias(data.data || []);
     } catch (error) {
       if (error instanceof Error && error.message.includes("Sessão expirada")) {
         router.push("/login");

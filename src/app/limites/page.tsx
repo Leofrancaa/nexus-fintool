@@ -42,7 +42,8 @@ export default function Limits() {
       const res = await apiRequest("/api/thresholds");
       if (!res.ok) throw new Error();
 
-      const data: Threshold[] = await res.json();
+      const responseData = await res.json();
+      const data: Threshold[] = responseData.data || responseData;
       setLimites(data);
 
       const gastosTemp: Record<number, number> = {};

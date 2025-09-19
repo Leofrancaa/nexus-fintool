@@ -39,13 +39,13 @@ export function ExpenseByCategoryChart({ mes, ano, refreshKey }: Props) {
     const fetchData = async () => {
       try {
         const res = await apiRequest(
-          `/api/expenses/resumo-categorias?mes=${mes}&ano=${ano}`
+          `/api/expenses/category-resume?mes=${mes}&ano=${ano}`
         );
 
         if (!res.ok) throw new Error("Erro ao buscar dados");
 
         const json = await res.json();
-        setDados(json);
+        setDados(json.data || []);
       } catch (error) {
         console.error("Erro ao carregar gráfico de categorias", error);
         if (

@@ -39,26 +39,22 @@ export function ExpenseStatsCards({
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const url = new URL(
-          `/api/expenses/stats`,
-          process.env.NEXT_PUBLIC_API_URL
-        );
-        url.searchParams.set("month", monthToUse);
-        url.searchParams.set("year", yearToUse);
+        let endpoint = `/api/expenses/stats?month=${monthToUse}&year=${yearToUse}`;
 
         if (categoryId && categoryId !== "todas") {
-          url.searchParams.set("categoryId", categoryId);
+          endpoint += `&categoryId=${categoryId}`;
         }
 
-        const res = await apiRequest(url.pathname + url.search);
+        const res = await apiRequest(endpoint);
         if (!res.ok) throw new Error("Erro ao buscar estatísticas");
 
         const data = await res.json();
+        const statsData = data.data || data;
         setStats({
-          total: Number(data.total || 0),
-          fixas: Number(data.fixas || 0),
-          transacoes: Number(data.transacoes || 0),
-          media: Number(data.media || 0),
+          total: Number(statsData.total || 0),
+          fixas: Number(statsData.fixas || 0),
+          transacoes: Number(statsData.transacoes || 0),
+          media: Number(statsData.media || 0),
         });
       } catch (error) {
         console.error("Erro ao buscar estatísticas de despesas:", error);

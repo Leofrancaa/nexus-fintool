@@ -31,13 +31,13 @@ export function IncomeByCategoryPieChart({ mes, ano, refreshKey }: Props) {
     const fetchData = async () => {
       try {
         const res = await apiRequest(
-          `/api/incomes/resumo-categorias?mes=${mes}&ano=${ano}`
+          `/api/incomes/category-resume?mes=${mes}&ano=${ano}`
         );
 
         if (!res.ok) throw new Error("Erro ao buscar dados");
 
         const json = await res.json();
-        setDados(json);
+        setDados(json.data || []);
       } catch (error) {
         console.error("Erro ao carregar gráfico de receitas", error);
         if (

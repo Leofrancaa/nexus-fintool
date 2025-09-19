@@ -1,9 +1,11 @@
+// src/components/cards/dashboardStatsCard.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import { TrendingUp, TrendingDown, PiggyBank, Wallet } from "lucide-react";
-import { apiRequest } from "@/lib/auth";
+import { TrendingUp, TrendingDown, Wallet } from "lucide-react";
+import { apiRequest, tokenManager } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface Props {
   customMonth?: string;
@@ -21,11 +23,6 @@ interface ExpenseStats {
   anterior: number;
 }
 
-interface InvestmentStats {
-  totalInvestido: number;
-  anterior: number;
-}
-
 export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
   const [incomes, setIncomes] = useState<IncomeStats>({
     total: 0,
@@ -35,10 +32,8 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
     total: 0,
     anterior: 0,
   });
-  const [investments, setInvestments] = useState<InvestmentStats>({
-    totalInvestido: 0,
-    anterior: 0,
-  });
+
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
   const month = customMonth || String(new Date().getMonth() + 1);
@@ -47,23 +42,47 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const incomeRes = await apiRequest(
-          `/api/incomes/stats?month=${month}&year=${year}`
-        );
-        if (!incomeRes.ok) throw new Error("Erro ao buscar receitas");
-        const incomeData = await incomeRes.json();
+        setLoading(true);
 
-        const expenseRes = await apiRequest(
-          `/api/expenses/stats?month=${month}&year=${year}`
+        // Verificar se há token antes de fazer as requisições
+        const token = tokenManager.get();
+        if (!token) {
+          console.error("Token não encontrado");
+          router.push("/login");
+          return;
+        }
+
+        console.log(
+          "Fazendo requisições do dashboard com token:",
+          token ? "presente" : "ausente"
         );
-        if (!expenseRes.ok) throw new Error("Erro ao buscar despesas");
+
+        // Fazer todas as requisições em paralelo
+        const [incomeRes, expenseRes] = await Promise.all([
+          apiRequest(`/api/incomes/stats?month=${month}&year=${year}`),
+          apiRequest(`/api/expenses/stats?month=${month}&year=${year}`),
+        ]);
+
+        // Verificar se todas as responses são válidas
+        if (!incomeRes.ok) {
+          throw new Error(
+            `Erro ao buscar receitas: ${incomeRes.status} ${incomeRes.statusText}`
+          );
+        }
+        if (!expenseRes.ok) {
+          throw new Error(
+            `Erro ao buscar despesas: ${expenseRes.status} ${expenseRes.statusText}`
+          );
+        }
+
+        // Processar respostas
+        const incomeData = await incomeRes.json();
         const expenseData = await expenseRes.json();
 
-        const investmentRes = await apiRequest(
-          `/api/investments/stats?month=${month}&year=${year}`
-        );
-        if (!investmentRes.ok) throw new Error("Erro ao buscar investimentos");
-        const investmentData = await investmentRes.json();
+        console.log("Dados recebidos:", {
+          incomeData,
+          expenseData,
+        });
 
         setIncomes({
           total: Number(incomeData.total || 0),
@@ -74,16 +93,29 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
           total: Number(expenseData.total || 0),
           anterior: Number(expenseData.anterior || 0),
         });
-
-        setInvestments({
-          totalInvestido: Number(investmentData.totalInvestido || 0),
-          anterior: Number(investmentData.anterior || 0),
-        });
       } catch (err) {
         console.error("Erro ao carregar dados do dashboard:", err);
-        if (err instanceof Error && err.message.includes("Sessão expirada")) {
-          router.push("/login");
+
+        if (err instanceof Error) {
+          if (
+            err.message.includes("Sessão expirada") ||
+            err.message.includes("401")
+          ) {
+            // Token expirado ou inválido
+            tokenManager.remove();
+            router.push("/login");
+            toast.error("Sessão expirada. Faça login novamente.");
+          } else if (err.message.includes("403")) {
+            // Token inválido
+            tokenManager.remove();
+            router.push("/login");
+            toast.error("Acesso não autorizado. Faça login novamente.");
+          } else {
+            toast.error("Erro ao carregar dados do dashboard");
+          }
         }
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -93,100 +125,150 @@ export function DashboardCards({ customMonth, customYear, refreshKey }: Props) {
   const saldoAtual = incomes.total - expenses.total;
   const saldoAnterior = incomes.anterior - expenses.anterior;
 
-  // substitua a sua calcVariação por esta
-  const calcVariação = (
+  // Calcular variação percentual
+  const calcVariacao = (
     atual: number,
     anterior: number,
     positivoQuandoMaior: boolean
   ) => {
     if (anterior === 0) return null; // evita divisão por 0
 
-    const delta = atual - anterior; // direção real da mudança
-    const variacao = (delta / Math.abs(anterior)) * 100; // base sempre positiva
+    const delta = atual - anterior;
+    const variacao = (delta / Math.abs(anterior)) * 100;
     const isPositiva = positivoQuandoMaior ? delta >= 0 : delta <= 0;
 
     return {
-      texto: `${variacao >= 0 ? "+" : ""}${variacao.toFixed(
-        0
-      )}% em relação ao mês anterior`,
-      classe: isPositiva ? "text-green-500" : "text-red-500",
-      icone: isPositiva ? "↑" : "↓",
+      texto: `${variacao >= 0 ? "+" : ""}${variacao.toFixed(1)}%`,
+      isPositiva,
     };
   };
 
-  const cards = [
-    {
-      title: "Saldo Atual",
-      value: `R$ ${saldoAtual.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-      })}`,
-      comparacao: calcVariação(saldoAtual, saldoAnterior, true),
-      icon: <Wallet className="text-[var(--card-icon)]" />,
-      bg: "bg-[var(--card-icon-bg-neutral)]",
-    },
-    {
-      title: "Receitas do Mês",
-      value: `R$ ${incomes.total.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-      })}`,
-      comparacao: calcVariação(incomes.total, incomes.anterior, true),
-      icon: <TrendingUp className="text-green-600" />,
-      bg: "bg-[var(--card-icon-bg-green)]",
-    },
-    {
-      title: "Despesas do Mês",
-      value: `R$ ${expenses.total.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-      })}`,
-      comparacao: calcVariação(expenses.total, expenses.anterior, false),
-      icon: <TrendingDown className="text-red-500" />,
-      bg: "bg-[var(--card-icon-bg-red)]",
-    },
-    {
-      title: "Investimentos",
-      value: `R$ ${investments.totalInvestido.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-      })}`,
-      comparacao: calcVariação(
-        investments.totalInvestido,
-        investments.anterior,
-        true
-      ),
-      icon: <PiggyBank className="text-yellow-500" />,
-      bg: "bg-[var(--card-icon-bg-yellow)]",
-    },
-  ];
+  const varReceitas = calcVariacao(incomes.total, incomes.anterior, true);
+  const varDespesas = calcVariacao(expenses.total, expenses.anterior, false);
+  const varSaldo = calcVariacao(saldoAtual, saldoAnterior, true);
+
+  if (loading) {
+    return (
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+        {[...Array(4)].map((_, i) => (
+          <div
+            key={i}
+            className="bg-[var(--card-bg)] p-6 rounded-xl shadow-lg border border-[var(--card-border)] animate-pulse"
+          >
+            <div className="h-4 bg-gray-300 rounded mb-4"></div>
+            <div className="h-8 bg-gray-300 rounded mb-2"></div>
+            <div className="h-4 bg-gray-300 rounded w-20"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-      {cards.map((card, i) => (
-        <div
-          key={i}
-          className="flex flex-col justify-between bg-[var(--card-bg)] text-[var(--card-text)] border border-[var(--card-border)] rounded-xl p-5 h-full"
-        >
-          <div className="flex items-center gap-4">
-            <div
-              className={`w-10 h-10 rounded-lg flex items-center justify-center ${card.bg}`}
-            >
-              {card.icon}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm text-muted-foreground">
-                {card.title}
-              </span>
-              <span className="text-xl font-bold">{card.value}</span>
-            </div>
+    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+      {/* Card de Receitas */}
+      <div className="bg-[var(--card-bg)] p-6 rounded-xl shadow-lg border border-[var(--card-border)]">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[var(--card-text)] text-sm font-medium">
+              Receitas
+            </p>
+            <p className="text-2xl font-bold text-[var(--card-title)]">
+              {incomes.total.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </p>
+            {varReceitas && (
+              <p
+                className={`text-xs flex items-center gap-1 ${
+                  varReceitas.isPositiva ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {varReceitas.isPositiva ? (
+                  <TrendingUp className="h-3 w-3" />
+                ) : (
+                  <TrendingDown className="h-3 w-3" />
+                )}
+                {varReceitas.texto} vs mês anterior
+              </p>
+            )}
           </div>
-          {card.comparacao && (
-            <div
-              className={`mt-3 text-sm flex items-center gap-1 ${card.comparacao.classe}`}
-            >
-              <span className="text-xs">{card.comparacao.icone}</span>
-              <span>{card.comparacao.texto}</span>
-            </div>
-          )}
+          <div className="p-3 bg-green-100 rounded-lg">
+            <TrendingUp className="h-6 w-6 text-green-600" />
+          </div>
         </div>
-      ))}
+      </div>
+
+      {/* Card de Despesas */}
+      <div className="bg-[var(--card-bg)] p-6 rounded-xl shadow-lg border border-[var(--card-border)]">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[var(--card-text)] text-sm font-medium">
+              Despesas
+            </p>
+            <p className="text-2xl font-bold text-[var(--card-title)]">
+              {expenses.total.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </p>
+            {varDespesas && (
+              <p
+                className={`text-xs flex items-center gap-1 ${
+                  varDespesas.isPositiva ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {varDespesas.isPositiva ? (
+                  <TrendingUp className="h-3 w-3" />
+                ) : (
+                  <TrendingDown className="h-3 w-3" />
+                )}
+                {varDespesas.texto} vs mês anterior
+              </p>
+            )}
+          </div>
+          <div className="p-3 bg-red-100 rounded-lg">
+            <TrendingDown className="h-6 w-6 text-red-600" />
+          </div>
+        </div>
+      </div>
+
+      {/* Card de Saldo */}
+      <div className="bg-[var(--card-bg)] p-6 rounded-xl shadow-lg border border-[var(--card-border)]">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[var(--card-text)] text-sm font-medium">Saldo</p>
+            <p
+              className={`text-2xl font-bold ${
+                saldoAtual >= 0 ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {saldoAtual.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}
+            </p>
+            {varSaldo && (
+              <p
+                className={`text-xs flex items-center gap-1 ${
+                  varSaldo.isPositiva ? "text-green-600" : "text-red-600"
+                }`}
+              >
+                {varSaldo.isPositiva ? (
+                  <TrendingUp className="h-3 w-3" />
+                ) : (
+                  <TrendingDown className="h-3 w-3" />
+                )}
+                {varSaldo.texto} vs mês anterior
+              </p>
+            )}
+          </div>
+          <div className="p-3 bg-blue-100 rounded-lg">
+            <Wallet className="h-6 w-6 text-blue-600" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

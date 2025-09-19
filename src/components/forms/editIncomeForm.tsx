@@ -44,7 +44,7 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
       try {
         const res = await apiRequest("/api/categories?tipo=receita");
         const data = await res.json();
-        setCategorias(data);
+        setCategorias(data.data || []);
       } catch (error) {
         console.error("Erro ao carregar categorias:", error);
       }
