@@ -13,6 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { apiRequest } from "@/lib/auth";
+import {
+  getApiErrorMessage,
+  getContextualErrorMessage,
+  generateToastId,
+} from "@/utils/errorUtils";
 
 const cores = [
   "#6366f1",
@@ -46,7 +51,9 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
         const data: Categoria[] = await res.json();
         setCategoriasPai(data.filter((cat) => !cat.parent_id));
       } catch {
-        toast.error("Erro ao carregar categorias existentes");
+        toast.error("Erro ao carregar categorias existentes", {
+          id: "load-parent-categories",
+        });
       }
     };
 
@@ -56,12 +63,20 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Criar ID único para evitar toasts duplicados
+    const toastId = generateToastId("save", "category");
+
+    // Validação dos campos obrigatórios
     if (!nome || !corSelecionada || !tipo) {
-      toast.error("Preencha todos os campos obrigatórios");
+      toast.error("Os campos Nome, Cor e Tipo são obrigatórios", {
+        id: toastId,
+      });
       return;
     }
 
     try {
+      toast.loading("Salvando categoria...", { id: toastId });
+
       const res = await apiRequest("/api/categories", {
         method: "POST",
         headers: {
@@ -75,16 +90,26 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
         }),
       });
 
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const errorMessage = await getApiErrorMessage(
+          res,
+          "Erro ao criar categoria. Verifique se o nome não está em uso"
+        );
+        toast.error(errorMessage, { id: toastId });
+        return;
+      }
 
       const novaCategoria: Categoria = await res.json();
-      toast.success("Categoria criada com sucesso!");
+      toast.success("Categoria criada com sucesso!", { id: toastId });
       onCreated?.(novaCategoria);
       onClose();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Erro ao salvar categoria"
+      const errorMessage = getContextualErrorMessage(
+        error,
+        "save",
+        "categoria"
       );
+      toast.error(errorMessage, { id: toastId });
     }
   };
 
@@ -92,7 +117,7 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Nome */}
       <div>
-        <Label>Nome da Categoria</Label>
+        <Label>Nome da Categoria *</Label>
         <Input
           placeholder="Ex: Alimentação, Transporte..."
           value={nome}
@@ -103,7 +128,7 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
 
       {/* Cor */}
       <div>
-        <Label>Cor da Categoria</Label>
+        <Label>Cor da Categoria *</Label>
         <div className="grid grid-cols-4 gap-2 mt-2">
           {cores.map((cor) => (
             <button
@@ -123,7 +148,7 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
 
       {/* Tipo */}
       <div>
-        <Label>Tipo</Label>
+        <Label>Tipo *</Label>
         <div className="flex gap-4 mt-2">
           {["despesa", "receita"].map((t) => (
             <button

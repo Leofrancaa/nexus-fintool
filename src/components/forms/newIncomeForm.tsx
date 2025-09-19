@@ -14,6 +14,13 @@ import {
 import { toast } from "react-hot-toast";
 import { Categoria } from "@/types/category";
 import { apiRequest } from "@/lib/auth";
+import {
+  getApiErrorMessage,
+  getContextualErrorMessage,
+  generateToastId,
+  validateRequiredFields,
+  validatePositiveNumber,
+} from "@/utils/errorUtils";
 
 interface Props {
   onClose: () => void;
@@ -38,6 +45,9 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
         setCategorias(data.data || []);
       } catch (error) {
         console.error("Erro ao carregar categorias:", error);
+        toast.error("Erro ao carregar categorias de receita", {
+          id: "load-income-categories",
+        });
       }
     };
 
@@ -47,12 +57,36 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!descricao || !valor || !data || !fonte || !categoriaId) {
-      toast.error("Preencha todos os campos obrigatórios.");
+    // Validação dos campos obrigatórios
+    const requiredFieldsValidation = validateRequiredFields({
+      Descrição: descricao,
+      Valor: valor,
+      Data: data,
+      Fonte: fonte,
+      Categoria: categoriaId,
+    });
+
+    if (requiredFieldsValidation) {
+      toast.error(requiredFieldsValidation, {
+        id: "income-validation",
+      });
       return;
     }
 
+    // Validação do valor
+    const valueValidation = validatePositiveNumber(valor, "O valor");
+    if (valueValidation) {
+      toast.error(valueValidation, {
+        id: "income-value-validation",
+      });
+      return;
+    }
+
+    const toastId = generateToastId("save", "income");
+
     try {
+      toast.loading("Salvando receita...", { id: toastId });
+
       const res = await apiRequest("/api/incomes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,18 +102,20 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
       });
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
-        toast.error(errorData?.error || "Erro ao cadastrar receita.");
+        const errorMessage = await getApiErrorMessage(
+          res,
+          "Erro ao cadastrar receita. Verifique os dados informados"
+        );
+        toast.error(errorMessage, { id: toastId });
         return;
       }
 
-      toast.success("Receita cadastrada!");
+      toast.success("Receita cadastrada com sucesso!", { id: toastId });
       onCreated?.();
       onClose();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Erro ao cadastrar receita."
-      );
+      const errorMessage = getContextualErrorMessage(error, "save", "receita");
+      toast.error(errorMessage, { id: toastId });
     }
   };
 
@@ -88,68 +124,72 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
       {/* Descrição e Valor */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label>Descrição</Label>
+          <Label>Descrição *</Label>
           <Input
-            placeholder="Ex: Salário, Venda online..."
+            placeholder="Ex: Salário, Freelance..."
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
           />
         </div>
+
         <div>
-          <Label>Valor</Label>
+          <Label>Valor (R$) *</Label>
           <Input
             type="number"
-            placeholder="Ex: 5000"
+            step="0.01"
+            min="0"
+            placeholder="Ex: 2500.00"
             value={valor}
             onChange={(e) => setValor(e.target.value)}
           />
         </div>
       </div>
 
-      {/* Data e Fonte */}
+      {/* Fonte e Categoria */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <Label>Data</Label>
+          <Label>Fonte *</Label>
           <Input
-            type="date"
-            value={data}
-            onChange={(e) => setData(e.target.value)}
-          />
-        </div>
-        <div>
-          <Label>Fonte</Label>
-          <Input
-            placeholder="Ex: Empresa X, Banco Y..."
+            placeholder="Ex: Empresa XYZ, Cliente ABC..."
             value={fonte}
             onChange={(e) => setFonte(e.target.value)}
           />
         </div>
+
+        <div>
+          <Label>Categoria *</Label>
+          <Select value={categoriaId} onValueChange={setCategoriaId}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione uma categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {categorias.map((categoria) => (
+                <SelectItem key={categoria.id} value={String(categoria.id)}>
+                  {categoria.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      {/* Categoria */}
+      {/* Data */}
       <div>
-        <Label>Categoria</Label>
-        <Select value={categoriaId} onValueChange={setCategoriaId}>
-          <SelectTrigger>
-            <SelectValue placeholder="Selecione uma categoria" />
-          </SelectTrigger>
-          <SelectContent>
-            {categorias.map((cat) => (
-              <SelectItem key={cat.id} value={cat.id.toString()}>
-                {cat.nome}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Label>Data *</Label>
+        <Input
+          type="date"
+          value={data}
+          onChange={(e) => setData(e.target.value)}
+        />
       </div>
 
-      {/* Receita fixa */}
-      <div className="flex items-center gap-2">
+      {/* Toggle Receita Fixa */}
+      <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => setFixo(!fixo)}
-          className={`w-11 h-6 flex items-center rounded-full px-1 transition-colors duration-300 ${
-            fixo ? "bg-blue-600" : "bg-gray-400"
+          className={`relative w-10 h-5 rounded-full transition-colors duration-300 ${
+            fixo ? "bg-green-600" : "bg-gray-400"
           }`}
         >
           <div
@@ -158,14 +198,14 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
             }`}
           />
         </button>
-        <span className="text-white text-sm">Receita fixa</span>
+        <span className="text-white text-sm">Receita fixa (mensal)</span>
       </div>
 
-      {/* Nota */}
+      {/* Observações */}
       <div>
-        <Label>Nota</Label>
+        <Label>Observações</Label>
         <Textarea
-          placeholder="Ex: Recebido via transferência"
+          placeholder="Informações adicionais sobre esta receita..."
           value={nota}
           onChange={(e) => setNota(e.target.value)}
         />
@@ -180,9 +220,10 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
         >
           Cancelar
         </button>
+
         <button
           type="submit"
-          className="px-6 py-3 w-full rounded-xl text-white font-semibold text-[16px] bg-[#00D4D4] hover:opacity-80 hover:text-black transition-all"
+          className="px-6 py-3 w-full rounded-xl text-white font-semibold text-[16px] bg-green-600 hover:opacity-80 hover:text-black transition-all"
         >
           Salvar
         </button>

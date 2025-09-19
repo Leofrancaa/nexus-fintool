@@ -34,7 +34,10 @@ export default function Cards() {
       if (error instanceof Error && error.message.includes("Sessão expirada")) {
         router.push("/login");
       } else {
-        toast.error("Erro ao buscar cartões");
+        // Use ID único para evitar duplicação
+        toast.error("Erro ao carregar cartões", {
+          id: "fetch-cards-error",
+        });
       }
     }
   }, [router]);

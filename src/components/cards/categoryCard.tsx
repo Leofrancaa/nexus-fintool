@@ -7,6 +7,11 @@ import ConfirmDialog from "@/components/ui/confirmDialog";
 import { Categoria } from "@/types/category";
 import { useRouter } from "next/navigation";
 import { apiRequest } from "@/lib/auth";
+import {
+  getApiErrorMessage,
+  getContextualErrorMessage,
+  generateToastId,
+} from "@/utils/errorUtils";
 
 interface CategoryCardProps {
   id: number;
@@ -50,12 +55,25 @@ export default function CategoryCard({
         const data = await res.json();
         const categorias = data.data || [];
         const categoria = categorias.find((c: Categoria) => c.nome === nome);
+
         if (categoria) {
+          // Garantir que todos os valores sejam números válidos
           setStats({
-            total: categoria.total,
-            media: categoria.total / categoria.quantidade,
-            percentual: categoria.percentual,
-            quantidade: categoria.quantidade,
+            total: Number(categoria.total) || 0,
+            media:
+              categoria.quantidade > 0
+                ? Number(categoria.total) / Number(categoria.quantidade)
+                : 0,
+            percentual: Number(categoria.percentual) || 0,
+            quantidade: Number(categoria.quantidade) || 0,
+          });
+        } else {
+          // Se a categoria não foi encontrada, manter valores zerados
+          setStats({
+            total: 0,
+            media: 0,
+            percentual: 0,
+            quantidade: 0,
           });
         }
       } catch (error) {
@@ -66,6 +84,13 @@ export default function CategoryCard({
         ) {
           router.push("/login");
         }
+        // Em caso de erro, manter stats zeradas para evitar crashes
+        setStats({
+          total: 0,
+          media: 0,
+          percentual: 0,
+          quantidade: 0,
+        });
       }
     };
 
@@ -73,23 +98,60 @@ export default function CategoryCard({
   }, [nome, tipo, router]);
 
   const handleDelete = async (categoryId: number) => {
+    if (isDeleting) return;
+
+    setIsDeleting(true);
+    const toastId = generateToastId("delete", "category", categoryId);
+
     try {
-      setIsDeleting(true);
+      toast.loading("Excluindo categoria...", { id: toastId });
+
       const res = await apiRequest(`/api/categories/${categoryId}`, {
         method: "DELETE",
       });
-      if (!res.ok) throw new Error("Erro ao excluir categoria");
-      toast.success("Categoria excluída com sucesso!");
+
+      if (!res.ok) {
+        const errorMessage = await getApiErrorMessage(
+          res,
+          "Não foi possível excluir a categoria. Verifique se não há transações associadas"
+        );
+        toast.error(errorMessage, { id: toastId });
+        return;
+      }
+
+      toast.success("Categoria excluída com sucesso!", { id: toastId });
       onDelete(categoryId);
     } catch (error) {
       if (error instanceof Error && error.message.includes("Sessão expirada")) {
+        toast.error("Sessão expirada. Redirecionando para login...", {
+          id: toastId,
+        });
         router.push("/login");
       } else {
-        toast.error("Erro ao excluir categoria");
+        const errorMessage = getContextualErrorMessage(
+          error,
+          "delete",
+          "categoria"
+        );
+        toast.error(errorMessage, { id: toastId });
       }
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  // Funções auxiliares para formatação segura
+  const formatCurrency = (value: number): string => {
+    const safeValue = Number(value) || 0;
+    return safeValue.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
+
+  const formatPercentage = (value: number): string => {
+    const safeValue = Number(value) || 0;
+    return safeValue.toFixed(1);
   };
 
   return (
@@ -136,7 +198,7 @@ export default function CategoryCard({
           <div className="flex flex-col text-right">
             <span className="text-md">Do total</span>
             <span className="text-lg font-bold text-purple-500">
-              {stats.percentual.toFixed(1)}%
+              {formatPercentage(stats.percentual)}%
             </span>
           </div>
         </div>
@@ -146,10 +208,7 @@ export default function CategoryCard({
             {tipo === "receita" ? "Receita total" : "Gasto total"}
           </span>
           <span className="text-cyan-600 font-bold text-base">
-            {stats.total.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}
+            {formatCurrency(stats.total)}
           </span>
         </div>
 
@@ -158,10 +217,7 @@ export default function CategoryCard({
             {tipo === "receita" ? "Média por receita" : "Média por despesa"}
           </span>
           <span className="text-green-400 font-bold text-base">
-            {stats.media.toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            })}
+            {formatCurrency(stats.media)}
           </span>
         </div>
       </div>
