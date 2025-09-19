@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewCardModal } from "@/components/modals/newCardModal";
 import { EditCardModal } from "@/components/modals/editCardModal";
@@ -8,6 +8,7 @@ import { CardVisual } from "@/components/cards/cardVisual";
 import { CardType } from "@/types/card";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { apiRequest, isAuthenticated } from "@/lib/auth";
 
 export default function Cards() {
   const [cards, setCards] = useState<CardType[]>([]);
@@ -17,32 +18,31 @@ export default function Cards() {
 
   // auth guard
   useEffect(() => {
-    const checkAuth = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
-        credentials: "include",
-      });
-      if (!res.ok) router.push("/login");
-    };
-    checkAuth();
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
   }, [router]);
 
-  const fetchCards = async () => {
+  const fetchCards = useCallback(async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cards`, {
-        credentials: "include",
-      });
+      const res = await apiRequest("/api/cards");
       if (!res.ok) throw new Error();
       const data: CardType[] = await res.json();
       setCards(data);
-    } catch {
-      toast.error("Erro ao buscar cartões");
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Sessão expirada")) {
+        router.push("/login");
+      } else {
+        toast.error("Erro ao buscar cartões");
+      }
     }
-  };
+  }, [router]);
 
   // refetch quando refreshKey mudar
   useEffect(() => {
     fetchCards();
-  }, [refreshKey]);
+  }, [refreshKey, fetchCards]);
 
   // handlers de refresh
   const handleRefresh = () => setRefreshKey((k) => k + 1);

@@ -11,6 +11,8 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 interface MonthlyData {
   mes: string;
@@ -30,6 +32,7 @@ interface Props {
 export default function BalanceChart({ refreshKey = 0 }: Props) {
   const [data, setData] = useState<MonthlyData[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     let cancelled = false;
@@ -39,15 +42,8 @@ export default function BalanceChart({ refreshKey = 0 }: Props) {
         setLoading(true);
 
         const [despRes, recRes] = await Promise.all([
-          fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/despesas/mes`,
-            {
-              credentials: "include",
-            }
-          ),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/incomes/receitas/mes`, {
-            credentials: "include",
-          }),
+          apiRequest("/api/expenses/despesas/mes"),
+          apiRequest("/api/incomes/receitas/mes"),
         ]);
 
         if (!despRes.ok || !recRes.ok) throw new Error("Erro ao buscar dados");
@@ -79,7 +75,13 @@ export default function BalanceChart({ refreshKey = 0 }: Props) {
         if (!cancelled) setData(merged);
       } catch (err) {
         console.error(err);
-        if (!cancelled) toast.error("Erro ao carregar gráfico de balanço");
+        if (!cancelled) {
+          if (err instanceof Error && err.message.includes("Sessão expirada")) {
+            router.push("/login");
+          } else {
+            toast.error("Erro ao carregar gráfico de balanço");
+          }
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -89,7 +91,7 @@ export default function BalanceChart({ refreshKey = 0 }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [refreshKey]); // ⬅️ recarrega quando o refreshKey mudar
+  }, [refreshKey, router]); // ⬅️ recarrega quando o refreshKey mudar
 
   if (loading) return <p>Carregando gráfico...</p>;
 

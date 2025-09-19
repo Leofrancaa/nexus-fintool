@@ -10,6 +10,7 @@ import { NewIncomeModal } from "@/components/modals/newIncomeModal";
 import BalanceChart from "@/components/charts/balanceChart";
 import { ExpenseByCategoryChart } from "../../components/charts/expenseByCategoryChart";
 import { IncomeByCategoryPieChart } from "../../components/charts/incomeByCategoryPieChart";
+import { isAuthenticated } from "@/lib/auth";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -24,17 +25,10 @@ export default function Dashboard() {
   );
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        router.push("/login");
-      }
-    };
-
-    checkAuth();
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
   }, [router]);
 
   // 🔥 Handlers para mudança de mês/ano

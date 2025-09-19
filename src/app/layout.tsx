@@ -2,11 +2,11 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { Manrope } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import LayoutWrapper from "../components/navigation/layoutWrapper";
 import { DateProvider } from "../contexts/dateContext";
 import { ThemeProvider } from "@/contexts/themeContext";
-import SwUpdater from "@/components/swUpdater"; // se estiver usando
-import PwaLoginRedirect from "../components/pwaLoginRedirect";
+import AuthGuard from "@/components/authGuard";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -17,19 +17,16 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Nexus",
   description: "Controle seus gastos de forma simples e visual",
-  manifest: "/manifest.json",
-  // ❌ NÃO coloque themeColor aqui
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/icons/icon-192.png",
+  },
 };
 
-// ✅ coloque aqui
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  // Se quiser variar por tema do SO:
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#00D4D4" },
-    { media: "(prefers-color-scheme: dark)", color: "#00D4D4" },
-  ],
+  themeColor: "#00D4D4",
 };
 
 export default function RootLayout({
@@ -39,26 +36,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={manrope.variable}>
-      <head>
-        {/* iOS PWA metas */}
-
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta
-          name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent"
-        />
-
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-      </head>
       <body className="antialiased bg-gray-50 min-h-screen font-sans">
-        <PwaLoginRedirect />
-        <SwUpdater />
-        <DateProvider>
-          <ThemeProvider>
-            <LayoutWrapper>{children}</LayoutWrapper>
-          </ThemeProvider>
-        </DateProvider>
+        <AuthGuard>
+          <DateProvider>
+            <ThemeProvider>
+              <LayoutWrapper>{children}</LayoutWrapper>
+              <Toaster
+                position="top-center"
+                toastOptions={{
+                  duration: 4000,
+                  style: {
+                    background: "#1F2937",
+                    color: "#F9FAFB",
+                    border: "1px solid #374151",
+                  },
+                }}
+              />
+            </ThemeProvider>
+          </DateProvider>
+        </AuthGuard>
       </body>
     </html>
   );

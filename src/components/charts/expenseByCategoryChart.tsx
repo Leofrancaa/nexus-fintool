@@ -11,6 +11,8 @@ import {
   Cell,
 } from "recharts";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 interface CategoriaResumo {
   nome: string;
@@ -29,28 +31,38 @@ interface Props {
 export function ExpenseByCategoryChart({ mes, ano, refreshKey }: Props) {
   const [dados, setDados] = useState<CategoriaResumo[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     if (!mes || !ano || isNaN(mes) || isNaN(ano)) return;
 
     const fetchData = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/resumo-categorias?mes=${mes}&ano=${ano}`,
-          { credentials: "include" }
+        const res = await apiRequest(
+          `/api/expenses/resumo-categorias?mes=${mes}&ano=${ano}`
         );
+
+        if (!res.ok) throw new Error("Erro ao buscar dados");
+
         const json = await res.json();
         setDados(json);
       } catch (error) {
         console.error("Erro ao carregar gráfico de categorias", error);
-        toast.error("Erro ao carregar gráfico de categorias");
+        if (
+          error instanceof Error &&
+          error.message.includes("Sessão expirada")
+        ) {
+          router.push("/login");
+        } else {
+          toast.error("Erro ao carregar gráfico de categorias");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [mes, ano, refreshKey]);
+  }, [mes, ano, refreshKey, router]);
 
   if (loading)
     return <p className="text-[var(--chart-title)]">Carregando gráfico...</p>;

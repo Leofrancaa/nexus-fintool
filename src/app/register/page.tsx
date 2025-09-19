@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 import Button from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { register } from "@/lib/auth";
 
 export default function Signup() {
   const [nome, setNome] = useState("");
@@ -18,6 +19,7 @@ export default function Signup() {
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [showSenha, setShowSenha] = useState(false);
   const [showConfirmar, setShowConfirmar] = useState(false);
+
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,23 +35,20 @@ export default function Signup() {
       return;
     }
 
+    if (senha.length < 6) {
+      toast.error("A senha deve ter pelo menos 6 caracteres.");
+      return;
+    }
+
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nome, email, senha }),
-        }
-      );
+      const response = await register({ nome, email, senha });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Erro ao registrar");
+      if (response.success) {
+        toast.success("Cadastro realizado com sucesso!");
+        router.push("/login");
+      } else {
+        toast.error(response.message || "Erro ao registrar");
       }
-
-      toast.success("Cadastro realizado com sucesso!");
-      router.push("/login");
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -61,6 +60,7 @@ export default function Signup() {
 
   return (
     <main className="relative min-h-screen flex items-center justify-center bg-[#0E1116] px-4 overflow-hidden">
+      {/* Linhas de fundo */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         <svg
           className="w-full h-full"
@@ -93,39 +93,35 @@ export default function Signup() {
               y2="10%"
               stroke="rgba(255,255,255,0.05)"
             />
-            <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#00D4AA" />
-            <line x1="20%" y1="0" x2="90%" y2="100%" stroke="#3B82F6" />
           </g>
         </svg>
       </div>
 
-      <div className="relative z-10 w-full max-w-lg sm:max-w-md md:max-w-[60%] lg:max-w-[40%] xl:max-w-[30%] bg-[#111827] rounded-2xl shadow-lg px-6 sm:px-8 md:px-10 pb-8">
+      <div className="relative z-10 max-w-md w-full space-y-8">
+        {/* Logo */}
         <div className="text-center">
-          <div className="mx-auto mt-6 mb-6 w-[140px]">
-            <Image
-              src="/logo-nexus.png"
-              alt="Logo Nexus"
-              width={0}
-              height={0}
-              sizes="100vw"
-              style={{ width: "100%", height: "auto" }}
-              priority
-            />
-          </div>
-
-          <h1 className="text-xl font-semibold text-white">Criar conta</h1>
+          <Image
+            src="/logo.svg"
+            alt="Nexus Logo"
+            width={180}
+            height={60}
+            className="mx-auto"
+          />
+          <h2 className="mt-8 text-3xl font-bold text-white">Crie sua conta</h2>
+          <p className="mt-2 text-sm text-[#9CA3AF]">
+            Comece a controlar suas finanças hoje
+          </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5 mt-2 flex flex-col 3xl:gap-4"
-        >
+        {/* Formulário */}
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div>
             <Label htmlFor="nome">Nome completo</Label>
             <div className="relative mt-1">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
               <Input
                 id="nome"
+                type="text"
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
                 placeholder="Seu nome completo"
@@ -135,7 +131,7 @@ export default function Signup() {
           </div>
 
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">E-mail</Label>
             <div className="relative mt-1">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
               <Input
@@ -158,7 +154,7 @@ export default function Signup() {
                 type={showSenha ? "text" : "password"}
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
-                placeholder="Sua senha"
+                placeholder="Sua senha (mín. 6 caracteres)"
                 className="pl-10 pr-10 max-w-full"
               />
               <button

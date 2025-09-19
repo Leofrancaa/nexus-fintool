@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import PageTitle from "@/components/pageTitle";
 import { NewPlanModal } from "@/components/modals/newPlanModal";
 import PlanCard from "@/components/cards/planCard";
+import { apiRequest, isAuthenticated } from "@/lib/auth";
+import { toast } from "react-hot-toast";
 
 interface Plano {
   id: number;
@@ -21,27 +23,30 @@ export default function Plans() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/me`, {
-        credentials: "include",
-      });
-      if (!res.ok) router.push("/login");
-    };
+    if (!isAuthenticated()) {
+      router.push("/login");
+      return;
+    }
+  }, [router]);
 
-    checkAuth();
+  const fetchPlanos = useCallback(async () => {
+    try {
+      const res = await apiRequest("/api/plans");
+      if (!res.ok) throw new Error("Erro ao buscar planos");
+      const data = await res.json();
+      setPlanos(data);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Sessão expirada")) {
+        router.push("/login");
+      } else {
+        toast.error("Erro ao buscar planos");
+      }
+    }
   }, [router]);
 
   useEffect(() => {
-    const fetchPlanos = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/plans`, {
-        credentials: "include",
-      });
-      const data = await res.json();
-      setPlanos(data);
-    };
-
     fetchPlanos();
-  }, [refreshKey]);
+  }, [refreshKey, fetchPlanos]);
 
   return (
     <main

@@ -11,6 +11,7 @@ import Button from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RightShowcase } from "@/components/rightShowCase";
+import { login } from "@/lib/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -23,23 +24,14 @@ export default function Login() {
     if (!email || !senha) return toast.error("Preencha todos os campos.");
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ email, senha }),
-        }
-      );
+      const response = await login({ email, senha });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Erro ao fazer login");
+      if (response.success) {
+        toast.success("Login realizado com sucesso!");
+        router.push("/dashboard");
+      } else {
+        toast.error(response.message || "Erro ao fazer login");
       }
-
-      toast.success("Login realizado com sucesso!");
-      router.push("/dashboard");
     } catch (error: unknown) {
       toast.error(
         error instanceof Error ? error.message : "Ocorreu um erro desconhecido."

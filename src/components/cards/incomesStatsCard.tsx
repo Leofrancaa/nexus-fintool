@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { DollarSign, ListOrdered, Divide } from "lucide-react";
+import { apiRequest } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 interface Stats {
   total: number;
@@ -28,6 +30,7 @@ export function IncomeStatsCards({
     media: 0,
   });
 
+  const router = useRouter();
   const monthToUse = customMonth || String(new Date().getMonth() + 1);
   const yearToUse = customYear || String(new Date().getFullYear());
 
@@ -35,7 +38,8 @@ export function IncomeStatsCards({
     const fetchStats = async () => {
       try {
         const url = new URL(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/incomes/stats`
+          `/api/incomes/stats`,
+          process.env.NEXT_PUBLIC_API_URL
         );
         url.searchParams.set("month", monthToUse);
         url.searchParams.set("year", yearToUse);
@@ -44,9 +48,8 @@ export function IncomeStatsCards({
           url.searchParams.set("categoryId", categoryId);
         }
 
-        const res = await fetch(url.toString(), {
-          credentials: "include",
-        });
+        const res = await apiRequest(url.pathname + url.search);
+        if (!res.ok) throw new Error("Erro ao buscar estatísticas");
 
         const data = await res.json();
         setStats({
@@ -56,11 +59,17 @@ export function IncomeStatsCards({
         });
       } catch (error) {
         console.error("Erro ao buscar estatísticas de receitas:", error);
+        if (
+          error instanceof Error &&
+          error.message.includes("Sessão expirada")
+        ) {
+          router.push("/login");
+        }
       }
     };
 
     fetchStats();
-  }, [monthToUse, yearToUse, refreshKey, categoryId]);
+  }, [monthToUse, yearToUse, refreshKey, categoryId, router]);
 
   const cards = [
     {
