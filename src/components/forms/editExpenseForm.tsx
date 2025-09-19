@@ -46,7 +46,7 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
       try {
         const res = await apiRequest("/api/categories");
         const data = await res.json();
-        setCategorias(data);
+        setCategorias(data.data || []);
       } catch (error) {
         console.error("Erro ao carregar categorias:", error);
       }

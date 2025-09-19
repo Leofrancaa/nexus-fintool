@@ -26,8 +26,8 @@ export default function Categories() {
 
       if (!res.ok) throw new Error("Erro ao buscar categorias");
 
-      const data: Categoria[] = await res.json();
-      setCategorias(data);
+      const data = await res.json();
+      setCategorias(data.data || []);
     } catch (error) {
       if (error instanceof Error && error.message.includes("Sessão expirada")) {
         router.push("/login");

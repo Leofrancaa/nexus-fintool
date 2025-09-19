@@ -28,8 +28,8 @@ export default function Cards() {
     try {
       const res = await apiRequest("/api/cards");
       if (!res.ok) throw new Error();
-      const data: CardType[] = await res.json();
-      setCards(data);
+      const data = await res.json();
+      setCards(data.data || []);
     } catch (error) {
       if (error instanceof Error && error.message.includes("Sessão expirada")) {
         router.push("/login");

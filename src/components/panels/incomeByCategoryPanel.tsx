@@ -27,10 +27,10 @@ export function IncomesByCategoryPanel({ mes, ano, refreshKey }: Props) {
     const fetchData = async () => {
       try {
         const res = await apiRequest(
-          `/api/incomes/resumo-categorias?mes=${mes}&ano=${ano}`
+          `/api/incomes/category-resume?mes=${mes}&ano=${ano}`
         );
         const json = await res.json();
-        setDados(json);
+        setDados(json.data || []);
       } catch (error) {
         console.error(
           "Erro ao carregar resumo de categorias de receitas",

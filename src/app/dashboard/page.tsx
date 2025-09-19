@@ -1,7 +1,7 @@
+// src/app/dashboard/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import PageTitle from "@/components/pageTitle";
 import { DashboardCards } from "@/components/cards/dashboardStatsCard";
 import { DashboardFilter } from "@/components/filters/dashboardFilter";
@@ -10,13 +10,11 @@ import { NewIncomeModal } from "@/components/modals/newIncomeModal";
 import BalanceChart from "@/components/charts/balanceChart";
 import { ExpenseByCategoryChart } from "../../components/charts/expenseByCategoryChart";
 import { IncomeByCategoryPieChart } from "../../components/charts/incomeByCategoryPieChart";
-import { isAuthenticated } from "@/lib/auth";
 
 export default function Dashboard() {
-  const router = useRouter();
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // 🔥 Estados para controlar mês/ano personalizados
+  // Estados para controlar mês/ano personalizados
   const [customMonth, setCustomMonth] = useState<string>(
     String(new Date().getMonth() + 1)
   );
@@ -24,14 +22,7 @@ export default function Dashboard() {
     String(new Date().getFullYear())
   );
 
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      router.push("/login");
-      return;
-    }
-  }, [router]);
-
-  // 🔥 Handlers para mudança de mês/ano
+  // Handlers para mudança de mês/ano
   const handleMonthChange = (mes: string) => {
     setCustomMonth(mes);
   };
@@ -39,7 +30,6 @@ export default function Dashboard() {
   const handleYearChange = (ano: string) => {
     setCustomYear(ano);
   };
-
   return (
     <main className="flex flex-col min-h-screen bg-[var(--page-bg)] px-8 py-8 w-full lg:py-4">
       <div className="flex flex-col lg:flex-row w-full items-start justify-between gap-4 mt-14 lg:mt-0">
@@ -56,7 +46,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 🔥 NOVO: Filtro de Mês/Ano */}
+      {/* Filtro de Mês/Ano */}
       <div className="mt-6">
         <DashboardFilter
           onCustomMonthChange={handleMonthChange}

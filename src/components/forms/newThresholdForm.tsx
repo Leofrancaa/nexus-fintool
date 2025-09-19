@@ -40,7 +40,8 @@ export function NewThresholdForm({
         const res = await apiRequest("/api/categories");
 
         if (!res.ok) throw new Error();
-        const data: Categoria[] = await res.json();
+        const responseData = await res.json();
+        const data: Categoria[] = responseData.data || [];
         const pais = data.filter(
           (cat) => !cat.parent_id && cat.tipo === "despesa"
         );

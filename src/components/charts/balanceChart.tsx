@@ -42,14 +42,16 @@ export default function BalanceChart({ refreshKey = 0 }: Props) {
         setLoading(true);
 
         const [despRes, recRes] = await Promise.all([
-          apiRequest("/api/expenses/despesas/mes"),
-          apiRequest("/api/incomes/receitas/mes"),
+          apiRequest("/api/expenses/by-month"),
+          apiRequest("/api/incomes/by-month"),
         ]);
 
         if (!despRes.ok || !recRes.ok) throw new Error("Erro ao buscar dados");
 
-        const despesas: ReceitaOuDespesa[] = await despRes.json();
-        const receitas: ReceitaOuDespesa[] = await recRes.json();
+        const despesasRes = await despRes.json();
+        const receitasRes = await recRes.json();
+        const despesas: ReceitaOuDespesa[] = despesasRes.data || [];
+        const receitas: ReceitaOuDespesa[] = receitasRes.data || [];
 
         const meses = [
           "Jan",

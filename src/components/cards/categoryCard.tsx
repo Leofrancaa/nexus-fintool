@@ -44,13 +44,12 @@ export default function CategoryCard({
         const res = await apiRequest(
           `/api/${
             tipo === "receita" ? "incomes" : "expenses"
-          }/resumo-categorias?mes=${
-            now.getMonth() + 1
-          }&ano=${now.getFullYear()}`
+          }/category-resume?mes=${now.getMonth() + 1}&ano=${now.getFullYear()}`
         );
         if (!res.ok) throw new Error("Erro ao buscar estatísticas");
         const data = await res.json();
-        const categoria = data.find((c: Categoria) => c.nome === nome);
+        const categorias = data.data || [];
+        const categoria = categorias.find((c: Categoria) => c.nome === nome);
         if (categoria) {
           setStats({
             total: categoria.total,
