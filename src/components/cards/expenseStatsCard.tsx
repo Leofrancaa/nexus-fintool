@@ -81,7 +81,9 @@ export function ExpenseStatsCards({
     },
     {
       title: "Despesas Fixas",
-      value: stats.fixas,
+      value: `R$ ${Number(stats.fixas).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+      })}`,
       icon: <CalendarDays className="text-yellow-400" />,
       bg: "bg-[var(--card-icon-bg-yellow)]",
     },
