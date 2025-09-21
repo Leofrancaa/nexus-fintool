@@ -1,5 +1,5 @@
 // src/lib/auth.ts
-const API_URL = "http://localhost:3001";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 // Tipos
 interface LoginResponse {
@@ -32,27 +32,36 @@ interface ApiError {
 // Gerenciamento de token no localStorage
 const TOKEN_KEY = 'nexus_token';
 
+// Função para logging condicional (só em development)
+const debugLog = (message: string, data?: unknown) => {
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`[AUTH] ${message}`, data || '');
+    }
+};
+
 export const tokenManager = {
     get: (): string | null => {
         if (typeof window === 'undefined') return null;
         const token = localStorage.getItem(TOKEN_KEY);
-        console.log('tokenManager.get() - Token recuperado:', token ? `TOKEN EXISTE (${token.length} chars)` : 'TOKEN NÃO EXISTE');
+        debugLog('tokenManager.get() - Token recuperado:', token ? `TOKEN EXISTE (${token.length} chars)` : 'TOKEN NÃO EXISTE');
         return token;
     },
 
     set: (token: string): void => {
         if (typeof window === 'undefined') return;
-        console.log('tokenManager.set() - Salvando token:', token ? `TOKEN VÁLIDO (${token.length} chars)` : 'TOKEN VAZIO');
+        debugLog('tokenManager.set() - Salvando token:', token ? `TOKEN VÁLIDO (${token.length} chars)` : 'TOKEN VAZIO');
         localStorage.setItem(TOKEN_KEY, token);
 
-        // Verificar imediatamente se foi salvo
-        const saved = localStorage.getItem(TOKEN_KEY);
-        console.log('tokenManager.set() - Verificação pós-save:', saved === token ? 'SUCESSO' : 'FALHA');
+        // Verificar imediatamente se foi salvo (só em dev)
+        if (process.env.NODE_ENV === 'development') {
+            const saved = localStorage.getItem(TOKEN_KEY);
+            debugLog('tokenManager.set() - Verificação pós-save:', saved === token ? 'SUCESSO' : 'FALHA');
+        }
     },
 
     remove: (): void => {
         if (typeof window === 'undefined') return;
-        console.log('tokenManager.remove() - Removendo token');
+        debugLog('tokenManager.remove() - Removendo token');
         localStorage.removeItem(TOKEN_KEY);
     }
 };
@@ -65,10 +74,10 @@ const createHeaders = (includeAuth = true): Headers => {
     if (includeAuth) {
         const token = tokenManager.get();
         if (token) {
-            console.log('createHeaders() - Adicionando Authorization header com Bearer token');
+            debugLog('createHeaders() - Adicionando Authorization header com Bearer token');
             headers.set('Authorization', `Bearer ${token}`);
         } else {
-            console.log('createHeaders() - NENHUM TOKEN DISPONÍVEL para Authorization header');
+            debugLog('createHeaders() - NENHUM TOKEN DISPONÍVEL para Authorization header');
         }
     }
 
@@ -91,7 +100,7 @@ export const register = async (data: {
     email: string;
     senha: string;
 }): Promise<RegisterResponse> => {
-    console.log('register() - Iniciando registro para:', data.email);
+    debugLog('register() - Iniciando registro para:', data.email);
 
     const response = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
@@ -99,16 +108,16 @@ export const register = async (data: {
         body: JSON.stringify(data),
     });
 
-    console.log('register() - Status da resposta:', response.status);
+    debugLog('register() - Status da resposta:', response.status);
 
     if (!response.ok) {
-        console.log('register() - Erro na resposta:', response.status, response.statusText);
+        debugLog('register() - Erro na resposta:', `${response.status} ${response.statusText}`);
         await handleApiError(response);
     }
 
     // Debug: Vamos ver o que está chegando do servidor
     const responseText = await response.text();
-    console.log('register() - Resposta raw do servidor:', responseText);
+    debugLog('register() - Resposta raw do servidor:', responseText);
 
     let result: RegisterResponse;
     try {
@@ -118,7 +127,7 @@ export const register = async (data: {
         throw new Error('Resposta inválida do servidor');
     }
 
-    console.log('register() - Resposta parseada:', {
+    debugLog('register() - Resposta parseada:', {
         success: result.success,
         hasUser: !!result.user,
         hasToken: !!result.token,
@@ -128,10 +137,10 @@ export const register = async (data: {
 
     // Salvar token se fornecido no registro
     if (result.success && result.token) {
-        console.log('register() - Salvando token no localStorage');
+        debugLog('register() - Salvando token no localStorage');
         tokenManager.set(result.token);
     } else {
-        console.log('register() - Registro bem-sucedido mas sem token');
+        debugLog('register() - Registro bem-sucedido mas sem token');
     }
 
     return result;
@@ -141,7 +150,7 @@ export const login = async (data: {
     email: string;
     senha: string;
 }): Promise<LoginResponse> => {
-    console.log('login() - Iniciando login para:', data.email);
+    debugLog('login() - Iniciando login para:', data.email);
 
     const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
@@ -149,16 +158,16 @@ export const login = async (data: {
         body: JSON.stringify(data),
     });
 
-    console.log('login() - Status da resposta:', response.status);
+    debugLog('login() - Status da resposta:', response.status);
 
     if (!response.ok) {
-        console.log('login() - Erro na resposta:', response.status, response.statusText);
+        debugLog('login() - Erro na resposta:', `${response.status} ${response.statusText}`);
         await handleApiError(response);
     }
 
     // Debug: Vamos ver o que está chegando do servidor
     const responseText = await response.text();
-    console.log('login() - Resposta raw do servidor:', responseText);
+    debugLog('login() - Resposta raw do servidor:', responseText);
 
     let result: LoginResponse;
     try {
@@ -168,8 +177,8 @@ export const login = async (data: {
         throw new Error('Resposta inválida do servidor');
     }
 
-    console.log('login() - Resposta parseada completa:', result);
-    console.log('login() - Análise da resposta:', {
+    debugLog('login() - Resposta parseada completa:', result);
+    debugLog('login() - Análise da resposta:', {
         success: result.success,
         hasUser: !!result.user,
         hasToken: !!result.token,
@@ -181,26 +190,30 @@ export const login = async (data: {
 
     // Salvar token no localStorage
     if (result.success && result.token) {
-        console.log('login() - Token encontrado, salvando no localStorage');
+        debugLog('login() - Token encontrado, salvando no localStorage');
         tokenManager.set(result.token);
 
-        // Verificar se foi salvo
-        const savedToken = tokenManager.get();
-        console.log('login() - Token salvo com sucesso:', !!savedToken);
+        // Verificar se foi salvo (só em desenvolvimento)
+        if (process.env.NODE_ENV === 'development') {
+            const savedToken = tokenManager.get();
+            debugLog('login() - Token salvo com sucesso:', !!savedToken);
 
-        if (savedToken !== result.token) {
-            console.error('login() - ERRO: Token salvo não confere com o recebido!');
+            if (savedToken !== result.token) {
+                console.error('login() - ERRO: Token salvo não confere com o recebido!');
+            }
         }
     } else if (result.success && !result.token) {
         console.error('login() - ERRO CRÍTICO: Login bem-sucedido mas sem token!');
-        console.error('login() - Resposta completa:', JSON.stringify(result, null, 2));
+        if (process.env.NODE_ENV === 'development') {
+            console.error('login() - Resposta completa:', JSON.stringify(result, null, 2));
+        }
     }
 
     return result;
 };
 
 export const logout = (): void => {
-    console.log('logout() - Removendo token e fazendo logout');
+    debugLog('logout() - Removendo token e fazendo logout');
     tokenManager.remove();
     // Redirecionar para login será feito no componente
 };
@@ -208,8 +221,8 @@ export const logout = (): void => {
 // Verificar se o usuário está autenticado
 export const isAuthenticated = (): boolean => {
     const token = tokenManager.get();
-    const authenticated = !!token; // Correção: removida a negação dupla
-    console.log('isAuthenticated() - Verificando autenticação:', {
+    const authenticated = !!token;
+    debugLog('isAuthenticated() - Verificando autenticação:', {
         hasToken: !!token,
         authenticated,
         tokenLength: token ? token.length : 0
@@ -223,7 +236,7 @@ export const apiRequest = async (
     options: RequestInit = {}
 ): Promise<Response> => {
     const url = endpoint.startsWith('http') ? endpoint : `${API_URL}${endpoint}`;
-    console.log('apiRequest() - Fazendo requisição para:', endpoint);
+    debugLog('apiRequest() - Fazendo requisição para:', endpoint);
 
     const headers = createHeaders(true);
 
@@ -240,11 +253,11 @@ export const apiRequest = async (
         headers,
     });
 
-    console.log('apiRequest() - Resposta:', response.status, response.statusText);
+    debugLog('apiRequest() - Resposta:', `${response.status} ${response.statusText}`);
 
     // Se receber 401, o token provavelmente expirou
     if (response.status === 401) {
-        console.log('apiRequest() - Token expirado (401), removendo e redirecionando');
+        debugLog('apiRequest() - Token expirado (401), removendo e redirecionando');
         tokenManager.remove();
         throw new Error('Sessão expirada. Faça login novamente.');
     }
