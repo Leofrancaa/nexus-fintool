@@ -17,8 +17,8 @@ const fetchGastoPorCategoria = async (categoryId: number): Promise<number> => {
     );
     if (!res.ok) throw new Error();
     const data = await res.json();
-    return data.total || 0;
-  } catch {
+    return data.data?.total || data.total || 0;
+  } catch (error) {
     return 0;
   }
 };
