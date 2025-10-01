@@ -65,8 +65,8 @@ export function IncomeByCategoryPieChart({ mes, ano, refreshKey }: Props) {
     );
 
   return (
-    <div className="bg-[var(--chart-bg)] p-6 rounded-xl shadow-lg w-full lg:max-w-[35%] flex flex-col lg:flex-row gap-2 border border-[var(--card-border)]">
-      <div className="flex-1">
+    <div className="bg-[var(--chart-bg)] p-6 rounded-xl shadow-lg w-full lg:w-[40%] flex flex-col lg:flex-row gap-4 border border-[var(--card-border)]">
+      <div className="flex-shrink-0 lg:w-[60%]">
         <h2 className="text-[var(--chart-title)] text-lg font-semibold mb-4">
           Receitas por Categoria
         </h2>
@@ -105,21 +105,21 @@ export function IncomeByCategoryPieChart({ mes, ano, refreshKey }: Props) {
       </div>
 
       {/* ✅ Legenda */}
-      <div className="flex flex-col justify-center gap-3 text-sm text-[var(--chart-legend-text)] w-full lg:w-[40%] ">
+      <div className="flex flex-col justify-center gap-3 text-sm text-[var(--chart-legend-text)] flex-1">
         {dados.map((item, i) => (
           <div
             key={i}
-            className="flex items-center justify-between border-b pb-2"
+            className="flex items-start justify-between border-b pb-2"
             style={{ borderColor: "var(--chart-legend-border)" }}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-start gap-2">
               <span
-                className="w-3.5 h-3.5 rounded-full"
+                className="w-3.5 h-3.5 rounded-full mt-0.5"
                 style={{ backgroundColor: item.cor || "#22d3ee" }}
               />
               <span className="font-medium">{item.nome}</span>
             </div>
-            <div className="text-right">
+            <div className="text-right flex-shrink-0">
               <p className="text-green-400 font-bold">
                 {item.total.toLocaleString("pt-BR", {
                   style: "currency",

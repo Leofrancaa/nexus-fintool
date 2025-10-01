@@ -12,6 +12,7 @@ import { apiRequest, isAuthenticated } from "@/lib/auth";
 export default function Categories() {
   const router = useRouter();
   const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -56,21 +57,23 @@ export default function Categories() {
           subTitle="Gerencie e acompanhe suas categorias"
         />
         <NewCategoryModal
-          onCreated={(novaCategoria) =>
-            setCategorias((prev) => [novaCategoria, ...prev])
-          }
+          onCreated={(novaCategoria) => {
+            setCategorias((prev) => [novaCategoria, ...prev]);
+            setRefreshTrigger(prev => prev + 1);
+          }}
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
         {categoriasPai.map((categoria) => (
           <CategoryCard
-            key={categoria.id}
+            key={`${categoria.id}-${refreshTrigger}`}
             id={categoria.id}
             nome={categoria.nome}
             cor={categoria.cor}
             tipo={categoria.tipo}
             subcategorias={getSubcategorias(categoria.id)}
+            refreshTrigger={refreshTrigger}
             onDelete={(deletedId) =>
               setCategorias((prev) =>
                 prev.filter((cat) => cat.id !== deletedId)

@@ -10,6 +10,7 @@ import { NewIncomeModal } from "@/components/modals/newIncomeModal";
 import BalanceChart from "@/components/charts/balanceChart";
 import { ExpenseByCategoryChart } from "../../components/charts/expenseByCategoryChart";
 import { IncomeByCategoryPieChart } from "../../components/charts/incomeByCategoryPieChart";
+import { DashboardInsightsCard } from "@/components/cards/dashboardInsightsCard";
 
 export default function Dashboard() {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -46,12 +47,30 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Filtro de Mês/Ano */}
-      <div className="mt-6">
-        <DashboardFilter
-          onCustomMonthChange={handleMonthChange}
-          onCustomYearChange={handleYearChange}
-        />
+      {/* Filtro de Mês/Ano + Cards de Metas + Alertas de Limites */}
+      <div className="mt-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+        <div className="w-full">
+          <DashboardFilter
+            onCustomMonthChange={handleMonthChange}
+            onCustomYearChange={handleYearChange}
+          />
+        </div>
+        <div className="flex flex-col">
+          <DashboardInsightsCard
+            customMonth={customMonth}
+            customYear={customYear}
+            refreshKey={refreshKey}
+            onlyGoals
+          />
+        </div>
+        <div className="flex flex-col">
+          <DashboardInsightsCard
+            customMonth={customMonth}
+            customYear={customYear}
+            refreshKey={refreshKey}
+            onlyAlerts
+          />
+        </div>
       </div>
 
       {/* Cards de Estatísticas com mês/ano personalizados */}
@@ -78,6 +97,16 @@ export default function Dashboard() {
           mes={Number(customMonth)}
           ano={Number(customYear)}
           refreshKey={refreshKey}
+        />
+      </div>
+
+      {/* Cards de Cartão e Plano */}
+      <div className="mt-10 w-full">
+        <DashboardInsightsCard
+          customMonth={customMonth}
+          customYear={customYear}
+          refreshKey={refreshKey}
+          onlyCards
         />
       </div>
     </main>

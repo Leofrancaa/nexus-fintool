@@ -27,9 +27,9 @@ const navItems = [
   { name: "Receitas", href: "/receitas", icon: TrendingUp },
   { name: "Cartões", href: "/cartoes", icon: CreditCard },
   { name: "Categorias", href: "/categorias", icon: FolderKanban },
-  { name: "Limites", href: "/limites", icon: Gauge },
+  { name: "Limites e Metas", href: "/limites", icon: Gauge },
   { name: "Planos", href: "/planos", icon: Target },
-  { name: "Manual", href: "/manual", icon: BookOpen }, // ⬅️ NOVO ITEM
+  { name: "Manual", href: "/manual", icon: BookOpen },
 ];
 
 export function Sidebar() {
