@@ -145,7 +145,9 @@ export default function Limits() {
   };
 
   const handleGoalEdit = (goal: Goal) => {
-    toast.info("Edição de metas em desenvolvimento");
+    toast("Edição de metas em desenvolvimento", {
+      icon: "ℹ️",
+    });
   };
 
   useEffect(() => {
