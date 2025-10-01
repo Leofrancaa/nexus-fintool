@@ -18,7 +18,7 @@ function useTypewriter(
 
   useEffect(() => {
     frasesRef.current = frases;
-  }, [frasesKey]);
+  }, [frasesKey, frases]);
 
   useEffect(() => {
     const arr = frasesRef.current;
