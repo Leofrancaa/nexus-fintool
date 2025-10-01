@@ -56,7 +56,7 @@ export default function CategoryCard({
         if (!res.ok) throw new Error("Erro ao buscar estatísticas");
         const data = await res.json();
         const categorias = data.data || [];
-        const categoria = categorias.find((c: any) => c.id === id || c.nome === nome);
+        const categoria = categorias.find((c: { id: number; nome: string; total: number; quantidade: number; percentual: number }) => c.id === id || c.nome === nome);
 
         if (categoria) {
           // Garantir que todos os valores sejam números válidos

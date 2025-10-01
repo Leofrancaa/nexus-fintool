@@ -40,7 +40,7 @@ export function NewGoalModal({ onCreated }: Props) {
       const res = await apiRequest(`/api/categories?tipo=receita`);
       const data = await res.json();
       setCategories(data.data || []);
-    } catch (error) {
+    } catch {
       toast.error("Erro ao carregar categorias");
     }
   };
@@ -81,8 +81,8 @@ export function NewGoalModal({ onCreated }: Props) {
         ano: String(now.getFullYear()),
       });
       onCreated();
-    } catch (error: any) {
-      toast.error(error.message || "Erro ao criar meta");
+    } catch (error) {
+      toast.error((error as Error).message || "Erro ao criar meta");
     } finally {
       setLoading(false);
     }

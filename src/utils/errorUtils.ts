@@ -125,7 +125,7 @@ export const generateToastId = (action: string, entity: string, id?: string | nu
  */
 export const validateRequiredFields = (fields: Record<string, unknown>): string | null => {
     const emptyFields = Object.entries(fields)
-        .filter(([key, value]) => !value || (typeof value === 'string' && value.trim() === ''))
+        .filter(([, value]) => !value || (typeof value === 'string' && value.trim() === ''))
         .map(([key]) => key);
 
     if (emptyFields.length === 0) return null;
