@@ -48,9 +48,14 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
         const res = await apiRequest("/api/categories");
 
         if (!res.ok) throw new Error();
-        const data: Categoria[] = await res.json();
+        const response = await res.json();
+        console.log('[newCategoryForm] Categories response:', response);
+
+        // Handle both direct array and wrapped response formats
+        const data: Categoria[] = response.data || response;
         setCategoriasPai(data.filter((cat) => !cat.parent_id));
-      } catch {
+      } catch (error) {
+        console.log('[newCategoryForm] Error fetching categories:', error);
         toast.error("Erro ao carregar categorias existentes", {
           id: "load-parent-categories",
         });

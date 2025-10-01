@@ -141,3 +141,18 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
+
+/* Estilo para ícone de calendário em inputs type="date" no tema dark */
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+/* Cursor pointer para todos os botões */
+button {
+  cursor: pointer;
+}

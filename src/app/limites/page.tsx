@@ -3,12 +3,31 @@
 import { useEffect, useState, useCallback } from "react";
 import PageTitle from "@/components/pageTitle";
 import { NewThresholdModal } from "@/components/modals/newThresholdModal";
+import { NewGoalModal } from "@/components/modals/newGoalModal";
 import ThresholdCard from "@/components/cards/thresholdCard";
+import GoalCard from "@/components/cards/goalCard";
 import { Threshold } from "@/types/threshold";
 import { toast } from "react-hot-toast";
 import { EditThresholdModal } from "@/components/modals/editThresholdModal";
 import { useRouter } from "next/navigation";
 import { apiRequest, isAuthenticated } from "@/lib/auth";
+import ConfirmDialog from "@/components/ui/confirmDialog";
+
+interface Goal {
+  id: number;
+  nome: string;
+  tipo: string;
+  valor_alvo: number;
+  valor_atual: number;
+  progresso: number;
+  mes: number;
+  ano: number;
+  categoria?: {
+    id: number;
+    nome: string;
+    cor: string;
+  };
+}
 
 const fetchGastoPorCategoria = async (categoryId: number): Promise<number> => {
   try {
@@ -34,37 +53,104 @@ export default function Limits() {
   }, [router]);
 
   const [limites, setLimites] = useState<Threshold[]>([]);
+  const [metas, setMetas] = useState<Goal[]>([]);
   const [gastos, setGastos] = useState<Record<number, number>>({});
   const [editando, setEditando] = useState<Threshold | null>(null);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [thresholdToDelete, setThresholdToDelete] = useState<Threshold | null>(null);
+  const [goalToDelete, setGoalToDelete] = useState<Goal | null>(null);
+  const [goalConfirmDialogOpen, setGoalConfirmDialogOpen] = useState(false);
 
-  const carregarLimites = useCallback(async () => {
+  const carregarDados = useCallback(async () => {
     try {
-      const res = await apiRequest("/api/thresholds");
-      if (!res.ok) throw new Error();
+      // Carregar limites
+      const resLimites = await apiRequest("/api/thresholds");
+      if (!resLimites.ok) throw new Error();
 
-      const responseData = await res.json();
-      const data: Threshold[] = responseData.data || responseData;
-      setLimites(data);
+      const responseDataLimites = await resLimites.json();
+      const dataLimites: Threshold[] = responseDataLimites.data || responseDataLimites;
+      setLimites(dataLimites);
 
       const gastosTemp: Record<number, number> = {};
-      for (const lim of data) {
+      for (const lim of dataLimites) {
         gastosTemp[lim.category_id] = await fetchGastoPorCategoria(
           lim.category_id
         );
       }
       setGastos(gastosTemp);
+
+      // Carregar metas
+      const now = new Date();
+      const resMetas = await apiRequest(`/api/goals?mes=${now.getMonth() + 1}&ano=${now.getFullYear()}`);
+      if (!resMetas.ok) throw new Error();
+
+      const responseDataMetas = await resMetas.json();
+      const dataMetas: Goal[] = responseDataMetas.data || [];
+      setMetas(dataMetas);
     } catch (error) {
       if (error instanceof Error && error.message.includes("Sessão expirada")) {
         router.push("/login");
       } else {
-        toast.error("Erro ao carregar limites");
+        toast.error("Erro ao carregar dados");
       }
     }
   }, [router]);
 
+  const handleDelete = (threshold: Threshold) => {
+    setThresholdToDelete(threshold);
+    setConfirmDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!thresholdToDelete) return;
+
+    try {
+      const res = await apiRequest(`/api/thresholds/${thresholdToDelete.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error();
+
+      toast.success("Limite deletado com sucesso!");
+      carregarDados();
+    } catch (error) {
+      toast.error("Erro ao deletar limite");
+    } finally {
+      setThresholdToDelete(null);
+    }
+  };
+
+  const handleGoalDelete = (goal: Goal) => {
+    setGoalToDelete(goal);
+    setGoalConfirmDialogOpen(true);
+  };
+
+  const confirmGoalDelete = async () => {
+    if (!goalToDelete) return;
+
+    try {
+      const res = await apiRequest(`/api/goals/${goalToDelete.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error();
+
+      toast.success("Meta deletada com sucesso!");
+      carregarDados();
+    } catch (error) {
+      toast.error("Erro ao deletar meta");
+    } finally {
+      setGoalToDelete(null);
+    }
+  };
+
+  const handleGoalEdit = (goal: Goal) => {
+    toast.info("Edição de metas em desenvolvimento");
+  };
+
   useEffect(() => {
-    carregarLimites();
-  }, [carregarLimites]);
+    carregarDados();
+  }, [carregarDados]);
 
   return (
     <main
@@ -73,13 +159,35 @@ export default function Limits() {
     >
       <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-14 lg:mt-0">
         <PageTitle
-          title="Limites"
-          subTitle="Gerencie e acompanhe seus limites"
+          title="Limites e Metas"
+          subTitle="Gerencie e acompanhe seus limites e metas"
         />
-        <NewThresholdModal onCreated={carregarLimites} />
+        <div className="flex gap-2">
+          <NewThresholdModal onCreated={carregarDados} />
+          <NewGoalModal onCreated={carregarDados} />
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+      {/* Seção de Metas */}
+      {metas.length > 0 && (
+        <>
+          <h2 className="text-2xl font-bold text-[var(--card-text)] mt-8 mb-4">Metas</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {metas.map((meta) => (
+              <GoalCard
+                key={meta.id}
+                goal={meta}
+                onEdit={handleGoalEdit}
+                onDelete={handleGoalDelete}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Seção de Limites */}
+      <h2 className="text-2xl font-bold text-[var(--card-text)] mt-8 mb-4">Limites</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {limites.map((limite) =>
           limite.categoria ? (
             <ThresholdCard
@@ -87,6 +195,7 @@ export default function Limits() {
               threshold={limite}
               gastoAtual={gastos[limite.category_id] || 0}
               onEdit={(limite) => setEditando(limite)}
+              onDelete={handleDelete}
             />
           ) : (
             <div
@@ -108,9 +217,27 @@ export default function Limits() {
         <EditThresholdModal
           threshold={editando}
           onClose={() => setEditando(null)}
-          onUpdated={carregarLimites}
+          onUpdated={carregarDados}
         />
       )}
+
+      <ConfirmDialog
+        open={confirmDialogOpen}
+        title="Deletar Limite"
+        description={`Deseja realmente deletar o limite de ${thresholdToDelete?.categoria?.nome}?`}
+        onCancel={() => setThresholdToDelete(null)}
+        onConfirm={confirmDelete}
+        onOpenChange={setConfirmDialogOpen}
+      />
+
+      <ConfirmDialog
+        open={goalConfirmDialogOpen}
+        title="Deletar Meta"
+        description={`Deseja realmente deletar a meta "${goalToDelete?.nome}"?`}
+        onCancel={() => setGoalToDelete(null)}
+        onConfirm={confirmGoalDelete}
+        onOpenChange={setGoalConfirmDialogOpen}
+      />
     </main>
   );
 }

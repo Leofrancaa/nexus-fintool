@@ -19,6 +19,7 @@ interface CategoryCardProps {
   cor: string;
   tipo: "despesa" | "receita";
   subcategorias: Categoria[];
+  refreshTrigger?: number;
   onDelete: (id: number) => void;
 }
 
@@ -28,6 +29,7 @@ export default function CategoryCard({
   cor,
   tipo,
   subcategorias,
+  refreshTrigger,
   onDelete,
 }: CategoryCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -54,7 +56,7 @@ export default function CategoryCard({
         if (!res.ok) throw new Error("Erro ao buscar estatísticas");
         const data = await res.json();
         const categorias = data.data || [];
-        const categoria = categorias.find((c: Categoria) => c.nome === nome);
+        const categoria = categorias.find((c: any) => c.id === id || c.nome === nome);
 
         if (categoria) {
           // Garantir que todos os valores sejam números válidos
@@ -95,7 +97,7 @@ export default function CategoryCard({
     };
 
     fetchStats();
-  }, [nome, tipo, router]);
+  }, [id, nome, tipo, router, refreshTrigger]);
 
   const handleDelete = async (categoryId: number) => {
     if (isDeleting) return;

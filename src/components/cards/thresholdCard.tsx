@@ -4,17 +4,20 @@ import { Threshold } from "@/types/threshold";
 import { Progress } from "@/components/ui/progress";
 import { BadgeAlert } from "lucide-react";
 import EditButton from "@/components/ui/editButton";
+import DeleteButton from "@/components/ui/deleteButton";
 
 interface Props {
   threshold: Threshold;
   gastoAtual: number;
   onEdit: (threshold: Threshold) => void;
+  onDelete: (threshold: Threshold) => void;
 }
 
 export default function ThresholdCard({
   threshold,
   gastoAtual,
   onEdit,
+  onDelete,
 }: Props) {
   const limite = threshold.valor;
   const excedeu = gastoAtual - limite;
@@ -91,11 +94,14 @@ export default function ThresholdCard({
             )}
           </div>
 
-          <EditButton
-            onClick={() => onEdit(threshold)}
-            title="Editar limite"
-            size="md"
-          />
+          <div className="flex gap-2 items-center">
+            <DeleteButton onClick={() => onDelete(threshold)} />
+            <EditButton
+              onClick={() => onEdit(threshold)}
+              title="Editar limite"
+              size="md"
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -74,7 +74,7 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative" style={nexusGradient}>
         <div className="absolute inset-0 pointer-events-none" />
-        <div className="mx-auto max-w-7xl px-4 py-20 md:py-28">
+        <div className="mx-auto max-w-7xl px-4 py-12 md:py-16">
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             <div>
               <span className="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full border border-white/15 text-white/90 bg-white/10 dark:bg-white/10 mb-4">
@@ -151,7 +151,7 @@ export default function LandingPage() {
       </section>
 
       {/* Recursos */}
-      <section id="recursos" className="mx-auto max-w-7xl px-4 py-16">
+      <section id="recursos" className="mx-auto max-w-7xl px-4 py-12">
         <h2 className="text-2xl md:text-3xl font-bold">
           O que você pode fazer com o Nexus
         </h2>
@@ -211,7 +211,7 @@ export default function LandingPage() {
       </section>
 
       {/* Como funciona */}
-      <section id="como-funciona" className="mx-auto max-w-7xl px-4 py-16">
+      <section id="como-funciona" className="mx-auto max-w-7xl px-4 py-12">
         <h2 className="text-2xl md:text-3xl font-bold">Como funciona</h2>
         <div className="mt-8 grid lg:grid-cols-3 gap-5">
           {[
@@ -242,7 +242,7 @@ export default function LandingPage() {
       </section>
 
       {/* Depoimentos */}
-      <section id="depoimentos" className="mx-auto max-w-7xl px-4 py-16">
+      <section id="depoimentos" className="mx-auto max-w-7xl px-4 py-12">
         <h2 className="text-2xl md:text-3xl font-bold">Quem usa, recomenda</h2>
         <div className="mt-8 grid md:grid-cols-3 gap-5">
           {[
@@ -276,7 +276,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA final */}
-      <section className="mx-auto max-w-7xl px-4 pb-16">
+      <section className="mx-auto max-w-7xl px-4 pb-12">
         <div className="rounded-3xl p-6 md:p-10 border bg-[var(--card-bg)] border-[var(--card-border)] flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <h3 className="text-2xl font-bold">
@@ -303,7 +303,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 py-16">
+      <section className="max-w-7xl mx-auto px-4 py-8">
         <EmailForm />
       </section>
 
