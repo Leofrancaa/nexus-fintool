@@ -41,7 +41,7 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
     expense.metodo_pagamento || ""
   );
   const [data, setData] = useState(
-    expense.data ? new Date(expense.data).toISOString().split("T")[0] : ""
+    expense.data ? expense.data.split("T")[0] : ""
   );
   const [categoriaId, setCategoriaId] = useState(
     String(expense.category_id || "")

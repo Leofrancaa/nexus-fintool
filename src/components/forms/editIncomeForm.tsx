@@ -32,7 +32,7 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
   const [fonte, setFonte] = useState(income.fonte || "");
   const [nota, setNota] = useState(income.observacoes || "");
   const [data, setData] = useState(
-    income.data ? new Date(income.data).toISOString().split("T")[0] : ""
+    income.data ? income.data.split("T")[0] : ""
   );
   const [categoriaId, setCategoriaId] = useState(
     String(income.category_id || "")
