@@ -49,32 +49,64 @@ export default function ManualPage() {
     () => [
       {
         id: "intro",
-        title: "Introdução",
+        title: "Introdução ao Nexus",
         body: (
           <>
             <p className="mb-3">
-              O <strong>Nexus</strong> é sua plataforma de{" "}
-              <strong>gestão financeira pessoal</strong>. Aqui você registra
-              despesas e receitas, gerencia cartões, define limites por
-              categoria, analisa gráficos e acompanha investimentos.
+              Bem-vindo ao <strong>Nexus</strong>! Esta é uma ferramenta criada para ajudar você a{" "}
+              <strong>organizar suas finanças pessoais</strong> de forma simples e prática.
+              Com o Nexus, você pode controlar onde seu dinheiro está sendo gasto, planejar
+              seus gastos futuros e ter uma visão clara da sua saúde financeira.
             </p>
             <p className="mb-3">
-              A navegação é feita pelo menu lateral. Todas as telas têm{" "}
-              <strong>filtros de mês/ano</strong>, cards de resumo e listas com
-              ações rápidas (editar, excluir, ver histórico).
+              O Nexus funciona como um assistente financeiro pessoal, onde você pode:
             </p>
-            <ul className="list-disc pl-5 space-y-1">
+            <ul className="list-disc pl-5 space-y-2 mb-3">
               <li>
-                <strong>Dados em tempo real</strong>: os totais e gráficos se
-                atualizam após cada criação/edição/exclusão.
+                <strong>Anotar seus gastos</strong>: Registre todas as suas compras,
+                contas e despesas do dia a dia, seja em dinheiro, pix ou cartão de crédito.
               </li>
               <li>
-                <strong>Consistência</strong>: regras de cartões e limites
-                garantem integridade (sem faturas inconsistentes).
+                <strong>Acompanhar sua renda</strong>: Registre seu salário, freelas
+                e outras fontes de receita para saber quanto você ganhou no mês.
               </li>
               <li>
-                <strong>Acessibilidade</strong>: suporte a tema claro/escuro e
-                layout responsivo.
+                <strong>Gerenciar cartões de crédito</strong>: Controle o limite,
+                veja quanto ainda pode gastar e saiba quando vence cada fatura.
+              </li>
+              <li>
+                <strong>Organizar por categorias</strong>: Agrupe seus gastos
+                (exemplo: alimentação, transporte, lazer) para saber onde você gasta mais.
+              </li>
+              <li>
+                <strong>Definir limites de gastos</strong>: Estabeleça quanto quer
+                gastar em cada categoria e receba alertas quando estiver perto do limite.
+              </li>
+              <li>
+                <strong>Ver gráficos e relatórios</strong>: Visualize seus gastos de
+                forma clara através de gráficos coloridos e fáceis de entender.
+              </li>
+            </ul>
+            <p className="mb-3">
+              <strong>Como navegar no Nexus:</strong> Use o menu lateral (aquela barra
+              à esquerda da tela) para acessar cada funcionalidade. Em telas menores,
+              o menu aparece quando você clica no ícone de três linhas no canto superior.
+            </p>
+            <p className="mb-3">
+              <strong>Recursos importantes:</strong>
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>
+                <strong>Atualizações automáticas</strong>: Sempre que você adicionar,
+                editar ou excluir algo, os totais e gráficos são recalculados na hora.
+              </li>
+              <li>
+                <strong>Filtros de período</strong>: Na maioria das telas você pode
+                escolher o mês e ano para ver informações específicas daquele período.
+              </li>
+              <li>
+                <strong>Tema claro ou escuro</strong>: Escolha o tema que é mais
+                confortável para seus olhos - há um botão para alternar no menu.
               </li>
             </ul>
           </>
@@ -125,88 +157,164 @@ export default function ManualPage() {
 
       {
         id: "dashboard",
-        title: "Dashboard",
+        title: "Página Inicial (Dashboard)",
         body: (
           <>
             <p className="mb-3">
-              A <strong>Dashboard</strong> mostra um panorama do período
-              selecionado: totais, médias, variação vs. mês anterior e gráficos
-              por categoria.
+              A <strong>Dashboard</strong> é a primeira tela que você vê ao entrar no Nexus.
+              Ela funciona como um resumo geral das suas finanças, mostrando de forma visual
+              e organizada como está sua situação financeira no mês selecionado.
             </p>
-            <ul className="list-disc pl-5 space-y-1 mb-3">
+            <p className="mb-3">
+              <strong>O que você encontra na Dashboard:</strong>
+            </p>
+            <ul className="list-disc pl-5 space-y-2 mb-3">
               <li>
-                <strong>Cards</strong>: Total do mês, Despesas fixas,
-                Transações, Média por despesa (converte valores para número
-                antes de formatação).
+                <strong>Resumo em números</strong>: Quadrados coloridos (chamados de "cards")
+                mostram informações importantes como:
+                <ul className="list-circle pl-6 mt-1 space-y-1">
+                  <li>Quanto você gastou no total no mês</li>
+                  <li>Quantas despesas são fixas (aquelas que se repetem todo mês)</li>
+                  <li>Número total de transações (compras e pagamentos) realizadas</li>
+                  <li>Valor médio que você gasta por transação</li>
+                </ul>
               </li>
               <li>
-                <strong>Comparativos</strong>: variação percentual mês a mês
-                (positivo/negativo) e setas indicativas.
+                <strong>Comparação com o mês anterior</strong>: Setas e porcentagens
+                mostram se você gastou mais ou menos que no mês passado. Seta verde para
+                baixo significa que você economizou, seta vermelha para cima indica que
+                gastou mais.
               </li>
               <li>
-                <strong>Gráficos</strong>: pizza por categoria e barras/linhas
-                por mês; cores vêm das categorias do usuário.
+                <strong>Gráficos visuais</strong>: Gráficos coloridos em formato de pizza
+                e barras que mostram:
+                <ul className="list-circle pl-6 mt-1 space-y-1">
+                  <li>Quanto você gastou em cada categoria (alimentação, transporte, etc.)</li>
+                  <li>Como seus gastos evoluíram ao longo dos meses</li>
+                  <li>Qual categoria consumiu a maior parte do seu orçamento</li>
+                </ul>
               </li>
               <li>
-                <strong>Alertas</strong>: limites por categoria, excesso e
-                avisos (cards com barra de progresso).
+                <strong>Alertas de limite</strong>: Avisos coloridos aparecem quando você
+                está perto de estourar o limite definido para alguma categoria. Uma barra
+                mostra quanto % do limite você já usou.
               </li>
             </ul>
-            <p className="font-semibold">Dicas</p>
-            <ul className="list-disc pl-5 space-y-1">
+            <p className="font-semibold mb-2">Como usar a Dashboard:</p>
+            <ul className="list-disc pl-5 space-y-2">
               <li>
-                Use os <strong>filtros de mês/ano</strong> no topo para ver
-                tendências e sazonalidade.
+                <strong>Escolha o período</strong>: No topo da página há filtros onde
+                você pode selecionar o mês e ano que deseja visualizar.
               </li>
               <li>
-                Se algo não aparecer, verifique se as{" "}
-                <strong>categorias</strong> existem e possuem cor; os gráficos
-                dependem disso.
+                <strong>Analise os gráficos</strong>: Passe o mouse sobre as áreas dos
+                gráficos para ver detalhes de cada categoria.
+              </li>
+              <li>
+                <strong>Fique de olho nos alertas</strong>: Se aparecer um aviso vermelho
+                ou amarelo, significa que você está gastando muito em alguma categoria.
               </li>
             </ul>
+            <p className="mt-3 text-sm italic">
+              <strong>Observação:</strong> Para que os gráficos apareçam corretamente,
+              certifique-se de que você criou categorias e definiu uma cor para cada uma
+              (você faz isso na página "Categorias").
+            </p>
           </>
         ),
       },
       {
         id: "despesas",
-        title: "Despesas",
+        title: "Como Registrar Despesas",
         body: (
           <>
             <p className="mb-3">
-              Registre <strong>despesas</strong> com método de pagamento
-              (dinheiro, pix, cartão), categoria, data, quantidade e
-              observações.
+              A página de <strong>Despesas</strong> é onde você anota todos os seus gastos.
+              Pode ser desde um cafézinho até o pagamento do aluguel - tudo que você gastar
+              deve ser registrado aqui para ter um controle completo.
             </p>
-            <ul className="list-disc pl-5 space-y-1 mb-3">
+            <p className="mb-3">
+              <strong>Como cadastrar uma nova despesa:</strong>
+            </p>
+            <ol className="list-decimal pl-5 space-y-2 mb-3">
               <li>
-                <strong>Cartão de crédito</strong>: ao selecionar, escolha um
-                cartão e, se parcelado, informe parcelas. O sistema valida
-                limite e competência.
+                <strong>Clique no botão de adicionar</strong> (geralmente um botão verde
+                ou com símbolo de "+").
               </li>
               <li>
-                <strong>Despesa fixa</strong>: replica automaticamente do mês
-                atual até dezembro (gera lançamentos futuros).
+                <strong>Escolha como você pagou</strong>: Dinheiro, Pix ou Cartão de Crédito.
               </li>
               <li>
-                <strong>Lista de despesas</strong>: permite busca por texto,
-                filtro por categoria e período, e ações de excluir/editar
-                (cartão não permite edição, apenas exclusão).
+                <strong>Selecione a categoria</strong>: Escolha em qual grupo esse gasto
+                se encaixa (por exemplo: Alimentação, Transporte, Lazer).
               </li>
               <li>
-                <strong>Exclusão em cartão</strong>: remove parcelas associadas
-                e devolve limite imediatamente.
+                <strong>Informe o valor</strong>: Digite quanto você gastou.
+              </li>
+              <li>
+                <strong>Escolha a data</strong>: Quando você fez essa compra.
+              </li>
+              <li>
+                <strong>Adicione observações (opcional)</strong>: Você pode escrever uma
+                nota para lembrar o que foi (ex: "Pizza com amigos").
+              </li>
+            </ol>
+
+            <p className="font-semibold mb-2">Tipos especiais de despesas:</p>
+            <ul className="list-disc pl-5 space-y-2 mb-3">
+              <li>
+                <strong>Despesas no Cartão de Crédito</strong>: Quando você escolhe
+                pagar com cartão, o sistema pede para você selecionar qual cartão usou.
+                Se a compra foi parcelada (dividida em várias vezes), informe o número
+                de parcelas. O sistema vai calcular automaticamente e distribuir o valor
+                pelos próximos meses.
+              </li>
+              <li>
+                <strong>Despesas Fixas</strong>: São gastos que se repetem todo mês
+                (como aluguel, internet, academia). Marque a opção "Despesa Fixa" e
+                o sistema criará automaticamente esse gasto nos próximos meses até
+                dezembro, sem você precisar cadastrar novamente.
               </li>
             </ul>
-            <p className="font-semibold">Boas práticas</p>
-            <ul className="list-disc pl-5 space-y-1">
+
+            <p className="font-semibold mb-2">Gerenciando suas despesas:</p>
+            <ul className="list-disc pl-5 space-y-2 mb-3">
               <li>
-                Use <strong>subcategorias</strong> para granularidade (ex.:
-                Alimentação &gt; Mercado &gt; Açougue).
+                <strong>Procurar despesas</strong>: Use a barra de busca no topo
+                para encontrar gastos específicos pelo nome ou descrição.
               </li>
               <li>
-                Evite editar lançamentos antigos quando houver{" "}
-                <strong>limites</strong> e <strong>cartões</strong> envolvidos;
-                prefira ajustes no mês corrente.
+                <strong>Filtrar por categoria</strong>: Veja apenas despesas de
+                uma categoria específica.
+              </li>
+              <li>
+                <strong>Editar</strong>: Clique no ícone de lápis para corrigir
+                informações de uma despesa. Atenção: despesas pagas no cartão não
+                podem ser editadas, apenas excluídas.
+              </li>
+              <li>
+                <strong>Excluir</strong>: Clique no ícone de lixeira para remover
+                uma despesa. Se for uma compra parcelada no cartão, todas as parcelas
+                serão removidas e o limite do cartão será devolvido.
+              </li>
+            </ul>
+
+            <p className="font-semibold mb-2">Dicas importantes:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>
+                <strong>Registre assim que gastar</strong>: Não deixe acumular!
+                Anote suas despesas logo após fazer uma compra para não esquecer.
+              </li>
+              <li>
+                <strong>Use categorias específicas</strong>: Em vez de apenas
+                "Alimentação", crie subcategorias como "Mercado", "Restaurante",
+                "Lanche". Isso ajuda a entender melhor seus hábitos.
+              </li>
+              <li>
+                <strong>Cuidado ao editar despesas antigas</strong>: Se você já
+                configurou limites de gastos ou tem despesas no cartão, evite
+                ficar alterando lançamentos antigos - isso pode bagunçar seus
+                cálculos. Prefira fazer ajustes no mês atual.
               </li>
             </ul>
           </>
@@ -497,43 +605,6 @@ export default function ManualPage() {
         ),
       },
       {
-        id: "investimentos",
-        title: "Investimentos",
-        body: (
-          <>
-            <p className="mb-3">
-              Acompanhe ativos pré-definidos (dólar, euro, bitcoin etc.) e veja
-              variação em tempo quase real no painel de mercado.
-            </p>
-            <ul className="list-disc pl-5 space-y-1 mb-3">
-              <li>
-                <strong>Painel</strong>: preço, variação e indicador de
-                tendência (alta/baixa).
-              </li>
-              <li>
-                <strong>Integração futura</strong>: carteira, preço médio e
-                rentabilidade acumulada.
-              </li>
-              <li>
-                <strong>Filtros</strong>: seleção de ativos relevantes para seu
-                perfil (reduz ruído).
-              </li>
-            </ul>
-            <p className="font-semibold">Observações</p>
-            <ul className="list-disc pl-5 space-y-1">
-              <li>
-                Use a aba apenas como <strong>referência</strong>; decisões de
-                investimento devem considerar seu perfil de risco.
-              </li>
-              <li>
-                Mantenha registros de aportes para análise correta de
-                rentabilidade quando a carteira for liberada.
-              </li>
-            </ul>
-          </>
-        ),
-      },
-      {
         id: "config",
         title: "Configurações",
         body: (
@@ -614,7 +685,7 @@ export default function ManualPage() {
   return (
     <main className="min-h-screen px-5 sm:px-8 lg:px-10 py-8 lg:py-4 bg-[var(--page-bg)] text-[var(--foreground)]">
       <div className="w-full mx-auto">
-        <div className="mt-14 mb-6">
+        <div className="mt-14 lg:mt-0 mb-6">
           <PageTitle
             title="Manual"
             subTitle="Aprenda a usar o Nexus passo a passo."
