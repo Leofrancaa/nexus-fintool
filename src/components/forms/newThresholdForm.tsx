@@ -39,7 +39,10 @@ export function NewThresholdForm({
       try {
         const res = await apiRequest("/api/categories");
 
-        if (!res.ok) throw new Error();
+        if (!res.ok) {
+          toast.error("Não foi possível carregar as categorias");
+          return;
+        }
         const responseData = await res.json();
         const data: Categoria[] = responseData.data || [];
         const pais = data.filter(
@@ -48,7 +51,7 @@ export function NewThresholdForm({
         setCategorias(pais);
       } catch (error) {
         console.error("Erro ao carregar categorias:", error);
-        toast.error("Erro ao carregar categorias");
+        toast.error("Não foi possível conectar ao servidor. Verifique sua internet");
       }
     };
 
@@ -83,7 +86,10 @@ export function NewThresholdForm({
           }),
         });
 
-        if (!res.ok) throw new Error();
+        if (!res.ok) {
+          toast.error("Não foi possível atualizar o limite. Tente novamente");
+          return;
+        }
         toast.success("Limite atualizado!");
         onUpdated?.();
       } else {
@@ -96,7 +102,10 @@ export function NewThresholdForm({
           }),
         });
 
-        if (!res.ok) throw new Error();
+        if (!res.ok) {
+          toast.error("Não foi possível criar o limite. Tente novamente");
+          return;
+        }
         const novo: Threshold = await res.json();
         toast.success("Limite criado!");
         onCreated?.(novo);
@@ -104,9 +113,7 @@ export function NewThresholdForm({
 
       onClose();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Erro ao salvar limite"
-      );
+      toast.error("Não foi possível conectar ao servidor. Verifique sua internet");
     }
   };
 

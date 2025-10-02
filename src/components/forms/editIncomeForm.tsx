@@ -76,16 +76,17 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
 
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "Erro ao atualizar receita.");
+        const message = errorData.error || "Não foi possível atualizar a receita. Verifique os dados";
+        toast.error(message, { id: toastId });
+        return;
       }
 
       toast.success("Receita atualizada com sucesso!", { id: toastId });
       onUpdated?.();
+      onClose();
     } catch (err: unknown) {
       console.error(err);
-      const errorMessage =
-        err instanceof Error ? err.message : "Erro ao atualizar receita.";
-      toast.error(errorMessage, { id: toastId });
+      toast.error("Não foi possível conectar ao servidor. Verifique sua internet", { id: toastId });
     }
   };
 

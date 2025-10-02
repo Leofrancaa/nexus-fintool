@@ -97,14 +97,15 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
         body: JSON.stringify(body),
       });
 
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        toast.error("Não foi possível cadastrar o cartão. Tente novamente");
+        return;
+      }
       toast.success("Cartão cadastrado com sucesso!");
       onCreated?.();
       onClose();
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Erro ao salvar cartão"
-      );
+      toast.error("Não foi possível conectar ao servidor. Verifique sua internet");
     }
   };
 

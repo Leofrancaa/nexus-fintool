@@ -47,7 +47,12 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
       try {
         const res = await apiRequest("/api/categories");
 
-        if (!res.ok) throw new Error();
+        if (!res.ok) {
+          toast.error("Não foi possível carregar as categorias existentes", {
+            id: "load-parent-categories",
+          });
+          return;
+        }
         const response = await res.json();
         console.log('[newCategoryForm] Categories response:', response);
 
@@ -56,7 +61,7 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
         setCategoriasPai(data.filter((cat) => !cat.parent_id));
       } catch (error) {
         console.log('[newCategoryForm] Error fetching categories:', error);
-        toast.error("Erro ao carregar categorias existentes", {
+        toast.error("Não foi possível conectar ao servidor. Verifique sua internet", {
           id: "load-parent-categories",
         });
       }
