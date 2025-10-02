@@ -77,9 +77,12 @@ export function DashboardInsightsCard({ customMonth, customYear, refreshKey, onl
         const plansData = await plansRes.json();
         const plans: Plan[] = plansData.data || [];
 
+        console.log('[DashboardInsights] Planos recebidos:', plans);
+
         // Encontrar plano mais próximo de conclusão
         if (plans.length > 0) {
           const sorted = plans.sort((a, b) => b.progresso - a.progresso);
+          console.log('[DashboardInsights] Plano mais próximo:', sorted[0]);
           setClosestPlan(sorted[0]);
         }
 
