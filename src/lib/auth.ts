@@ -230,6 +230,36 @@ export const isAuthenticated = (): boolean => {
     return authenticated;
 };
 
+// Obter dados do usuário do token (decodificado)
+export const getUserData = (): { id: number; nome: string; email: string } | null => {
+    const token = tokenManager.get();
+    if (!token) return null;
+
+    try {
+        // Decodificar o payload do JWT (formato: header.payload.signature)
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+            atob(base64)
+                .split('')
+                .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                .join('')
+        );
+
+        const payload = JSON.parse(jsonPayload);
+        debugLog('getUserData() - Dados do usuário:', payload);
+
+        return {
+            id: payload.id,
+            nome: payload.nome,
+            email: payload.email
+        };
+    } catch (error) {
+        console.error('getUserData() - Erro ao decodificar token:', error);
+        return null;
+    }
+};
+
 // Helper genérico para fazer requisições autenticadas
 export const apiRequest = async (
     endpoint: string,

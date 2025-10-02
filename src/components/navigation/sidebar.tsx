@@ -16,10 +16,13 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  BookOpen, // ⬅️ IMPORT novo
+  BookOpen,
 } from "lucide-react";
 import clsx from "clsx";
 import { ThemeToggle } from "@/components/toggles/themeToggle";
+import { getUserData, logout } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 const navItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -34,15 +37,31 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [userName, setUserName] = useState<string>("");
 
   const toggleSidebar = () => setIsOpen((prev) => !prev);
   const toggleMobile = () => setIsMobileOpen((prev) => !prev);
 
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
+
   useEffect(() => {
     document.body.style.overflow = isMobileOpen ? "hidden" : "";
   }, [isMobileOpen]);
+
+  useEffect(() => {
+    const user = getUserData();
+    if (user && user.nome) {
+      // Pegar apenas o primeiro nome
+      const firstName = user.nome.split(" ")[0];
+      setUserName(firstName);
+    }
+  }, []);
 
   return (
     <>
@@ -119,6 +138,17 @@ export function Sidebar() {
 
           <div className="border-t border-[color:var(--sidebar-border)] mx-4 my-4" />
 
+          {isOpen && userName && (
+            <div className="px-4">
+              <div className="text-sm text-[var(--foreground)]/60">
+                Bem-vindo
+              </div>
+              <div className="text-lg font-semibold text-[var(--foreground)] mb-2">
+                {userName}
+              </div>
+            </div>
+          )}
+
           <nav className="flex flex-col gap-2 px-2">
             {navItems.map(({ name, href, icon: Icon }) => {
               const isActive = pathname === href;
@@ -136,18 +166,26 @@ export function Sidebar() {
                     }
                   )}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className={clsx(isOpen ? "w-5 h-5" : "w-6 h-6")} />
                   {isOpen && <span>{name}</span>}
                 </Link>
               );
             })}
           </nav>
 
-          {isOpen && (
-            <div className="mt-auto px-4 pb-24">
-              <ThemeToggle />
-            </div>
-          )}
+          <div className="mt-auto px-4 pb-6 space-y-3">
+            {isOpen && <ThemeToggle />}
+            <button
+              onClick={handleLogout}
+              className={clsx(
+                "flex items-center gap-3 rounded-lg px-3 py-3 transition-colors duration-200 font-medium w-full",
+                "bg-transparent text-red-500 hover:bg-red-500/10"
+              )}
+            >
+              <LogOut className={clsx(isOpen ? "w-5 h-5" : "w-6 h-6")} />
+              {isOpen && <span>Sair</span>}
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -179,6 +217,25 @@ export function Sidebar() {
 
           <div className="border-t border-[color:var(--sidebar-border)] mx-4 my-4" />
 
+          {userName && (
+            <div className="px-4 mb-4">
+              <div className="text-sm text-[var(--foreground)]/60">
+                Bem-vindo
+              </div>
+              <div className="text-lg font-semibold text-[var(--foreground)] mb-2">
+                {userName}
+              </div>
+              <Link
+                href="/manual"
+                onClick={toggleMobile}
+                className="text-xs text-[var(--foreground)]/70 hover:text-[#00D4AA] transition-colors flex items-center gap-1"
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Manual de uso</span>
+              </Link>
+            </div>
+          )}
+
           <nav className="flex flex-col gap-2 px-4">
             {navItems.map(({ name, href, icon: Icon }) => {
               const isActive = pathname === href;
@@ -204,8 +261,17 @@ export function Sidebar() {
             })}
           </nav>
 
-          <div className="flex justify-center mt-6">
-            <ThemeToggle />
+          <div className="px-4 mt-6 space-y-3">
+            <div className="flex justify-center">
+              <ThemeToggle />
+            </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center gap-3 rounded-lg px-4 py-3 transition-colors duration-200 font-medium w-full bg-transparent text-red-500 hover:bg-red-500/10"
+            >
+              <LogOut className="w-5 h-5" />
+              <span>Sair</span>
+            </button>
           </div>
         </div>
       )}
