@@ -218,13 +218,23 @@ export function Sidebar() {
           <div className="border-t border-[color:var(--sidebar-border)] mx-4 my-4" />
 
           {userName && (
-            <div className="px-4 mb-4">
-              <div className="text-sm text-[var(--foreground)]/60">
-                Bem-vindo
+            <div className="px-4 mb-4 flex items-center justify-between">
+              <div>
+                <div className="text-sm text-[var(--foreground)]/60">
+                  Bem-vindo
+                </div>
+                <div className="text-lg font-semibold text-[var(--foreground)] mb-2">
+                  {userName}
+                </div>
               </div>
-              <div className="text-lg font-semibold text-[var(--foreground)] mb-2">
-                {userName}
-              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors duration-200 font-medium bg-transparent text-red-500 hover:bg-red-500/10"
+                aria-label="Sair"
+              >
+                <LogOut className="w-5 h-5" />
+                <span className="text-sm">Sair</span>
+              </button>
             </div>
           )}
 
@@ -253,17 +263,10 @@ export function Sidebar() {
             })}
           </nav>
 
-          <div className="px-4 mt-6 space-y-3">
+          <div className="px-4 mt-6">
             <div className="flex justify-center">
               <ThemeToggle />
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center justify-center gap-3 rounded-lg px-4 py-3 transition-colors duration-200 font-medium w-full bg-transparent text-red-500 hover:bg-red-500/10"
-            >
-              <LogOut className="w-5 h-5" />
-              <span>Sair</span>
-            </button>
           </div>
         </div>
       )}
