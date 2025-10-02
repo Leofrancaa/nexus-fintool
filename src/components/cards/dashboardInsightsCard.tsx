@@ -14,8 +14,8 @@ interface Card {
 interface Plan {
   id: number;
   nome: string;
-  valor_alvo: number;
-  valor_atual: number;
+  meta: number;
+  total_contribuido: number;
   progresso: number;
 }
 
@@ -262,12 +262,12 @@ export function DashboardInsightsCard({ customMonth, customYear, refreshKey, onl
                 ></div>
               </div>
               <p className="text-xs text-[var(--card-text)]/60 mt-2">
-                {(closestPlan.valor_atual || 0).toLocaleString("pt-BR", {
+                {(closestPlan.total_contribuido || 0).toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 })}{" "}
-                /{" "}
-                {(closestPlan.valor_alvo || 0).toLocaleString("pt-BR", {
+                de{" "}
+                {(closestPlan.meta || 0).toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 })}
