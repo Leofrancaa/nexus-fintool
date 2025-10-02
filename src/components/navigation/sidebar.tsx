@@ -225,14 +225,6 @@ export function Sidebar() {
               <div className="text-lg font-semibold text-[var(--foreground)] mb-2">
                 {userName}
               </div>
-              <Link
-                href="/manual"
-                onClick={toggleMobile}
-                className="text-xs text-[var(--foreground)]/70 hover:text-[#00D4AA] transition-colors flex items-center gap-1"
-              >
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Manual de uso</span>
-              </Link>
             </div>
           )}
 
