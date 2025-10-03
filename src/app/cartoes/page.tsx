@@ -35,7 +35,7 @@ export default function Cards() {
         router.push("/login");
       } else {
         // Use ID único para evitar duplicação
-        toast.error("Erro ao carregar cartões", {
+        toast.error("Não foi possível carregar os cartões", {
           id: "fetch-cards-error",
         });
       }

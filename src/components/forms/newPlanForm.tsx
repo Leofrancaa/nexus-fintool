@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textArea";
 import { toast } from "react-hot-toast";
 import { apiRequest } from "@/lib/auth";
+import { DatePicker } from "@/components/ui/datePicker";
 import {
   getApiErrorMessage,
   getContextualErrorMessage,
@@ -102,10 +103,10 @@ export function NewPlanForm({ onClose, onCreated }: Props) {
 
       <div>
         <Label>Prazo *</Label>
-        <Input
-          type="date"
+        <DatePicker
           value={prazo}
-          onChange={(e) => setPrazo(e.target.value)}
+          onChange={setPrazo}
+          placeholder="Selecione a data"
         />
       </div>
 

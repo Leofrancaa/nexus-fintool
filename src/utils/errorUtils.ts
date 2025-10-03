@@ -35,31 +35,31 @@ export const getApiErrorMessage = async (response: Response, defaultMessage: str
  */
 export const ERROR_MESSAGES = {
     // Validation Errors
-    REQUIRED_FIELDS: "Preencha todos os campos obrigatórios",
-    INVALID_EMAIL: "Email inválido",
-    INVALID_VALUE: "Valor deve ser um número positivo",
-    INVALID_DATE: "Data inválida",
-    INVALID_CATEGORY: "Selecione uma categoria válida",
+    REQUIRED_FIELDS: "Por favor, preencha todos os campos obrigatórios",
+    INVALID_EMAIL: "Este email não é válido",
+    INVALID_VALUE: "O valor precisa ser um número positivo",
+    INVALID_DATE: "Esta data não é válida",
+    INVALID_CATEGORY: "Por favor, escolha uma categoria",
 
     // Authentication Errors
     INVALID_CREDENTIALS: "Email ou senha incorretos",
-    SESSION_EXPIRED: "Sessão expirada. Faça login novamente",
-    UNAUTHORIZED: "Você não tem permissão para essa ação",
+    SESSION_EXPIRED: "Sua conexão expirou. Entre novamente",
+    UNAUTHORIZED: "Você não tem permissão para fazer isso",
 
     // Business Logic Errors
-    INSUFFICIENT_LIMIT: "Limite do cartão insuficiente",
+    INSUFFICIENT_LIMIT: "O limite do cartão não é suficiente",
     DUPLICATE_CATEGORY: "Já existe uma categoria com esse nome",
     PLAN_ALREADY_COMPLETED: "Este plano já foi concluído",
 
     // Network/Server Errors
-    NETWORK_ERROR: "Erro de conexão. Verifique sua internet",
-    SERVER_ERROR: "Erro interno do servidor. Tente novamente",
+    NETWORK_ERROR: "Sem conexão com a internet. Verifique e tente novamente",
+    SERVER_ERROR: "Algo deu errado. Tente novamente",
 
     // Default Messages
-    SAVE_ERROR: "Erro ao salvar",
-    UPDATE_ERROR: "Erro ao atualizar",
-    DELETE_ERROR: "Erro ao excluir",
-    LOAD_ERROR: "Erro ao carregar dados"
+    SAVE_ERROR: "Não foi possível salvar",
+    UPDATE_ERROR: "Não foi possível atualizar",
+    DELETE_ERROR: "Não foi possível excluir",
+    LOAD_ERROR: "Não foi possível carregar as informações"
 };
 
 /**
@@ -102,10 +102,10 @@ export const getContextualErrorMessage = (
 
     // Fallback baseado no contexto
     const contextMessages = {
-        save: `Erro ao salvar ${entity}`,
-        update: `Erro ao atualizar ${entity}`,
-        delete: `Erro ao excluir ${entity}`,
-        load: `Erro ao carregar ${entity}`
+        save: `Não foi possível salvar ${entity}`,
+        update: `Não foi possível atualizar ${entity}`,
+        delete: `Não foi possível excluir ${entity}`,
+        load: `Não foi possível carregar ${entity}`
     };
 
     return contextMessages[context];
@@ -131,15 +131,15 @@ export const validateRequiredFields = (fields: Record<string, unknown>): string 
     if (emptyFields.length === 0) return null;
 
     if (emptyFields.length === 1) {
-        return `O campo ${emptyFields[0]} é obrigatório`;
+        return `Por favor, preencha o campo ${emptyFields[0]}`;
     }
 
     if (emptyFields.length === 2) {
-        return `Os campos ${emptyFields.join(' e ')} são obrigatórios`;
+        return `Por favor, preencha os campos ${emptyFields.join(' e ')}`;
     }
 
     const lastField = emptyFields.pop();
-    return `Os campos ${emptyFields.join(', ')} e ${lastField} são obrigatórios`;
+    return `Por favor, preencha os campos ${emptyFields.join(', ')} e ${lastField}`;
 };
 
 /**
@@ -149,11 +149,11 @@ export const validatePositiveNumber = (value: string | number, fieldName: string
     const numValue = typeof value === 'string' ? parseFloat(value) : value;
 
     if (isNaN(numValue)) {
-        return `${fieldName} deve ser um número válido`;
+        return `${fieldName} precisa ser um número válido`;
     }
 
     if (numValue <= 0) {
-        return `${fieldName} deve ser um valor positivo`;
+        return `${fieldName} precisa ser um valor positivo`;
     }
 
     return null;

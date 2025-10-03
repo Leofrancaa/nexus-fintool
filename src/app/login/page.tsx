@@ -24,7 +24,7 @@ export default function Login() {
     e.preventDefault();
 
     if (!email || !senha) {
-      toast.error("Preencha todos os campos.");
+      toast.error("Por favor, preencha seu email e senha");
       return;
     }
 
@@ -40,11 +40,11 @@ export default function Login() {
           router.push("/dashboard");
         }, 500);
       } else {
-        toast.error(response.message || "Erro ao fazer login");
+        toast.error(response.message || "Não foi possível fazer login. Verifique suas credenciais");
       }
     } catch (error: unknown) {
       toast.error(
-        error instanceof Error ? error.message : "Ocorreu um erro desconhecido."
+        error instanceof Error ? error.message : "Não foi possível completar a ação. Tente novamente"
       );
     } finally {
       setLoading(false);
