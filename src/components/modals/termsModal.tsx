@@ -48,7 +48,7 @@ export function TermsModal({ open, onOpenChange }: TermsModalProps) {
               <p className="leading-relaxed">
                 O Nexus é uma plataforma de gestão financeira pessoal para
                 controle de despesas, receitas, cartões, categorias e metas. O
-                serviço é fornecido "como está" e pode ser modificado a qualquer
+                serviço é fornecido como está e pode ser modificado a qualquer
                 momento.
               </p>
             </section>
@@ -103,9 +103,7 @@ export function TermsModal({ open, onOpenChange }: TermsModalProps) {
                   plataforma
                 </li>
                 <li>Não garantimos disponibilidade ininterrupta</li>
-                <li>
-                  Recomendamos backup regular de informações importantes
-                </li>
+                <li>Recomendamos backup regular de informações importantes</li>
                 <li>A plataforma não substitui aconselhamento profissional</li>
               </ul>
             </section>
@@ -144,8 +142,8 @@ export function TermsModal({ open, onOpenChange }: TermsModalProps) {
 
             <div className="pt-4 border-t border-[#333] text-center">
               <p className="text-xs text-gray-400">
-                Ao criar uma conta, você confirma que leu, compreendeu e concorda
-                com estes Termos e Condições.
+                Ao criar uma conta, você confirma que leu, compreendeu e
+                concorda com estes Termos e Condições.
               </p>
             </div>
           </div>
