@@ -109,7 +109,8 @@ export function NewCategoryForm({ onClose, onCreated }: NewCategoryFormProps) {
         return;
       }
 
-      const novaCategoria: Categoria = await res.json();
+      const response = await res.json();
+      const novaCategoria: Categoria = response.data || response;
       toast.success("Categoria criada com sucesso!", { id: toastId });
       onCreated?.(novaCategoria);
       onClose();
