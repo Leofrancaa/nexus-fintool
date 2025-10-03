@@ -257,6 +257,9 @@ export default function ManualPage() {
               aluguel - tudo que você gastar deve ser registrado aqui para ter
               um controle completo.
             </p>
+            <p className="mb-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+              <strong>⚠️ IMPORTANTE:</strong> Antes de registrar despesas, você precisa <strong>criar categorias</strong> na página de Categorias. Sem categorias cadastradas, não será possível adicionar despesas!
+            </p>
             <p className="mb-3">
               <strong>Como cadastrar uma nova despesa:</strong>
             </p>
@@ -353,6 +356,9 @@ export default function ManualPage() {
         title: "Receitas",
         body: (
           <>
+            <p className="mb-3 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+              <strong>⚠️ IMPORTANTE:</strong> Antes de registrar receitas, você precisa <strong>criar categorias de receita</strong> na página de Categorias. Sem categorias cadastradas, não será possível adicionar receitas!
+            </p>
             <p className="mb-3">
               Cadastre <strong>receitas</strong> (salário, vendas, freelance),
               com categoria, data e valor. Acompanhe por mês/ano e por origem.
