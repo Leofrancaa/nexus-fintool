@@ -52,14 +52,14 @@ export default function Expenses() {
   const fetchCategorias = useCallback(async () => {
     try {
       const res = await apiRequest("/api/categories");
-      if (!res.ok) throw new Error("Erro ao buscar categorias");
+      if (!res.ok) throw new Error("Não foi possível carregar as categorias");
       const data = await res.json();
       setCategorias(data.data || []);
     } catch (error) {
       if (error instanceof Error && error.message.includes("Sessão expirada")) {
         router.push("/login");
       } else {
-        toast.error("Erro ao buscar categorias");
+        toast.error("Não foi possível carregar as categorias");
       }
     }
   }, [router]);

@@ -26,17 +26,17 @@ export default function Signup() {
     e.preventDefault();
 
     if (!nome || !email || !senha || !confirmarSenha) {
-      toast.error("Preencha todos os campos.");
+      toast.error("Por favor, preencha todas as informações");
       return;
     }
 
     if (senha !== confirmarSenha) {
-      toast.error("As senhas não coincidem.");
+      toast.error("As senhas digitadas não são iguais");
       return;
     }
 
     if (senha.length < 6) {
-      toast.error("A senha deve ter pelo menos 6 caracteres.");
+      toast.error("A senha precisa ter pelo menos 6 caracteres");
       return;
     }
 
@@ -47,13 +47,13 @@ export default function Signup() {
         toast.success("Cadastro realizado com sucesso!");
         router.push("/login");
       } else {
-        toast.error(response.message || "Erro ao registrar");
+        toast.error(response.message || "Não foi possível criar sua conta");
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
-        toast.error("Ocorreu um erro desconhecido.");
+        toast.error("Não foi possível completar o cadastro. Tente novamente");
       }
     }
   };

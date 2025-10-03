@@ -14,6 +14,7 @@ import {
 import { toast } from "react-hot-toast";
 import { Income } from "@/types/income";
 import { apiRequest } from "@/lib/auth";
+import { DatePicker } from "@/components/ui/datePicker";
 
 interface Categoria {
   id: number;
@@ -145,11 +146,10 @@ export function EditIncomeForm({ income, onClose, onUpdated }: Props) {
       {/* Data */}
       <div>
         <Label>Data</Label>
-        <Input
-          type="date"
+        <DatePicker
           value={data}
-          onChange={(e) => setData(e.target.value)}
-          required
+          onChange={setData}
+          placeholder="Selecione a data"
         />
       </div>
 

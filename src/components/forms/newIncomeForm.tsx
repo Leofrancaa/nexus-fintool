@@ -14,6 +14,7 @@ import {
 import { toast } from "react-hot-toast";
 import { Categoria } from "@/types/category";
 import { apiRequest } from "@/lib/auth";
+import { DatePicker } from "@/components/ui/datePicker";
 import {
   getApiErrorMessage,
   getContextualErrorMessage,
@@ -176,10 +177,10 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
       {/* Data */}
       <div>
         <Label>Data *</Label>
-        <Input
-          type="date"
+        <DatePicker
           value={data}
-          onChange={(e) => setData(e.target.value)}
+          onChange={setData}
+          placeholder="Selecione a data"
         />
       </div>
 

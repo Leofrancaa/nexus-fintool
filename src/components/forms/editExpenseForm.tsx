@@ -13,6 +13,7 @@ import {
 import { toast } from "react-hot-toast";
 import { Expense } from "@/types/expense";
 import { apiRequest } from "@/lib/auth";
+import { DatePicker } from "@/components/ui/datePicker";
 import {
   getApiErrorMessage,
   getContextualErrorMessage,
@@ -192,11 +193,10 @@ export function EditExpenseForm({ expense, onClose, onUpdated }: Props) {
 
       <div>
         <Label>Data *</Label>
-        <Input
-          type="date"
+        <DatePicker
           value={data}
-          onChange={(e) => setData(e.target.value)}
-          required
+          onChange={setData}
+          placeholder="Selecione a data"
         />
       </div>
 
