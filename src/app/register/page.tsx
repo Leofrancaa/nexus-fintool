@@ -53,7 +53,7 @@ export default function Signup() {
 
       if (response.success) {
         toast.success("Cadastro realizado com sucesso!");
-        router.push("/login");
+        router.push("/manual");
       } else {
         toast.error(response.message || "Não foi possível criar sua conta");
       }
