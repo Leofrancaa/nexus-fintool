@@ -8,6 +8,7 @@ import { toast } from "react-hot-toast";
 import { EditIncomeModal } from "../modals/editIncomeModal";
 import { Income } from "@/types/income";
 import { apiRequest } from "@/lib/auth";
+import { formatDateBR } from "@/lib/utils";
 
 interface IncomeListProps {
   refreshKey: number;
@@ -169,7 +170,7 @@ export function IncomeList({
                   </span>
                   <span>•</span>
                   <span className="text-[var(--card-text)] font-medium">
-                    {new Date(income.data).toLocaleDateString("pt-BR")}
+                    {formatDateBR(income.data)}
                   </span>
                   {income.observacoes && (
                     <>

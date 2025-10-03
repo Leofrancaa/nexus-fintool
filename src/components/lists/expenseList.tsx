@@ -7,6 +7,7 @@ import ConfirmDialog from "../ui/confirmDialog";
 import { toast } from "react-hot-toast";
 import { EditExpenseModal } from "../modals/editExpenseModal";
 import { apiRequest } from "@/lib/auth";
+import { formatDateBR } from "@/lib/utils";
 
 interface Expense {
   id: number;
@@ -198,7 +199,7 @@ export function ExpenseList({
                   </span>
                   <span>•</span>
                   <span className="font-medium">
-                    {new Date(expense.data).toLocaleDateString("pt-BR")}
+                    {formatDateBR(expense.data)}
                   </span>
                   {expense.observacoes && (
                     <>
