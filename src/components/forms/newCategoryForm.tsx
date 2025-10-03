@@ -20,14 +20,44 @@ import {
 } from "@/utils/errorUtils";
 
 const cores = [
-  "#6366f1",
-  "#3b82f6",
-  "#10b981",
-  "#f59e0b",
-  "#ef4444",
-  "#60a5fa",
-  "#ec4899",
-  "#06b6d4",
+  // Azuis
+  "#3b82f6", // Azul
+  "#60a5fa", // Azul Claro
+  "#1e40af", // Azul Escuro
+  "#0ea5e9", // Sky Blue
+  "#06b6d4", // Ciano
+
+  // Roxos e Rosas
+  "#6366f1", // Índigo
+  "#8b5cf6", // Roxo
+  "#a855f7", // Roxo Claro
+  "#ec4899", // Rosa
+  "#f43f5e", // Rosa Vermelho
+
+  // Verdes
+  "#10b981", // Verde
+  "#22c55e", // Verde Claro
+  "#14b8a6", // Teal
+  "#84cc16", // Lima
+  "#16a34a", // Verde Escuro
+
+  // Amarelos e Laranjas
+  "#f59e0b", // Âmbar
+  "#eab308", // Amarelo
+  "#fbbf24", // Amarelo Claro
+  "#f97316", // Laranja
+  "#fb923c", // Laranja Claro
+
+  // Vermelhos
+  "#ef4444", // Vermelho
+  "#dc2626", // Vermelho Escuro
+  "#f87171", // Vermelho Claro
+
+  // Neutros
+  "#64748b", // Slate
+  "#78716c", // Stone
+  "#71717a", // Zinc
+  "#6b7280", // Gray
 ];
 
 interface NewCategoryFormProps {
