@@ -11,6 +11,7 @@ import Button from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { register } from "@/lib/auth";
+import { TermsModal } from "@/components/modals/termsModal";
 
 export default function Signup() {
   const [nome, setNome] = useState("");
@@ -19,6 +20,8 @@ export default function Signup() {
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [showSenha, setShowSenha] = useState(false);
   const [showConfirmar, setShowConfirmar] = useState(false);
+  const [aceitouTermos, setAceitouTermos] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   const router = useRouter();
 
@@ -37,6 +40,11 @@ export default function Signup() {
 
     if (senha.length < 6) {
       toast.error("A senha precisa ter pelo menos 6 caracteres");
+      return;
+    }
+
+    if (!aceitouTermos) {
+      toast.error("Você precisa aceitar os Termos e Condições para continuar");
       return;
     }
 
@@ -200,6 +208,27 @@ export default function Signup() {
             </div>
           </div>
 
+          {/* Termos e Condições */}
+          <div className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              id="termos"
+              checked={aceitouTermos}
+              onChange={(e) => setAceitouTermos(e.target.checked)}
+              className="mt-1 w-4 h-4 rounded border-[#2A2E37] bg-[#1A1D23] text-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6] focus:ring-offset-0 cursor-pointer"
+            />
+            <label htmlFor="termos" className="text-sm text-[#9CA3AF] cursor-pointer">
+              Eu li e aceito os{" "}
+              <button
+                type="button"
+                onClick={() => setShowTermsModal(true)}
+                className="text-[#3B82F6] hover:underline font-medium"
+              >
+                Termos e Condições de Uso
+              </button>
+            </label>
+          </div>
+
           <Button type="submit" className="h-12 max-w-full">
             Criar Conta
           </Button>
@@ -215,6 +244,8 @@ export default function Signup() {
           </p>
         </form>
       </div>
+
+      <TermsModal open={showTermsModal} onOpenChange={setShowTermsModal} />
     </main>
   );
 }
