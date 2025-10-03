@@ -22,6 +22,8 @@ import {
   validateRequiredFields,
   validatePositiveNumber,
 } from "@/utils/errorUtils";
+import * as Dialog from "@radix-ui/react-dialog";
+import { NewCategoryForm } from "./newCategoryForm";
 
 interface Props {
   onClose: () => void;
@@ -37,20 +39,22 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
   const [categoriaId, setCategoriaId] = useState("");
   const [fixo, setFixo] = useState(false);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+
+  const fetchCategorias = async () => {
+    try {
+      const res = await apiRequest("/api/categories?tipo=receita");
+      const data = await res.json();
+      setCategorias(data.data || []);
+    } catch (error) {
+      console.error("Erro ao carregar categorias:", error);
+      toast.error("Erro ao carregar categorias de receita", {
+        id: "load-income-categories",
+      });
+    }
+  };
 
   useEffect(() => {
-    const fetchCategorias = async () => {
-      try {
-        const res = await apiRequest("/api/categories?tipo=receita");
-        const data = await res.json();
-        setCategorias(data.data || []);
-      } catch (error) {
-        console.error("Erro ao carregar categorias:", error);
-        toast.error("Erro ao carregar categorias de receita", {
-          id: "load-income-categories",
-        });
-      }
-    };
 
     fetchCategorias();
   }, []);
@@ -159,18 +163,56 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
 
         <div>
           <Label>Categoria *</Label>
-          <Select value={categoriaId} onValueChange={setCategoriaId}>
-            <SelectTrigger>
-              <SelectValue placeholder="Selecione uma categoria" />
-            </SelectTrigger>
-            <SelectContent>
-              {categorias.map((categoria) => (
-                <SelectItem key={categoria.id} value={String(categoria.id)}>
-                  {categoria.nome}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <Select value={categoriaId} onValueChange={setCategoriaId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione uma categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categorias.map((categoria) => (
+                    <SelectItem key={categoria.id} value={String(categoria.id)}>
+                      {categoria.nome}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Dialog.Root open={showCategoryModal} onOpenChange={setShowCategoryModal}>
+              <Dialog.Trigger asChild>
+                <button
+                  type="button"
+                  className="px-3 rounded-lg bg-green-600 hover:opacity-80 text-white font-bold text-lg transition-all"
+                  title="Criar nova categoria"
+                >
+                  +
+                </button>
+              </Dialog.Trigger>
+              <Dialog.Portal>
+                <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" />
+                <Dialog.Content className="fixed z-[60] top-1/2 left-1/2 w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-[#111] border border-[#333] p-6 shadow-lg focus:outline-none">
+                  <div className="flex justify-between items-center mb-4">
+                    <Dialog.Title className="text-xl font-semibold text-white">
+                      Nova Categoria
+                    </Dialog.Title>
+                    <Dialog.Close asChild>
+                      <button className="text-white hover:text-gray-300 cursor-pointer">
+                        ✕
+                      </button>
+                    </Dialog.Close>
+                  </div>
+                  <NewCategoryForm
+                    onClose={() => setShowCategoryModal(false)}
+                    onCreated={(newCategory) => {
+                      fetchCategorias();
+                      setCategoriaId(String(newCategory.id));
+                      setShowCategoryModal(false);
+                    }}
+                  />
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog.Root>
+          </div>
         </div>
       </div>
 
