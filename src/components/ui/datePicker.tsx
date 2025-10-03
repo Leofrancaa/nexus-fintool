@@ -126,7 +126,7 @@ export function DatePicker({ value, onChange, placeholder = "Selecione uma data"
 
       {/* Calendar Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 mt-2 w-full min-w-[320px] p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] shadow-2xl">
+        <div className="absolute z-50 mt-2 w-full sm:min-w-[320px] p-4 rounded-xl border border-[var(--card-border)] bg-[var(--card-bg)] shadow-2xl left-0 right-0">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <button
