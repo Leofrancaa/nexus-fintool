@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import Button from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Shield, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
-import { getAuthToken } from "@/lib/auth";
+import { tokenManager } from "@/lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -56,7 +56,7 @@ export default function ConfiguracoesPage() {
     setLoading(true);
 
     try {
-      const token = getAuthToken();
+      const token = tokenManager.get();
 
       if (!token) {
         setMessage({
