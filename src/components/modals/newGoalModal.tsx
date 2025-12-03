@@ -6,6 +6,15 @@ import { X } from "lucide-react";
 import { apiRequest } from "@/lib/auth";
 import { toast } from "react-hot-toast";
 import AddButton from "@/components/ui/addButton";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Category {
   id: number;
@@ -116,85 +125,87 @@ export function NewGoalModal({ onCreated }: Props) {
 
           <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-[var(--card-text)] mb-1">
-                  Nome da Meta
-                </label>
-                <input
+                <Label>Nome da Meta</Label>
+                <Input
                   type="text"
                   required
                   value={formData.nome}
                   onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--filter-input-bg)] text-[var(--card-text)]"
                   placeholder="Ex: Economizar para viagem"
+                  className="mt-1"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--card-text)] mb-1">
-                  Categoria (opcional)
-                </label>
-                <select
+                <Label>Categoria (opcional)</Label>
+                <Select
                   value={formData.category_id}
-                  onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--filter-input-bg)] text-[var(--card-text)]"
+                  onValueChange={(value) => setFormData({ ...formData, category_id: value })}
                 >
-                  <option value="">Todas as categorias</option>
-                  {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
-                      {cat.nome}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Todas as categorias" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Todas as categorias</SelectItem>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id.toString()}>
+                        {cat.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[var(--card-text)] mb-1">
-                  Valor Alvo
-                </label>
-                <input
+                <Label>Valor Alvo</Label>
+                <Input
                   type="number"
                   step="0.01"
                   required
                   value={formData.valor_alvo}
                   onChange={(e) => setFormData({ ...formData, valor_alvo: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--filter-input-bg)] text-[var(--card-text)]"
                   placeholder="0.00"
+                  className="mt-1"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[var(--card-text)] mb-1">
-                    Mês
-                  </label>
-                  <select
+                  <Label>Mês</Label>
+                  <Select
                     value={formData.mes}
-                    onChange={(e) => setFormData({ ...formData, mes: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--filter-input-bg)] text-[var(--card-text)]"
+                    onValueChange={(value) => setFormData({ ...formData, mes: value })}
                   >
-                    {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                        <SelectItem key={m} value={m.toString()}>
+                          {m}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[var(--card-text)] mb-1">
-                    Ano
-                  </label>
-                  <select
+                  <Label>Ano</Label>
+                  <Select
                     value={formData.ano}
-                    onChange={(e) => setFormData({ ...formData, ano: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg border border-[var(--card-border)] bg-[var(--filter-input-bg)] text-[var(--card-text)]"
+                    onValueChange={(value) => setFormData({ ...formData, ano: value })}
                   >
-                    {[2024, 2025, 2026].map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[2024, 2025, 2026].map((y) => (
+                        <SelectItem key={y} value={y.toString()}>
+                          {y}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
