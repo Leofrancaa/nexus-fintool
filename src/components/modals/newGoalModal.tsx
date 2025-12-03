@@ -139,14 +139,14 @@ export function NewGoalModal({ onCreated }: Props) {
               <div>
                 <Label>Categoria (opcional)</Label>
                 <Select
-                  value={formData.category_id}
-                  onValueChange={(value) => setFormData({ ...formData, category_id: value })}
+                  value={formData.category_id || "none"}
+                  onValueChange={(value) => setFormData({ ...formData, category_id: value === "none" ? "" : value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Todas as categorias" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Todas as categorias</SelectItem>
+                    <SelectItem value="none">Todas as categorias</SelectItem>
                     {categories.map((cat) => (
                       <SelectItem key={cat.id} value={cat.id.toString()}>
                         {cat.nome}
