@@ -4,7 +4,7 @@ import { useState } from "react";
 import PageTitle from "@/components/pageTitle";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import Button from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Shield, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
 import { getAuthToken } from "@/lib/auth";
