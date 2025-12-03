@@ -114,8 +114,8 @@ export default function ConfiguracoesPage() {
       </div>
 
       <div className="mt-8 max-w-2xl">
-        <Card className="p-6 bg-[var(--card-bg)] border-[var(--card-border)]">
-          <h2 className="text-xl font-semibold mb-6 text-[var(--card-text)]">
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-6">
             Alterar Senha
           </h2>
 
