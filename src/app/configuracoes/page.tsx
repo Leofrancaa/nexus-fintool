@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PageTitle } from "@/components/pageTitle";
+import PageTitle from "@/components/pageTitle";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -105,11 +105,15 @@ export default function ConfiguracoesPage() {
 
   return (
     <div className="flex-1 p-8 overflow-y-auto">
-      <PageTitle
-        title="Configurações"
-        subtitle="Gerencie suas preferências e segurança da conta"
-        icon={<Shield className="w-8 h-8" />}
-      />
+      <div className="flex items-center gap-4 mb-8">
+        <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-lg">
+          <Shield className="w-8 h-8" />
+        </div>
+        <PageTitle
+          title="Configurações"
+          subTitle="Gerencie suas preferências e segurança da conta"
+        />
+      </div>
 
       <div className="mt-8 max-w-2xl">
         <Card className="p-6">
