@@ -1,6 +1,6 @@
 ## Licença e Direitos Autorais
 
-Copyright © 2025 Leonardo França Almeida Silva. Todos os direitos reservados.
+Copyright © 2025 Leonardo Franca Almeida Silva. Todos os direitos reservados.
 
 Este projeto e todo o seu código-fonte são propriedade privada e confidencial. Nenhuma parte deste software pode ser reproduzida, distribuída, modificada ou utilizada sem autorização expressa por escrito do autor.
 
@@ -22,4 +22,5 @@ Para solicitações de licenciamento ou permissões, entre em contato através d
 ---
 
 **AVISO**: O uso não autorizado deste código está sujeito a ações legais.
+
 
