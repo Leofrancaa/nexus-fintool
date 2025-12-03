@@ -17,6 +17,7 @@ import {
   ChevronLeft,
   ChevronRight,
   BookOpen,
+  Settings,
 } from "lucide-react";
 import clsx from "clsx";
 import { ThemeToggle } from "@/components/toggles/themeToggle";
@@ -33,6 +34,7 @@ const navItems = [
   { name: "Limites e Metas", href: "/limites", icon: Gauge },
   { name: "Planos", href: "/planos", icon: Target },
   { name: "Manual", href: "/manual", icon: BookOpen },
+  { name: "Configurações", href: "/configuracoes", icon: Settings },
 ];
 
 export function Sidebar() {
