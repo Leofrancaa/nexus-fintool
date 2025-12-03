@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Button from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Shield, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
 import { tokenManager } from "@/lib/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -104,11 +104,9 @@ export default function ConfiguracoesPage() {
   };
 
   return (
-    <div className="flex-1 p-8 overflow-y-auto">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-lg">
-          <Shield className="w-8 h-8" />
-        </div>
+    <main className="flex flex-col min-h-screen bg-[var(--page-bg)] px-8 py-8 lg:py-4">
+      {/* Cabeçalho */}
+      <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mt-14 lg:mt-0">
         <PageTitle
           title="Configurações"
           subTitle="Gerencie suas preferências e segurança da conta"
@@ -116,8 +114,8 @@ export default function ConfiguracoesPage() {
       </div>
 
       <div className="mt-8 max-w-2xl">
-        <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-6 text-[var(--foreground)]">
+        <Card className="p-6 bg-[var(--card-bg)] border-[var(--card-border)]">
+          <h2 className="text-xl font-semibold mb-6 text-[var(--card-text)]">
             Alterar Senha
           </h2>
 
@@ -154,7 +152,7 @@ export default function ConfiguracoesPage() {
                 <button
                   type="button"
                   onClick={() => setShowSenhaAtual(!showSenhaAtual)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--foreground)]/50 hover:text-[var(--foreground)]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--filter-placeholder)] hover:text-[var(--filter-text)] transition-colors"
                   tabIndex={-1}
                 >
                   {showSenhaAtual ? (
@@ -181,7 +179,7 @@ export default function ConfiguracoesPage() {
                 <button
                   type="button"
                   onClick={() => setShowNovaSenha(!showNovaSenha)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--foreground)]/50 hover:text-[var(--foreground)]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--filter-placeholder)] hover:text-[var(--filter-text)] transition-colors"
                   tabIndex={-1}
                 >
                   {showNovaSenha ? (
@@ -191,7 +189,7 @@ export default function ConfiguracoesPage() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-[var(--foreground)]/60">
+              <p className="text-xs text-[var(--filter-placeholder)]">
                 Mínimo de 6 caracteres
               </p>
             </div>
@@ -211,7 +209,7 @@ export default function ConfiguracoesPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmarSenha(!showConfirmarSenha)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--foreground)]/50 hover:text-[var(--foreground)]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--filter-placeholder)] hover:text-[var(--filter-text)] transition-colors"
                   tabIndex={-1}
                 >
                   {showConfirmarSenha ? (
@@ -224,13 +222,13 @@ export default function ConfiguracoesPage() {
             </div>
 
             <div className="pt-4">
-              <Button type="submit" disabled={loading} className="w-full">
+              <Button type="submit" disabled={loading}>
                 {loading ? "Alterando..." : "Alterar Senha"}
               </Button>
             </div>
           </form>
         </Card>
       </div>
-    </div>
+    </main>
   );
 }

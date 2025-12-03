@@ -34,7 +34,6 @@ const navItems = [
   { name: "Limites e Metas", href: "/limites", icon: Gauge },
   { name: "Planos", href: "/planos", icon: Target },
   { name: "Manual", href: "/manual", icon: BookOpen },
-  { name: "Configurações", href: "/configuracoes", icon: Settings },
 ];
 
 export function Sidebar() {
@@ -141,12 +140,21 @@ export function Sidebar() {
           <div className="border-t border-[color:var(--sidebar-border)] mx-4 my-4" />
 
           {isOpen && userName && (
-            <div className="px-4">
+            <div className="px-4 mb-2">
               <div className="text-sm text-[var(--foreground)]/60">
                 Bem-vindo
               </div>
-              <div className="text-lg font-semibold text-[var(--foreground)] mb-2">
-                {userName}
+              <div className="flex items-center justify-between">
+                <div className="text-lg font-semibold text-[var(--foreground)]">
+                  {userName}
+                </div>
+                <Link
+                  href="/configuracoes"
+                  className="p-2 rounded-lg hover:bg-[var(--hover-bg)] transition-colors"
+                  title="Configurações"
+                >
+                  <Settings className="w-5 h-5 text-[var(--foreground)]" />
+                </Link>
               </div>
             </div>
           )}
@@ -220,23 +228,33 @@ export function Sidebar() {
           <div className="border-t border-[color:var(--sidebar-border)] mx-4 my-4" />
 
           {userName && (
-            <div className="px-4 mb-4 flex items-center justify-between">
-              <div>
-                <div className="text-sm text-[var(--foreground)]/60">
-                  Bem-vindo
-                </div>
-                <div className="text-lg font-semibold text-[var(--foreground)] mb-2">
+            <div className="px-4 mb-4">
+              <div className="text-sm text-[var(--foreground)]/60">
+                Bem-vindo
+              </div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-lg font-semibold text-[var(--foreground)]">
                   {userName}
                 </div>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/configuracoes"
+                    onClick={toggleMobile}
+                    className="p-2 rounded-lg hover:bg-[var(--hover-bg)] transition-colors"
+                    title="Configurações"
+                  >
+                    <Settings className="w-5 h-5 text-[var(--foreground)]" />
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="p-2 rounded-lg transition-colors text-red-500 hover:bg-red-500/10"
+                    aria-label="Sair"
+                    title="Sair"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors duration-200 font-medium bg-transparent text-red-500 hover:bg-red-500/10"
-                aria-label="Sair"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="text-sm">Sair</span>
-              </button>
             </div>
           )}
 
