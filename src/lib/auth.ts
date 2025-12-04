@@ -88,9 +88,40 @@ const createHeaders = (includeAuth = true): Headers => {
 const handleApiError = async (response: Response): Promise<never> => {
     try {
         const error: ApiError = await response.json();
-        throw new Error(error.error || error.message || 'Erro desconhecido');
-    } catch {
-        throw new Error(`Erro ${response.status}: ${response.statusText}`);
+
+        // Mapear códigos de erro para mensagens amigáveis
+        const friendlyMessages: Record<number, string> = {
+            400: error.message || 'Dados inválidos. Verifique as informações e tente novamente.',
+            401: 'Email ou senha incorretos. Tente novamente.',
+            403: 'Você não tem permissão para realizar esta ação.',
+            404: 'Recurso não encontrado.',
+            409: error.message || 'Este registro já existe.',
+            422: error.message || 'Dados inválidos. Verifique as informações.',
+            429: 'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
+            500: 'Erro no servidor. Tente novamente em alguns instantes.',
+            503: 'Serviço temporariamente indisponível. Tente novamente em alguns instantes.',
+        };
+
+        const message = friendlyMessages[response.status] || error.message || 'Não foi possível completar a ação. Tente novamente.';
+        throw new Error(message);
+    } catch (e) {
+        // Se não conseguiu fazer parse do JSON ou houve outro erro
+        if (e instanceof Error && e.message) {
+            throw e; // Re-throw se já tem uma mensagem
+        }
+
+        // Mensagens amigáveis para erros sem resposta JSON
+        const fallbackMessages: Record<number, string> = {
+            400: 'Dados inválidos. Verifique as informações e tente novamente.',
+            401: 'Email ou senha incorretos. Tente novamente.',
+            403: 'Você não tem permissão para realizar esta ação.',
+            404: 'Recurso não encontrado.',
+            409: 'Este registro já existe.',
+            500: 'Erro no servidor. Tente novamente em alguns instantes.',
+            503: 'Serviço temporariamente indisponível. Tente novamente em alguns instantes.',
+        };
+
+        throw new Error(fallbackMessages[response.status] || 'Não foi possível completar a ação. Tente novamente.');
     }
 };
 
