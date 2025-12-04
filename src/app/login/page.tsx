@@ -133,7 +133,15 @@ export default function Login() {
               </div>
 
               <div>
-                <Label htmlFor="senha">Senha</Label>
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="senha">Senha</Label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm text-[#3B82F6] hover:underline"
+                  >
+                    Esqueci minha senha
+                  </Link>
+                </div>
                 <div className="relative mt-1">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
                   <Input
