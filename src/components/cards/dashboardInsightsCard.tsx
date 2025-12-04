@@ -93,9 +93,8 @@ export function DashboardInsightsCard({ customMonth, customYear, refreshKey, onl
         const thresholdsData = await thresholdsRes.json();
         const alerts: ThresholdAlert[] = thresholdsData.data || [];
 
-        // Filtrar apenas limites ultrapassados
-        const exceeded = alerts.filter((t) => t.is_exceeded);
-        setExceededThresholds(exceeded);
+        // Mostrar todos os limites (não apenas os ultrapassados)
+        setExceededThresholds(alerts);
 
         // Buscar metas
         const goalsRes = await apiRequest(`/api/goals?mes=${customMonth}&ano=${customYear}`);
@@ -158,24 +157,38 @@ export function DashboardInsightsCard({ customMonth, customYear, refreshKey, onl
         )
       )}
 
-      {/* Alertas de limites ultrapassados */}
+      {/* Alertas de limites */}
       {!onlyCards && !onlyGoals && (
         exceededThresholds.length > 0 ? (
           <div className={`flex flex-col ${exceededThresholds.length === 1 ? 'h-full' : 'h-full'} gap-3`}>
-            {exceededThresholds.map((threshold) => (
-              <div
-                key={threshold.threshold_id}
-                className={`bg-red-500/10 border border-red-500/50 rounded-xl p-3 flex items-center justify-center gap-2 ${exceededThresholds.length === 1 ? 'h-full' : 'flex-1'}`}
-              >
-                <AlertTriangle className={`text-red-500 flex-shrink-0 ${exceededThresholds.length === 1 ? 'w-5 h-5' : 'w-4 h-4'}`} />
-                <p className={`text-[var(--card-text)] ${exceededThresholds.length === 1 ? 'text-sm' : 'text-xs'}`}>
-                  <strong>{threshold.category_name}</strong> ultrapassou o limite em{" "}
-                  <strong className="text-red-500">
-                    {((threshold.percentage_used || 0) - 100).toFixed(1)}%
-                  </strong>
-                </p>
-              </div>
-            ))}
+            {exceededThresholds.slice(0, 2).map((threshold) => {
+              const getAlertColor = () => {
+                if (threshold.is_exceeded || threshold.alert_level === 'exceeded') return { bg: 'bg-red-500/10', border: 'border-red-500/50', text: 'text-red-500' };
+                if (threshold.alert_level === 'danger') return { bg: 'bg-orange-500/10', border: 'border-orange-500/50', text: 'text-orange-500' };
+                if (threshold.alert_level === 'warning') return { bg: 'bg-yellow-500/10', border: 'border-yellow-500/50', text: 'text-yellow-500' };
+                return { bg: 'bg-green-500/10', border: 'border-green-500/50', text: 'text-green-500' };
+              };
+
+              const colors = getAlertColor();
+              const getMessage = () => {
+                if (threshold.is_exceeded) {
+                  return `ultrapassou o limite em ${((threshold.percentage_used || 0) - 100).toFixed(1)}%`;
+                }
+                return `usando ${(threshold.percentage_used || 0).toFixed(1)}% do limite (${threshold.current_spending.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} / ${threshold.limit_value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })})`;
+              };
+
+              return (
+                <div
+                  key={threshold.threshold_id}
+                  className={`${colors.bg} border ${colors.border} rounded-xl p-3 flex items-center gap-2 ${exceededThresholds.length === 1 ? 'h-full' : 'flex-1'}`}
+                >
+                  <AlertTriangle className={`${colors.text} flex-shrink-0 ${exceededThresholds.length === 1 ? 'w-5 h-5' : 'w-4 h-4'}`} />
+                  <p className={`text-[var(--card-text)] ${exceededThresholds.length === 1 ? 'text-sm' : 'text-xs'}`}>
+                    <strong>{threshold.category_name}</strong> {getMessage()}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="flex flex-col h-full gap-3">
