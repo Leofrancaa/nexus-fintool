@@ -141,11 +141,11 @@ export function Sidebar() {
 
           {isOpen && userName && (
             <div className="px-4 mb-2">
-              <div className="text-sm text-[var(--foreground)]/60">
+              <div className="text-xs xl:text-sm text-[var(--foreground)]/60">
                 Bem-vindo
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-lg font-semibold text-[var(--foreground)]">
+                <div className="text-base xl:text-lg font-semibold text-[var(--foreground)]">
                   {userName}
                 </div>
                 <Link
@@ -153,7 +153,7 @@ export function Sidebar() {
                   className="p-2 rounded-lg hover:bg-[var(--hover-bg)] transition-colors"
                   title="Configurações"
                 >
-                  <Settings className="w-5 h-5 text-[var(--foreground)]" />
+                  <Settings className="w-4 h-4 xl:w-5 xl:h-5 text-[var(--foreground)]" />
                 </Link>
               </div>
             </div>
@@ -167,7 +167,7 @@ export function Sidebar() {
                   key={href}
                   href={href}
                   className={clsx(
-                    "flex items-center gap-3 rounded-lg px-3 py-3 transition-colors duration-200 font-medium",
+                    "flex items-center gap-3 rounded-lg px-3 py-3 transition-colors duration-200 font-medium text-sm xl:text-base",
                     {
                       "bg-gradient-to-r from-[#2256FF] via-[#00D4AA] to-[#00D4D4] text-white":
                         isActive,
@@ -176,7 +176,7 @@ export function Sidebar() {
                     }
                   )}
                 >
-                  <Icon className={clsx(isOpen ? "w-5 h-5" : "w-6 h-6")} />
+                  <Icon className={clsx(isOpen ? "w-4 h-4 xl:w-5 xl:h-5" : "w-6 h-6")} />
                   {isOpen && <span>{name}</span>}
                 </Link>
               );
@@ -188,11 +188,11 @@ export function Sidebar() {
             <button
               onClick={handleLogout}
               className={clsx(
-                "flex items-center gap-3 rounded-lg px-3 py-3 transition-colors duration-200 font-medium w-full",
+                "flex items-center gap-3 rounded-lg px-3 py-3 transition-colors duration-200 font-medium w-full text-sm xl:text-base",
                 "bg-transparent text-red-500 hover:bg-red-500/10"
               )}
             >
-              <LogOut className={clsx(isOpen ? "w-5 h-5" : "w-6 h-6")} />
+              <LogOut className={clsx(isOpen ? "w-4 h-4 xl:w-5 xl:h-5" : "w-6 h-6")} />
               {isOpen && <span>Sair</span>}
             </button>
           </div>
