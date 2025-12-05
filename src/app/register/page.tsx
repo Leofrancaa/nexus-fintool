@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, User, Eye, EyeOff, Ticket } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 import Button from "@/components/ui/button";
@@ -18,6 +18,7 @@ export default function Signup() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
   const [showSenha, setShowSenha] = useState(false);
   const [showConfirmar, setShowConfirmar] = useState(false);
   const [aceitouTermos, setAceitouTermos] = useState(false);
@@ -28,7 +29,7 @@ export default function Signup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!nome || !email || !senha || !confirmarSenha) {
+    if (!nome || !email || !senha || !confirmarSenha || !inviteCode) {
       toast.error("Por favor, preencha todas as informações");
       return;
     }
@@ -49,7 +50,7 @@ export default function Signup() {
     }
 
     try {
-      const response = await register({ nome, email, senha });
+      const response = await register({ nome, email, senha, inviteCode });
 
       if (response.success) {
         toast.success("Cadastro realizado com sucesso!");
@@ -127,85 +128,119 @@ export default function Signup() {
           onSubmit={handleSubmit}
           className="space-y-5 mt-2 flex flex-col 3xl:gap-4"
         >
-          <div>
-            <Label htmlFor="nome">Nome completo</Label>
-            <div className="relative mt-1">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
-              <Input
-                id="nome"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                placeholder="Seu nome completo"
-                className="pl-10 max-w-full"
-              />
+          {/* Grid 2 colunas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Nome */}
+            <div>
+              <Label htmlFor="nome">Nome completo</Label>
+              <div className="relative mt-1">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                <Input
+                  id="nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  placeholder="Seu nome completo"
+                  className="pl-10 max-w-full"
+                />
+              </div>
+            </div>
+
+            {/* Senha */}
+            <div>
+              <Label htmlFor="senha">Senha</Label>
+              <div className="relative mt-1">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                <Input
+                  id="senha"
+                  type={showSenha ? "text" : "password"}
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  placeholder="Sua senha"
+                  className="pl-10 pr-10 max-w-full"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowSenha(!showSenha)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-white"
+                >
+                  {showSenha ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Email */}
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <div className="relative mt-1">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="seu@email.com"
+                  className="pl-10 max-w-full"
+                />
+              </div>
+            </div>
+
+            {/* Confirmar Senha */}
+            <div>
+              <Label htmlFor="confirmarSenha">Confirmar Senha</Label>
+              <div className="relative mt-1">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+                <Input
+                  id="confirmarSenha"
+                  type={showConfirmar ? "text" : "password"}
+                  value={confirmarSenha}
+                  onChange={(e) => setConfirmarSenha(e.target.value)}
+                  placeholder="Confirme sua senha"
+                  className="pl-10 pr-10 max-w-full"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmar(!showConfirmar)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-white"
+                >
+                  {showConfirmar ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
+          {/* Código de Convite - Full width */}
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="inviteCode">Código de Convite</Label>
             <div className="relative mt-1">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+              <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
               <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
-                className="pl-10 max-w-full"
+                id="inviteCode"
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                placeholder="Digite seu código de convite"
+                className="pl-10 max-w-full uppercase"
+                maxLength={32}
               />
             </div>
-          </div>
-
-          <div>
-            <Label htmlFor="senha">Senha</Label>
-            <div className="relative mt-1">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
-              <Input
-                id="senha"
-                type={showSenha ? "text" : "password"}
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                placeholder="Sua senha"
-                className="pl-10 pr-10 max-w-full"
-              />
-              <button
-                type="button"
-                onClick={() => setShowSenha(!showSenha)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-white"
+            <p className="text-xs text-[#9CA3AF] mt-1.5">
+              Não tem um código?{" "}
+              <a
+                href="https://wa.me/5571996601709?text=Olá! Gostaria de obter um código de convite para o Nexus"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#3B82F6] hover:underline font-medium"
               >
-                {showSenha ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="confirmarSenha">Confirmar Senha</Label>
-            <div className="relative mt-1">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
-              <Input
-                id="confirmarSenha"
-                type={showConfirmar ? "text" : "password"}
-                value={confirmarSenha}
-                onChange={(e) => setConfirmarSenha(e.target.value)}
-                placeholder="Confirme sua senha"
-                className="pl-10 pr-10 max-w-full"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmar(!showConfirmar)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-white"
-              >
-                {showConfirmar ? (
-                  <EyeOff className="w-4 h-4" />
-                ) : (
-                  <Eye className="w-4 h-4" />
-                )}
-              </button>
-            </div>
+                Solicite aqui pelo WhatsApp
+              </a>
+            </p>
           </div>
 
           {/* Termos e Condições */}
