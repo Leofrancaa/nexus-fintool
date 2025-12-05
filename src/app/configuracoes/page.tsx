@@ -64,6 +64,11 @@ export default function ConfiguracoesPage() {
   const [loadingAdmin, setLoadingAdmin] = useState(false);
   const [expiresInDays, setExpiresInDays] = useState<string>("");
 
+  // Debug: Monitorar mudanças no estado users
+  useEffect(() => {
+    console.log("🔍 Estado users atualizado:", users);
+  }, [users]);
+
   // Verificar se é admin
   useEffect(() => {
     const user = getUserData();
@@ -74,7 +79,9 @@ export default function ConfiguracoesPage() {
 
   // Carregar dados admin
   useEffect(() => {
+    console.log("🔍 useEffect Admin: isAdmin =", isAdmin, "activeTab =", activeTab);
     if (isAdmin && activeTab === "admin") {
+      console.log("🔍 useEffect Admin: Condição atendida, carregando dados...");
       loadInviteCodes();
       loadUsers();
     }
@@ -99,20 +106,30 @@ export default function ConfiguracoesPage() {
   };
 
   const loadUsers = async () => {
+    console.log("🔍 loadUsers: Iniciando carregamento de usuários...");
     try {
       const token = tokenManager.get();
+      console.log("🔍 loadUsers: Token obtido:", token ? "Presente" : "Ausente");
+
       const response = await fetch(`${API_URL}/api/admin/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      console.log("🔍 loadUsers: Status da resposta:", response.status);
+
       if (response.ok) {
         const data = await response.json();
+        console.log("🔍 loadUsers: Dados recebidos:", data);
+        console.log("🔍 loadUsers: Número de usuários:", data.data?.length || 0);
         setUsers(data.data || []);
+      } else {
+        const errorData = await response.json();
+        console.error("🔍 loadUsers: Erro na resposta:", errorData);
       }
     } catch (error) {
-      console.error("Erro ao carregar usuários:", error);
+      console.error("🔍 loadUsers: Erro ao carregar usuários:", error);
     }
   };
 
@@ -427,8 +444,8 @@ export default function ConfiguracoesPage() {
           {/* Gerar Código */}
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4">Gerar Código de Convite</h2>
-            <div className="flex gap-4 items-end">
-              <div className="flex-1">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 max-w-xs">
                 <Label htmlFor="expiresInDays">
                   Expira em (dias) - Opcional
                 </Label>
@@ -437,19 +454,22 @@ export default function ConfiguracoesPage() {
                   type="number"
                   value={expiresInDays}
                   onChange={(e) => setExpiresInDays(e.target.value)}
-                  placeholder="Deixe vazio para nunca expirar"
+                  placeholder="Ex: 7"
                   min="1"
                   className="mt-1"
                 />
               </div>
-              <Button
-                onClick={handleGenerateCode}
-                disabled={loadingAdmin}
-                className="flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                Gerar Código
-              </Button>
+              <div className="flex items-end">
+                <button
+                  type="button"
+                  onClick={handleGenerateCode}
+                  disabled={loadingAdmin}
+                  className="flex items-center gap-2 h-10 px-4 rounded-lg bg-gradient-to-r from-[#2256FF] via-[#00D4AA] to-[#00D4D4] text-white font-semibold hover:opacity-90 disabled:opacity-50 transition-all whitespace-nowrap"
+                >
+                  <Plus className="w-4 h-4" />
+                  Gerar Código
+                </button>
+              </div>
             </div>
           </Card>
 
