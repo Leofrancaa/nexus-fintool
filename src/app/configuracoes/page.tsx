@@ -120,7 +120,7 @@ export default function ConfiguracoesPage() {
     setLoadingAdmin(true);
     try {
       const token = tokenManager.get();
-      const body: any = {};
+      const body: { expiresInDays?: number } = {};
       if (expiresInDays) {
         body.expiresInDays = parseInt(expiresInDays);
       }
