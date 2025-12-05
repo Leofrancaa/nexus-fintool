@@ -130,6 +130,7 @@ export const register = async (data: {
     nome: string;
     email: string;
     senha: string;
+    inviteCode: string;
 }): Promise<RegisterResponse> => {
     debugLog('register() - Iniciando registro para:', data.email);
 
