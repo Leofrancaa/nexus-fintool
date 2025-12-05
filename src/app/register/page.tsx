@@ -107,7 +107,7 @@ export default function Signup() {
         </svg>
       </div>
 
-      <div className="relative z-10 w-full max-w-lg sm:max-w-md md:max-w-[60%] lg:max-w-[40%] xl:max-w-[30%] bg-[#111827] rounded-2xl shadow-lg px-6 sm:px-8 md:px-10 pb-8">
+      <div className="relative z-10 w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl bg-[#111827] rounded-2xl shadow-lg px-6 sm:px-8 md:px-10 pb-8">
         <div className="text-center">
           <div className="mx-auto mt-6 mb-6 w-[140px]">
             <Image
