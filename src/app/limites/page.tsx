@@ -79,9 +79,8 @@ export default function Limits() {
       }
       setGastos(gastosTemp);
 
-      // Carregar metas
-      const now = new Date();
-      const resMetas = await apiRequest(`/api/goals?mes=${now.getMonth() + 1}&ano=${now.getFullYear()}`);
+      // Carregar metas (sem filtro de data - mostrar todas)
+      const resMetas = await apiRequest(`/api/goals`);
       if (!resMetas.ok) throw new Error();
 
       const responseDataMetas = await resMetas.json();
