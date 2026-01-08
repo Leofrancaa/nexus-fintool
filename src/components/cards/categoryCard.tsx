@@ -12,7 +12,8 @@ import {
   getContextualErrorMessage,
   generateToastId,
 } from "@/utils/errorUtils";
-import { FiEdit2, FiCheck, FiX } from "react-icons/fi";
+import { FiCheck, FiX } from "react-icons/fi";
+import EditButton from "@/components/ui/editButton";
 
 interface CategoryCardProps {
   id: number;
@@ -322,31 +323,30 @@ export default function CategoryCard({
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <>
                 <p className="text-lg font-bold" style={{ color: cor }}>
                   {nome}
                 </p>
-                <button
-                  onClick={handleEditClick}
-                  className="p-1 hover:bg-white/10 rounded transition opacity-0 group-hover:opacity-100"
-                  title="Editar nome"
-                  disabled={isDeleting}
-                >
-                  <FiEdit2 className="text-gray-400" size={16} />
-                </button>
-              </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
+                  {tipo}
+                </p>
+              </>
             )}
-            <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
-              {tipo}
-            </p>
           </div>
         </div>
 
         {!isEditing && (
-          <DeleteButton
-            onClick={handleDeleteClick}
-            disabled={isDeleting}
-          />
+          <div className="flex items-center gap-2">
+            <EditButton
+              onClick={handleEditClick}
+              title="Editar nome da categoria"
+              size="sm"
+            />
+            <DeleteButton
+              onClick={handleDeleteClick}
+              disabled={isDeleting}
+            />
+          </div>
         )}
       </div>
 
