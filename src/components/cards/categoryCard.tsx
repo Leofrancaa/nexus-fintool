@@ -12,6 +12,7 @@ import {
   getContextualErrorMessage,
   generateToastId,
 } from "@/utils/errorUtils";
+import { FiEdit2, FiCheck, FiX } from "react-icons/fi";
 
 interface CategoryCardProps {
   id: number;
@@ -41,6 +42,10 @@ export default function CategoryCard({
     percentual: 0,
     quantidade: 0,
   });
+  const [deleteWarning, setDeleteWarning] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedName, setEditedName] = useState(nome);
+  const [isSaving, setIsSaving] = useState(false);
 
   const router = useRouter();
 
@@ -99,6 +104,94 @@ export default function CategoryCard({
     fetchStats();
   }, [id, nome, tipo, router, refreshTrigger]);
 
+  const handleEditClick = () => {
+    setIsEditing(true);
+    setEditedName(nome);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedName(nome);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editedName.trim() || editedName.trim() === nome) {
+      setIsEditing(false);
+      return;
+    }
+
+    setIsSaving(true);
+    const toastId = generateToastId("update", "category", id);
+
+    try {
+      toast.loading("Atualizando categoria...", { id: toastId });
+
+      const res = await apiRequest(`/api/categories/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nome: editedName.trim() }),
+      });
+
+      if (!res.ok) {
+        const errorMessage = await getApiErrorMessage(
+          res,
+          "Não foi possível atualizar a categoria"
+        );
+        toast.error(errorMessage, { id: toastId });
+        return;
+      }
+
+      toast.success("Categoria atualizada com sucesso!", { id: toastId });
+      setIsEditing(false);
+      // Atualizar a UI localmente
+      window.location.reload();
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Sessão expirada")) {
+        toast.error("Sessão expirada. Redirecionando para login...", {
+          id: toastId,
+        });
+        router.push("/login");
+      } else {
+        const errorMessage = getContextualErrorMessage(
+          error,
+          "update",
+          "categoria"
+        );
+        toast.error(errorMessage, { id: toastId });
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    // Preparar mensagem de aviso
+    const transacoes = stats.quantidade;
+    const subs = subcategorias.length;
+
+    let warning = "Ao excluir esta categoria";
+    const items = [];
+
+    if (subs > 0) {
+      items.push(`${subs} subcategoria${subs > 1 ? 's' : ''}`);
+    }
+
+    if (transacoes > 0) {
+      items.push(`${transacoes} ${tipo === 'receita' ? 'receita' : 'despesa'}${transacoes > 1 ? 's' : ''}`);
+    }
+
+    if (items.length > 0) {
+      warning += `, ${items.join(' e ')} vinculada${items.length > 1 || transacoes > 1 || subs > 1 ? 's' : ''} também será${items.length > 1 || transacoes > 1 || subs > 1 ? 'ão' : ''} excluída${items.length > 1 || transacoes > 1 || subs > 1 ? 's' : ''}.`;
+    } else {
+      warning = "Todas as subcategorias também serão removidas.";
+    }
+
+    setDeleteWarning(warning);
+    setConfirmOpen(true);
+  };
+
   const handleDelete = async (categoryId: number) => {
     if (isDeleting) return;
 
@@ -115,13 +208,33 @@ export default function CategoryCard({
       if (!res.ok) {
         const errorMessage = await getApiErrorMessage(
           res,
-          "Não foi possível excluir a categoria. Verifique se não há transações associadas"
+          "Não foi possível excluir a categoria"
         );
         toast.error(errorMessage, { id: toastId });
         return;
       }
 
-      toast.success("Categoria excluída com sucesso!", { id: toastId });
+      const data = await res.json();
+      const deleted = data.data?.deletedItems;
+
+      let successMessage = "Categoria excluída com sucesso!";
+      if (deleted) {
+        const deletedItems = [];
+        if (deleted.subcategorias > 0) {
+          deletedItems.push(`${deleted.subcategorias} subcategoria${deleted.subcategorias > 1 ? 's' : ''}`);
+        }
+        if (deleted.despesas > 0) {
+          deletedItems.push(`${deleted.despesas} despesa${deleted.despesas > 1 ? 's' : ''}`);
+        }
+        if (deleted.receitas > 0) {
+          deletedItems.push(`${deleted.receitas} receita${deleted.receitas > 1 ? 's' : ''}`);
+        }
+        if (deletedItems.length > 0) {
+          successMessage += ` (${deletedItems.join(', ')} removida${deletedItems.length > 1 ? 's' : ''})`;
+        }
+      }
+
+      toast.success(successMessage, { id: toastId });
       onDelete(categoryId);
     } catch (error) {
       if (error instanceof Error && error.message.includes("Sessão expirada")) {
@@ -158,7 +271,7 @@ export default function CategoryCard({
 
   return (
     <div
-      className="flex flex-col gap-4 border rounded-lg p-5 shadow-md"
+      className="group flex flex-col gap-4 border rounded-lg p-5 shadow-md"
       style={{
         backgroundColor: "var(--card-bg)",
         borderColor: "var(--card-border)",
@@ -166,25 +279,75 @@ export default function CategoryCard({
       }}
     >
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-1">
           <div
-            className="w-4 h-4 rounded-full"
+            className="w-4 h-4 rounded-full flex-shrink-0"
             style={{ backgroundColor: cor }}
           />
-          <div>
-            <p className="text-lg font-bold" style={{ color: cor }}>
-              {nome}
-            </p>
+          <div className="flex-1">
+            {isEditing ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                  className="text-lg font-bold px-2 py-1 rounded border"
+                  style={{
+                    color: cor,
+                    borderColor: cor,
+                    backgroundColor: "var(--card-bg)",
+                  }}
+                  disabled={isSaving}
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSaveEdit();
+                    if (e.key === "Escape") handleCancelEdit();
+                  }}
+                />
+                <button
+                  onClick={handleSaveEdit}
+                  disabled={isSaving}
+                  className="p-1 hover:bg-green-500/20 rounded transition"
+                  title="Salvar"
+                >
+                  <FiCheck className="text-green-500" size={20} />
+                </button>
+                <button
+                  onClick={handleCancelEdit}
+                  disabled={isSaving}
+                  className="p-1 hover:bg-red-500/20 rounded transition"
+                  title="Cancelar"
+                >
+                  <FiX className="text-red-500" size={20} />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <p className="text-lg font-bold" style={{ color: cor }}>
+                  {nome}
+                </p>
+                <button
+                  onClick={handleEditClick}
+                  className="p-1 hover:bg-white/10 rounded transition opacity-0 group-hover:opacity-100"
+                  title="Editar nome"
+                  disabled={isDeleting}
+                >
+                  <FiEdit2 className="text-gray-400" size={16} />
+                </button>
+              </div>
+            )}
             <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
               {tipo}
             </p>
           </div>
         </div>
 
-        <DeleteButton
-          onClick={() => setConfirmOpen(true)}
-          disabled={isDeleting}
-        />
+        {!isEditing && (
+          <DeleteButton
+            onClick={handleDeleteClick}
+            disabled={isDeleting}
+          />
+        )}
       </div>
 
       <div className="flex flex-col gap-2 text-sm text-muted-foreground">
@@ -259,7 +422,7 @@ export default function CategoryCard({
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title="Deseja excluir a categoria?"
-        description="Todas as subcategorias também serão removidas."
+        description={deleteWarning}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={() => handleDelete(id)}
       />
