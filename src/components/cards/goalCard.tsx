@@ -8,17 +8,11 @@ import DeleteButton from "@/components/ui/deleteButton";
 interface Goal {
   id: number;
   nome: string;
-  tipo: string;
   valor_alvo: number;
   valor_atual: number;
   progresso: number;
   mes: number;
   ano: number;
-  categoria?: {
-    id: number;
-    nome: string;
-    cor: string;
-  };
 }
 
 interface Props {
@@ -43,20 +37,14 @@ export default function GoalCard({ goal, onEdit, onDelete }: Props) {
       {/* Topo com nome e ícone */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
-          {goal.categoria && (
-            <div
-              className="w-4 h-4 rounded-full"
-              style={{ backgroundColor: goal.categoria.cor }}
-            />
-          )}
-          <Target className={`w-4 h-4 ${atingido ? "text-green-500" : "text-blue-500"}`} />
+          <Target className={`w-5 h-5 ${atingido ? "text-green-500" : "text-blue-500"}`} />
           <p className="font-semibold text-lg">{goal.nome}</p>
         </div>
       </div>
 
-      {goal.categoria && (
-        <p className="text-xs text-[var(--filter-placeholder)]">{goal.categoria.nome}</p>
-      )}
+      <p className="text-xs text-[var(--filter-placeholder)]">
+        Meta de receita total para {goal.mes}/{goal.ano}
+      </p>
 
       <div className="text-md mt-2 text-[var(--card-text)]">
         <div className="flex justify-between">
@@ -84,7 +72,7 @@ export default function GoalCard({ goal, onEdit, onDelete }: Props) {
         <div className="flex justify-between items-center mt-2">
           <div className="flex flex-col gap-[2px] text-md text-[var(--card-text)]">
             <span>
-              Atual:{" "}
+              Receita Atual:{" "}
               <span className="text-green-500 font-medium">
                 R$ {goal.valor_atual.toFixed(2).replace(".", ",")}
               </span>
@@ -96,7 +84,7 @@ export default function GoalCard({ goal, onEdit, onDelete }: Props) {
               </span>
             </span>
             <span className="text-xs text-[var(--filter-placeholder)]">
-              {goal.mes}/{goal.ano}
+              Período: {goal.mes}/{goal.ano}
             </span>
           </div>
 
