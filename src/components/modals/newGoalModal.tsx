@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { apiRequest } from "@/lib/auth";
@@ -16,43 +16,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface Category {
-  id: number;
-  nome: string;
-  cor: string;
-  tipo: "receita" | "despesa";
-}
-
 interface Props {
   onCreated: () => void;
 }
 
 export function NewGoalModal({ onCreated }: Props) {
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
 
   const now = new Date();
   const [formData, setFormData] = useState({
-    nome: "",
-    category_id: "",
+    nome: "Meta de Receita",
     valor_alvo: "",
     mes: String(now.getMonth() + 1),
     ano: String(now.getFullYear()),
   });
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await apiRequest(`/api/categories?tipo=receita`);
-      const data = await res.json();
-      setCategories(data.data || []);
-    } catch {
-      toast.error("Erro ao carregar categorias");
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,8 +38,6 @@ export function NewGoalModal({ onCreated }: Props) {
     try {
       const payload = {
         nome: formData.nome,
-        tipo: "receita",
-        category_id: formData.category_id ? Number(formData.category_id) : undefined,
         valor_alvo: Number(formData.valor_alvo),
         mes: Number(formData.mes),
         ano: Number(formData.ano),
@@ -83,8 +58,7 @@ export function NewGoalModal({ onCreated }: Props) {
       const closeBtn = document.querySelector("[data-radix-dialog-close]") as HTMLButtonElement;
       closeBtn?.click();
       setFormData({
-        nome: "",
-        category_id: "",
+        nome: "Meta de Receita",
         valor_alvo: "",
         mes: String(now.getMonth() + 1),
         ano: String(now.getFullYear()),
@@ -131,33 +105,13 @@ export function NewGoalModal({ onCreated }: Props) {
                   required
                   value={formData.nome}
                   onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                  placeholder="Ex: Economizar para viagem"
+                  placeholder="Ex: Meta de Receita de Janeiro"
                   className="mt-1"
                 />
               </div>
 
               <div>
-                <Label>Categoria (opcional)</Label>
-                <Select
-                  value={formData.category_id || "none"}
-                  onValueChange={(value) => setFormData({ ...formData, category_id: value === "none" ? "" : value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Todas as categorias" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Todas as categorias</SelectItem>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id.toString()}>
-                        {cat.nome}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label>Valor Alvo</Label>
+                <Label>Valor Alvo de Receita (R$)</Label>
                 <Input
                   type="number"
                   step="0.01"
@@ -167,6 +121,9 @@ export function NewGoalModal({ onCreated }: Props) {
                   placeholder="0.00"
                   className="mt-1"
                 />
+                <p className="text-xs text-gray-400 mt-1">
+                  Total de receitas que você deseja atingir no mês
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

@@ -9,6 +9,7 @@ import GoalCard from "@/components/cards/goalCard";
 import { Threshold } from "@/types/threshold";
 import { toast } from "react-hot-toast";
 import { EditThresholdModal } from "@/components/modals/editThresholdModal";
+import { EditGoalModal } from "@/components/modals/editGoalModal";
 import { useRouter } from "next/navigation";
 import { apiRequest, isAuthenticated } from "@/lib/auth";
 import ConfirmDialog from "@/components/ui/confirmDialog";
@@ -16,17 +17,11 @@ import ConfirmDialog from "@/components/ui/confirmDialog";
 interface Goal {
   id: number;
   nome: string;
-  tipo: string;
   valor_alvo: number;
   valor_atual: number;
   progresso: number;
   mes: number;
   ano: number;
-  categoria?: {
-    id: number;
-    nome: string;
-    cor: string;
-  };
 }
 
 const fetchGastoPorCategoria = async (categoryId: number): Promise<number> => {
@@ -37,7 +32,7 @@ const fetchGastoPorCategoria = async (categoryId: number): Promise<number> => {
     if (!res.ok) throw new Error();
     const data = await res.json();
     return data.data?.total || data.total || 0;
-  } catch (error) {
+  } catch {
     return 0;
   }
 };
@@ -56,8 +51,10 @@ export default function Limits() {
   const [metas, setMetas] = useState<Goal[]>([]);
   const [gastos, setGastos] = useState<Record<number, number>>({});
   const [editando, setEditando] = useState<Threshold | null>(null);
+  const [editandoGoal, setEditandoGoal] = useState<Goal | null>(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [thresholdToDelete, setThresholdToDelete] = useState<Threshold | null>(null);
+  const [thresholdToDelete, setThresholdToDelete] =
+    useState<Threshold | null>(null);
   const [goalToDelete, setGoalToDelete] = useState<Goal | null>(null);
   const [goalConfirmDialogOpen, setGoalConfirmDialogOpen] = useState(false);
 
@@ -68,7 +65,8 @@ export default function Limits() {
       if (!resLimites.ok) throw new Error();
 
       const responseDataLimites = await resLimites.json();
-      const dataLimites: Threshold[] = responseDataLimites.data || responseDataLimites;
+      const dataLimites: Threshold[] =
+        responseDataLimites.data || responseDataLimites;
       setLimites(dataLimites);
 
       const gastosTemp: Record<number, number> = {};
@@ -112,7 +110,7 @@ export default function Limits() {
 
       toast.success("Limite deletado com sucesso!");
       carregarDados();
-    } catch (error) {
+    } catch {
       toast.error("Erro ao deletar limite");
     } finally {
       setThresholdToDelete(null);
@@ -136,7 +134,7 @@ export default function Limits() {
 
       toast.success("Meta deletada com sucesso!");
       carregarDados();
-    } catch (error) {
+    } catch {
       toast.error("Erro ao deletar meta");
     } finally {
       setGoalToDelete(null);
@@ -144,9 +142,7 @@ export default function Limits() {
   };
 
   const handleGoalEdit = (goal: Goal) => {
-    toast("Edição de metas em desenvolvimento", {
-      icon: "ℹ️",
-    });
+    setEditandoGoal(goal);
   };
 
   useEffect(() => {
@@ -172,7 +168,9 @@ export default function Limits() {
       {/* Seção de Metas */}
       {metas.length > 0 && (
         <>
-          <h2 className="text-2xl font-bold text-[var(--card-text)] mt-8 mb-4">Metas</h2>
+          <h2 className="text-2xl font-bold text-[var(--card-text)] mt-8 mb-4">
+            Metas
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {metas.map((meta) => (
               <GoalCard
@@ -187,7 +185,9 @@ export default function Limits() {
       )}
 
       {/* Seção de Limites */}
-      <h2 className="text-2xl font-bold text-[var(--card-text)] mt-8 mb-4">Limites</h2>
+      <h2 className="text-2xl font-bold text-[var(--card-text)] mt-8 mb-4">
+        Limites
+      </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {limites.map((limite) =>
           limite.categoria ? (
@@ -218,6 +218,14 @@ export default function Limits() {
         <EditThresholdModal
           threshold={editando}
           onClose={() => setEditando(null)}
+          onUpdated={carregarDados}
+        />
+      )}
+
+      {editandoGoal && (
+        <EditGoalModal
+          goal={editandoGoal}
+          onClose={() => setEditandoGoal(null)}
           onUpdated={carregarDados}
         />
       )}
