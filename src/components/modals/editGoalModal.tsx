@@ -34,15 +34,15 @@ export function EditGoalModal({
   onClose,
   onUpdated,
 }: EditGoalModalProps) {
-  if (!goal) return null;
-
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    nome: goal.nome,
-    valor_alvo: String(goal.valor_alvo),
-    mes: String(goal.mes),
-    ano: String(goal.ano),
+    nome: goal?.nome || "",
+    valor_alvo: String(goal?.valor_alvo || ""),
+    mes: String(goal?.mes || ""),
+    ano: String(goal?.ano || ""),
   });
+
+  if (!goal) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
