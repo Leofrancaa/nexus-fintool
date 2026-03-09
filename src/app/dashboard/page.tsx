@@ -11,6 +11,7 @@ import BalanceChart from "@/components/charts/balanceChart";
 import { ExpenseByCategoryChart } from "../../components/charts/expenseByCategoryChart";
 import { IncomeByCategoryPieChart } from "../../components/charts/incomeByCategoryPieChart";
 import { DashboardInsightsCard } from "@/components/cards/dashboardInsightsCard";
+import { CarryoverBanner } from "@/components/cards/carryoverBanner";
 
 export default function Dashboard() {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -45,6 +46,16 @@ export default function Dashboard() {
             onCreated={() => setRefreshKey((prev) => prev + 1)}
           />
         </div>
+      </div>
+
+      {/* Banner de Carryover de Saldo */}
+      <div className="mt-4 w-full">
+        <CarryoverBanner
+          customMonth={customMonth}
+          customYear={customYear}
+          refreshKey={refreshKey}
+          onApplied={() => setRefreshKey((prev) => prev + 1)}
+        />
       </div>
 
       {/* Filtro de Mês/Ano + Cards de Metas + Alertas de Limites */}
