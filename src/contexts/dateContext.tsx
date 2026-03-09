@@ -21,7 +21,7 @@ interface DateProviderProps {
 export const DateProvider = ({ children }: DateProviderProps) => {
   const now = new Date();
   const [selectedYear, setYear] = useState(now.getFullYear());
-  const [selectedMonth, setMonth] = useState(now.getMonth());
+  const [selectedMonth, setMonth] = useState(now.getMonth() + 1); // 1-based (1=Janeiro, 12=Dezembro)
 
   return (
     <DateContext.Provider

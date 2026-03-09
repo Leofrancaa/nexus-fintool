@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { differenceInDays, format } from "date-fns";
-import { AlertTriangle, Wallet } from "lucide-react";
+import { AlertTriangle, Wallet, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "react-hot-toast";
 
 import { CardType } from "@/types/card";
@@ -11,6 +11,21 @@ import EditButton from "../ui/editButton";
 import DeleteButton from "../ui/deleteButton";
 import ConfirmDialog from "../ui/confirmDialog";
 import { apiRequest } from "@/lib/auth";
+
+interface FutureInstallment {
+  id: number;
+  tipo: string;
+  quantidade: number;
+  competencia_mes: number;
+  competencia_ano: number;
+  parcelas: number;
+  observacoes: string | null;
+}
+
+const MONTH_NAMES = [
+  "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+  "Jul", "Ago", "Set", "Out", "Nov", "Dez",
+];
 
 interface CardVisualProps {
   card: CardType;
@@ -67,6 +82,28 @@ export function CardVisual({
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pagarLoading, setPagarLoading] = useState(false);
+  const [showInstallments, setShowInstallments] = useState(false);
+  const [installments, setInstallments] = useState<FutureInstallment[]>([]);
+  const [installmentsLoading, setInstallmentsLoading] = useState(false);
+  const [installmentsFetched, setInstallmentsFetched] = useState(false);
+
+  useEffect(() => {
+    if (!showInstallments || installmentsFetched) return;
+    const fetchInstallments = async () => {
+      setInstallmentsLoading(true);
+      try {
+        const res = await apiRequest(`/api/cards/${id}/future-installments`);
+        const data = await res.json();
+        setInstallments(data.data || []);
+      } catch {
+        toast.error("Erro ao buscar parcelas futuras.");
+      } finally {
+        setInstallmentsLoading(false);
+        setInstallmentsFetched(true);
+      }
+    };
+    fetchInstallments();
+  }, [showInstallments, installmentsFetched, id]);
 
   const handleDelete = async () => {
     try {
@@ -260,6 +297,49 @@ export function CardVisual({
           </div>
         </div>
       </div>
+
+      {/* Parcelas Futuras (somente crédito) */}
+      {isCredito && (
+        <div className="border-t border-[var(--card-border)]">
+          <button
+            type="button"
+            onClick={() => setShowInstallments((v) => !v)}
+            className="w-full flex items-center justify-between px-4 py-2 text-sm text-[var(--card-text)]/70 hover:text-[var(--card-text)] transition-colors"
+          >
+            <span>Parcelas futuras</span>
+            {showInstallments ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
+
+          {showInstallments && (
+            <div className="px-4 pb-4">
+              {installmentsLoading ? (
+                <p className="text-xs text-[var(--card-text)]/50 text-center py-2">Carregando...</p>
+              ) : installments.length === 0 ? (
+                <p className="text-xs text-[var(--card-text)]/50 text-center py-2">Nenhuma parcela futura.</p>
+              ) : (
+                <div className="space-y-1 max-h-48 overflow-y-auto">
+                  {installments.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between text-xs py-1 border-b border-[var(--card-border)] last:border-0"
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-[var(--card-text)]/60 shrink-0">
+                          {MONTH_NAMES[item.competencia_mes - 1]}/{String(item.competencia_ano).slice(2)}
+                        </span>
+                        <span className="truncate text-[var(--card-text)]">{item.tipo}</span>
+                      </div>
+                      <span className="font-medium text-[var(--card-text)] shrink-0 ml-2">
+                        {formatCurrency(item.quantidade)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Diálogo de confirmação */}
       <ConfirmDialog

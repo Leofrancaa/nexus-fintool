@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { formatCurrency } from "@/utils/format";
 import EditButton from "@/components/ui/editButton";
 import DeleteButton from "@/components/ui/deleteButton";
 import { ContributeModal } from "../modals/contributeModal";
@@ -133,30 +134,21 @@ export default function PlanCard({ plano, onRefresh }: PlanCardProps) {
           <div>
             <p className="text-[var(--plan-card-text)]">Atual</p>
             <p className="text-green-400 font-medium">
-              R${" "}
-              {plano.total_contribuido.toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-              })}
+              {formatCurrency(plano.total_contribuido)}
             </p>
           </div>
 
           <div>
             <p className="text-[var(--plan-card-text)]">Meta</p>
             <p className="font-medium text-[var(--card-text)]">
-              R${" "}
-              {plano.meta.toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-              })}
+              {formatCurrency(plano.meta)}
             </p>
           </div>
 
           <div>
             <p className="text-[var(--plan-card-text)]">Restante</p>
             <p className="text-red-400 font-medium">
-              R${" "}
-              {restante.toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-              })}
+              {formatCurrency(restante)}
             </p>
           </div>
 

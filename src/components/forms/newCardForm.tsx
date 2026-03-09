@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "react-hot-toast";
 import { apiRequest } from "@/lib/auth";
+import { generateToastId, getApiErrorMessage } from "@/utils/errorUtils";
 
 const cores = [
   // Azuis
@@ -60,6 +61,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
   const [diaVencimento, setDiaVencimento] = useState("");
   const [diasFechamentoAntes, setDiasFechamentoAntes] = useState("10"); // default 10
   const [corSelecionada, setCorSelecionada] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const onlyDigits = (v: string) => v.replace(/\D/g, "");
 
@@ -94,7 +96,12 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
       }
     }
 
+    const toastId = generateToastId("save", "card");
+
     try {
+      setSubmitting(true);
+      toast.loading("Salvando cartão...", { id: toastId });
+
       interface CardPayload {
         nome: string;
         numero: string;
@@ -108,7 +115,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
       const body: CardPayload = {
         nome,
         numero,
-        tipo, // "crédito" | "débito"
+        tipo,
         cor: corSelecionada,
       };
 
@@ -116,9 +123,6 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
         body.limite = parseFloat(limite);
         body.dia_vencimento = parseInt(diaVencimento);
         body.dias_fechamento_antes = parseInt(diasFechamentoAntes);
-      } else {
-        // débito não precisa desses campos; se quiser enviar explicitamente:
-        // body.limite = 0;
       }
 
       const res = await apiRequest("/api/cards", {
@@ -128,14 +132,17 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
       });
 
       if (!res.ok) {
-        toast.error("Não foi possível cadastrar o cartão. Tente novamente");
+        const errorMessage = await getApiErrorMessage(res, "Não foi possível cadastrar o cartão. Tente novamente");
+        toast.error(errorMessage, { id: toastId });
         return;
       }
-      toast.success("Cartão cadastrado com sucesso!");
+      toast.success("Cartão cadastrado com sucesso!", { id: toastId });
       onCreated?.();
       onClose();
     } catch {
-      toast.error("Não foi possível conectar ao servidor. Verifique sua internet");
+      toast.error("Não foi possível conectar ao servidor. Verifique sua internet", { id: toastId });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -280,9 +287,10 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
 
         <button
           type="submit"
-          className="px-6 py-3 w-full rounded-xl text-white font-semibold text-[16px] bg-[#00D4D4] cursor-pointer hover:opacity-80 hover:text-black transition-all"
+          disabled={submitting}
+          className="px-6 py-3 w-full rounded-xl text-white font-semibold text-[16px] bg-[#00D4D4] cursor-pointer hover:opacity-80 hover:text-black transition-all disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Salvar
+          {submitting ? "Salvando..." : "Salvar"}
         </button>
       </div>
     </form>

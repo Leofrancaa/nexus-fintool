@@ -40,6 +40,7 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
   const [fixo, setFixo] = useState(false);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const fetchCategorias = async () => {
     try {
@@ -90,6 +91,7 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
     const toastId = generateToastId("save", "income");
 
     try {
+      setSubmitting(true);
       toast.loading("Salvando receita...", { id: toastId });
 
       const res = await apiRequest("/api/incomes", {
@@ -121,6 +123,8 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
     } catch (error) {
       const errorMessage = getContextualErrorMessage(error, "save", "receita");
       toast.error(errorMessage, { id: toastId });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -266,9 +270,10 @@ export function NewIncomeForm({ onClose, onCreated }: Props) {
 
         <button
           type="submit"
-          className="px-6 py-3 w-full rounded-xl text-white font-semibold text-[16px] bg-green-600 hover:opacity-80 hover:text-black transition-all"
+          disabled={submitting}
+          className="px-6 py-3 w-full rounded-xl text-white font-semibold text-[16px] bg-green-600 hover:opacity-80 hover:text-black transition-all disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          Salvar
+          {submitting ? "Salvando..." : "Salvar"}
         </button>
       </div>
     </form>

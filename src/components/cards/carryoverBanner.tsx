@@ -12,18 +12,12 @@ import {
   Loader2,
 } from "lucide-react";
 import type { CarryoverStatus } from "@/types/balanceCarryover";
+import { formatCurrency } from "@/utils/format";
 
 const MONTH_NAMES = [
   "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ];
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(Math.abs(value));
-}
 
 interface Props {
   customMonth: string;
@@ -144,7 +138,7 @@ export function CarryoverBanner({ customMonth, customYear, refreshKey, onApplied
 
   const srcMonth = MONTH_NAMES[status.source_mes - 1];
   const targetMonth = MONTH_NAMES[mes - 1];
-  const saldoFormatted = formatCurrency(status.saldo);
+  const saldoFormatted = formatCurrency(Math.abs(status.saldo));
 
   // Colors
   const accentColor = isPositive ? "text-emerald-400" : "text-red-400";

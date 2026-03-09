@@ -12,6 +12,7 @@ import { ExpenseByCategoryChart } from "../../components/charts/expenseByCategor
 import { IncomeByCategoryPieChart } from "../../components/charts/incomeByCategoryPieChart";
 import { DashboardInsightsCard } from "@/components/cards/dashboardInsightsCard";
 import { CarryoverBanner } from "@/components/cards/carryoverBanner";
+import { HealthScoreCard } from "@/components/cards/healthScoreCard";
 
 export default function Dashboard() {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -58,8 +59,8 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Filtro de Mês/Ano + Cards de Metas + Alertas de Limites */}
-      <div className="mt-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+      {/* Filtro de Mês/Ano + Cards de Metas + Alertas de Limites + Saúde Financeira */}
+      <div className="mt-6 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
         <div className="w-full">
           <DashboardFilter
             onCustomMonthChange={handleMonthChange}
@@ -81,6 +82,9 @@ export default function Dashboard() {
             refreshKey={refreshKey}
             onlyAlerts
           />
+        </div>
+        <div className="flex flex-col">
+          <HealthScoreCard refreshKey={refreshKey} />
         </div>
       </div>
 

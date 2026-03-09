@@ -11,13 +11,15 @@ import { IncomeStatsCards } from "@/components/cards/incomesStatsCard";
 import { IncomesByCategoryPanel } from "@/components/panels/incomeByCategoryPanel";
 import { apiRequest, isAuthenticated } from "@/lib/auth";
 import { toast } from "react-hot-toast";
+import { useDate } from "@/contexts/dateContext";
 
 export default function Incomes() {
   const router = useRouter();
-  const now = new Date();
+  const { selectedMonth, selectedYear, setMonth, setYear } = useDate();
 
-  const [customMonth, setCustomMonth] = useState(String(now.getMonth() + 1));
-  const [customYear, setCustomYear] = useState(String(now.getFullYear()));
+  const customMonth = String(selectedMonth);
+  const customYear = String(selectedYear);
+
   const [categorias, setCategorias] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("todas");
@@ -34,12 +36,12 @@ export default function Incomes() {
   }, []);
 
   const handleMonthChange = useCallback((mes: string) => {
-    setCustomMonth(mes);
-  }, []);
+    setMonth(Number(mes));
+  }, [setMonth]);
 
   const handleYearChange = useCallback((ano: string) => {
-    setCustomYear(ano);
-  }, []);
+    setYear(Number(ano));
+  }, [setYear]);
 
   // Autenticação
   useEffect(() => {

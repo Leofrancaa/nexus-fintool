@@ -11,13 +11,14 @@ import { ExpenseStatsCards } from "@/components/cards/expenseStatsCard";
 import { ExpensesByCategoryPanel } from "@/components/panels/expenseByCategoryPanel";
 import { apiRequest, isAuthenticated } from "@/lib/auth";
 import { toast } from "react-hot-toast";
+import { useDate } from "@/contexts/dateContext";
 
 export default function Expenses() {
   const router = useRouter();
+  const { selectedMonth, selectedYear, setMonth, setYear } = useDate();
 
-  const now = new Date();
-  const [customMonth, setCustomMonth] = useState(String(now.getMonth() + 1));
-  const [customYear, setCustomYear] = useState(String(now.getFullYear()));
+  const customMonth = String(selectedMonth);
+  const customYear = String(selectedYear);
 
   const [categorias, setCategorias] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,12 +35,12 @@ export default function Expenses() {
   }, []);
 
   const handleMonthChange = useCallback((mes: string) => {
-    setCustomMonth(mes);
-  }, []);
+    setMonth(Number(mes));
+  }, [setMonth]);
 
   const handleYearChange = useCallback((ano: string) => {
-    setCustomYear(ano);
-  }, []);
+    setYear(Number(ano));
+  }, [setYear]);
 
   useEffect(() => {
     if (!isAuthenticated()) {
