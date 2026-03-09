@@ -159,7 +159,7 @@ export default function ConfiguracoesPage() {
         const data = await response.json();
         toast.error(data.message || "Erro ao gerar código");
       }
-    } catch (error) {
+    } catch {
       toast.error("Erro ao gerar código");
     } finally {
       setLoadingAdmin(false);
@@ -190,7 +190,7 @@ export default function ConfiguracoesPage() {
         const data = await response.json();
         toast.error(data.message || "Erro ao deletar código");
       }
-    } catch (error) {
+    } catch {
       toast.error("Erro ao deletar código");
     }
   };
