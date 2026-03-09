@@ -112,7 +112,7 @@ export function NewThresholdForm({
       }
 
       onClose();
-    } catch (error) {
+    } catch {
       toast.error("Não foi possível conectar ao servidor. Verifique sua internet");
     }
   };

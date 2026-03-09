@@ -93,8 +93,8 @@ export function CarryoverBanner({ customMonth, customYear, refreshKey, onApplied
 
       toast.success(label, { id: toastId });
       onApplied?.();
-    } catch (err: any) {
-      toast.error(err.message || "Erro ao aplicar saldo", { id: toastId });
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Erro ao aplicar saldo", { id: toastId });
     } finally {
       setApplying(false);
     }
@@ -127,8 +127,8 @@ export function CarryoverBanner({ customMonth, customYear, refreshKey, onApplied
 
       toast.success("Carryover removido!", { id: toastId });
       onApplied?.();
-    } catch (err: any) {
-      toast.error(err.message || "Erro ao desfazer", { id: toastId });
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Erro ao desfazer", { id: toastId });
     } finally {
       setUndoing(false);
     }
@@ -140,7 +140,6 @@ export function CarryoverBanner({ customMonth, customYear, refreshKey, onApplied
   if (dismissed) return null;
 
   const isPositive = status.tipo === "positivo";
-  const isPendente = status.status === "pendente";
   const isAplicado = status.status === "aplicado";
 
   const srcMonth = MONTH_NAMES[status.source_mes - 1];

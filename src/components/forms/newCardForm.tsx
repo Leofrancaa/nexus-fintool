@@ -134,7 +134,7 @@ export function NewCardForm({ onClose, onCreated }: NewCardFormProps) {
       toast.success("Cartão cadastrado com sucesso!");
       onCreated?.();
       onClose();
-    } catch (error) {
+    } catch {
       toast.error("Não foi possível conectar ao servidor. Verifique sua internet");
     }
   };

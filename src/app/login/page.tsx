@@ -166,7 +166,7 @@ export default function Login() {
                 </div>
               </div>
 
-              <Button type="submit" className="h-12 max-w-full">
+              <Button type="submit" className="h-12 max-w-full" disabled={loading}>
                 Entrar
               </Button>
 
